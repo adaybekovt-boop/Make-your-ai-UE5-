@@ -11,10 +11,11 @@
 | Prompt expected start | `4d66cab0317aa416b76228dfef44db7573a1d348` |
 | Actual start of this session | `35d5a0bd5256bbd788026d711ee779c9902aad16` (`feat(ue5): add deterministic campaign, review methods, training and five endings`) |
 | `main` (unchanged) | `cda0b460257e656c57b31c8ccebfb79097023d4a` |
-| Implementation commit (tested tree) | `a3a7f3bb87a52e48f187c36b0b17afec76ba2886` |
-| Report pin commit | this follow-up on the same branch |
+| Remote overlap kept under this rebase | `f8d48a5` (43 campaign CI tests), `ca785c2` (loading / Flow UMG / Garage walk source) |
+| Rebased implementation | `3bfc69c` `feat(ue5): complete portable campaign slice, UMG flow and walk pawn` |
+| Report pin after rebase | `1230683` (later commits may follow this file) |
 
-The extra campaign commit already on the branch was **kept**. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
+The extra campaign commit already on the branch was **kept**. Remote commits `f8d48a5` / `ca785c2` were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
 
 ## 2. Major changes
 
@@ -58,14 +59,20 @@ These run in the native `mai-tests` binary with ASan/UBSan. They are **not** Unr
 | Missing profile / bad rules | PASS | PASS | BLOCKED |
 | EndingEvaluator 5 endings | PASS | PASS | BLOCKED |
 | Elon Max fictional buyer + letter | PASS | PASS | BLOCKED |
-| Elon Max portrait import | **not imported** | n/a | BLOCKED |
+| Elon Max remade likeness (source JPEG) | PASS (source file) | path recorded | BLOCKED (no Editor import) |
+| Elon Max UE texture import | **not imported** (no fake `.uasset`) | n/a | BLOCKED |
 | Garage walk domain | PASS | PASS | BLOCKED |
 | Garage walk pawn / collisions | source only | n/a | BLOCKED |
 | Dataset Unreviewed inventory | PASS | PASS | BLOCKED |
 | Human / AI / manual review | PASS | PASS | BLOCKED |
 | Review affects training + legal | PASS | PASS | BLOCKED |
 
-Elon Max is the fictional founder of Maximal Teapots. A user-supplied photograph of a living person was treated as a **design reference only** and was **not** copied into Content or named as an imported portrait. Development placeholder: `Unreal/Evidence/overnight/elon_max_dev_placeholder.png` (geometric card, not a UE texture, not a photograph).
+Elon Max is the fictional founder of Maximal Teapots and the writer of the acquisition ending letter. The author supplied a **remade likeness** (not a documentary photograph of a living public figure). That still is stored as source art only:
+
+- `Unreal/MakeYourAI/Content/Source/Portraits/elon_max_remade.jpg`
+- evidence copy: `Unreal/Evidence/overnight/elon_max_remade_source.jpg`
+
+No `.uasset` / `UTexture2D` was fabricated. `UMaiCampaignAsset::ElonMaxPortrait` stays unset until a real Editor import to `/Game/Scaffold/Portraits/T_ElonMax_Fictional`. Geometric card `elon_max_dev_placeholder.png` remains a development fallback, not a UE render.
 
 ## 5. Location placement
 
@@ -134,8 +141,9 @@ Recorded 2026-09-07T18:11:23Z against the working tree of this session. Logs: `U
 The only PNG written this session is the **development caricature placeholder**, not a scene render:
 
 - `Unreal/Evidence/overnight/elon_max_dev_placeholder.png`
+- `Unreal/Evidence/overnight/elon_max_remade_source.jpg` (author remade likeness; not an Editor render)
 
-Do not treat it as VISUAL_VERIFIED.
+Do not treat either as VISUAL_VERIFIED.
 
 ## 15. Shader / material warnings
 
@@ -148,7 +156,7 @@ No shader compile ran. Editor material script creates parameter-driven master ma
 3. `extract_city_markers.py` in Blender, then `scaffold_runner.py build-scene` / `materials` / `lighting` / `world-partition`.
 4. Play: New Game → difficulty → prologue → buy Garage → walk → dataset review → train → save/load → one ending.
 5. Capture dated day/night/Garage PNGs from **that** Editor.
-6. Commission a stylized fictional Elon Max portrait (not a photograph of a living person) and import it to `/Game/Scaffold/Portraits/T_ElonMax_Fictional`.
+6. In Editor, import `Content/Source/Portraits/elon_max_remade.jpg` to `/Game/Scaffold/Portraits/T_ElonMax_Fictional` and assign `UMaiCampaignAsset::ElonMaxPortrait`. Do not invent a `.uasset` by hand.
 7. Measure `stat unit/gpu/memory/streaming` before and after streaming/HLOD work.
 
 ## 17. `main` confirmation

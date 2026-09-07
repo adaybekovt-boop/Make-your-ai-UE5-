@@ -75,6 +75,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="BALANCE_TUNABLE") int64 HumanBatchMicro = 60000000LL;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="BALANCE_TUNABLE") int64 AISetupMicro = 2000000000LL;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="BALANCE_TUNABLE") int64 AIUpgradeMicro = 1000000000LL;
+    // Assigned in Editor from Content/Source/Portraits/elon_max_remade.jpg. Soft ptr stays unset until a real import.
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Fictional") TSoftObjectPtr<UTexture2D> ElonMaxPortrait;
     bool ToDomain(mai::CampaignRules& Out, FString& Error) const;
 };

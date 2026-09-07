@@ -117,7 +117,8 @@ struct FictionalCharacter {
     std::string id = "elon-max", name = "Elon Max";
     std::string biography = "Fictional founder of Maximal Teapots, a company launching luxury kettles into orbit. Not a real person's biography.";
     std::string portraitSlot = "/Game/Scaffold/Portraits/T_ElonMax_Fictional";
-    std::string fallback = "ELON MAX / fictional portrait pending / purple angular suit, copper spiral glasses, triangular moustache";
+    std::string fallback = "ELON MAX / fictional remade portrait pending UE import / author-supplied likeness, not a documentary photo";
+    std::string sourcePortrait = "Content/Source/Portraits/elon_max_remade.jpg";
     bool fictional = true;
 };
 struct CampaignRules {

@@ -276,6 +276,7 @@ void RunCampaignTests() {
         EndingMetrics both=regulator;both.bankrupt=true;
         CHECK(EndingEvaluator::Evaluate(both,rules.endings).kind==EndingKind::Regulator);
         CHECK(rules.buyer.fictional);CHECK(rules.buyer.name=="Elon Max");
+        CHECK(rules.buyer.sourcePortrait.find("elon_max_remade.jpg")!=std::string::npos);
         CHECK(std::string(Loc("placeholder.elon-max")).find("PLACEHOLDER")!=std::string::npos);
     });
     test("bankruptcy grace depends on difficulty and new game clears ending",[]{

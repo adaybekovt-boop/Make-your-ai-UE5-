@@ -43,7 +43,7 @@ inline const char* Loc(const char* id) {
         {"prologue.task-prompt", "First task: buy Garage, install a server, review a dataset, then train."},
         {"prologue.accept", "Accept first task"},
         {"ending.offer", "Elon Max has made an acquisition offer"},
-        {"ending.elon-max.letter", "Letter from Elon Max, fictional founder of Maximal Teapots:\n\nYour model boiled the market. We launch luxury kettles into orbit, not cars, and I am not a real person. If the copper glasses fog up, the deal still stands.\n\n— Elon Max"},
+        {"ending.elon-max.letter", "Letter from Elon Max, fictional founder of Maximal Teapots:\n\nYour model boiled the market. We launch luxury kettles into orbit, not cars. The remade face on this letter is the character who writes it — not a documentary photograph.\n\n— Elon Max"},
         {"ending.accept", "Accept Elon Max offer"},
         {"ending.decline", "Decline and remain independent"},
         {"ending.open", "Publish the model"},
@@ -78,10 +78,10 @@ inline const char* Loc(const char* id) {
         {"hud.enter-garage", "Walk Garage"},
         {"hud.save", "Save company"},
         {"hud.load", "Load company"},
-        {"character.elon-max.notice", "Elon Max is a fictional parody character. No real person's name, logo or photograph is used."},
+        {"character.elon-max.notice", "Elon Max is a fictional parody character. The ending portrait is an author-supplied remade likeness, not a documentary photograph of a living public figure."},
         {"status.source-only", "UE compilation, Editor, visual and gameplay verification: NOT VERIFIED."},
         {"status.proxy-world", "Graybox layout is a test stand-in, not imported CityV4."},
-        {"placeholder.elon-max", "DEV PLACEHOLDER: stylized fictional portrait is not imported. Neutral card only."}
+        {"placeholder.elon-max", "DEV PLACEHOLDER until Editor import: remade source is Content/Source/Portraits/elon_max_remade.jpg. UE texture T_ElonMax_Fictional is not imported."}
     };
     const auto it = k.find(id);
     return it == k.end() ? id : it->second;

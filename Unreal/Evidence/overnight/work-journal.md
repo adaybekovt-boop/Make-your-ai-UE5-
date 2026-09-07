@@ -27,7 +27,7 @@ UE5 compile, Editor, visual, and in-engine gameplay checks are therefore expecte
 
 Native tests after campaign + flow work: 46 cases, 1354 assertions, 0 failures (ASan/UBSan).
 
-UE5 remained unavailable. A user-supplied photograph of a living person was not imported; Elon Max stays a fictional caricature plus a geometric development placeholder PNG.
+UE5 remained unavailable. The author clarified the supplied still is a remade Elon Max likeness (the character who writes the ending letter), not a documentary photograph. It is stored as source JPEG only; no fake UE texture was created. Geometric placeholder PNG remains as a development fallback.
 
 Final report: `Unreal/UE5_OVERNIGHT_FINAL_REPORT.md`.
 Final commit: `a3a7f3bb87a52e48f187c36b0b17afec76ba2886`.
