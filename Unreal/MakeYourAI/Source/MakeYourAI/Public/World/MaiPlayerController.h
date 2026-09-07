@@ -3,19 +3,33 @@
 #include "GameFramework/PlayerController.h"
 #include "MaiPlayerController.generated.h"
 class UMaiHUDWidget;
-
+class UMaiFlowWidget;
+class AMaiCameraPawn;
+class AMaiWalkCharacter;
+class AMaiGarageInterior;
 UCLASS()
 class MAKEYOURAI_API AMaiPlayerController : public APlayerController {
     GENERATED_BODY()
 public:
     virtual void BeginPlay() override;
+    virtual void PlayerTick(float DeltaTime) override;
     virtual void SetupInputComponent() override;
-    void SelectLocation(const FString& Id, int32 Cell = -1);
+    void SelectLocation(const FString& Id,int32 Cell=-1);
     void EnterLocation(const FString& Id);
     void ShowCity();
+    void ShowWarehouse();
     void FocusLandmark(const FString& Id);
     void VisitNpc();
+    void OpenTraining(bool bFromDesk=false);
+    bool AtReviewDesk() const;
+    bool PrepareCampaignScene(const FString& Interior,bool bMenu,FString& Error);
+    void ToggleOperations() {bOperationsOpen=!bOperationsOpen;}
 private:
     UPROPERTY(Transient) TObjectPtr<UMaiHUDWidget> Screen;
+    UPROPERTY(Transient) TObjectPtr<UMaiFlowWidget> Flow;
+    UPROPERTY(Transient) TObjectPtr<AMaiCameraPawn> CityCamera;
+    UPROPERTY(Transient) TObjectPtr<AMaiWalkCharacter> Walker;
+    UPROPERTY(Transient) TObjectPtr<AMaiGarageInterior> RuntimeGarage;
+    bool bOperationsOpen=true;
     void ClickWorld();
 };

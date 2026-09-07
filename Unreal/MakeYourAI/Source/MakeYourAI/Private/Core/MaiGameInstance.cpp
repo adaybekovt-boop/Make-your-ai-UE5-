@@ -15,3 +15,14 @@ UMaiCatalogAsset* UMaiGameInstance::ResolveCatalog() {
     Catalog = NewObject<UMaiCatalogAsset>(this);
     return Catalog;
 }
+
+UMaiCampaignAsset* UMaiGameInstance::ResolveCampaign() {
+    if (Campaign) return Campaign;
+    FSoftObjectPath Requested=CampaignPath;
+    if (Requested.IsNull() && FPackageName::DoesPackageExist(TEXT("/Game/Scaffold/Data/DA_Campaign"))) Requested=FSoftObjectPath(TEXT("/Game/Scaffold/Data/DA_Campaign.DA_Campaign"));
+    if (!Requested.IsNull()) {
+        Campaign=Cast<UMaiCampaignAsset>(Requested.TryLoad());
+        if (!Campaign) UE_LOG(LogTemp, Error, TEXT("Configured campaign data is missing: %s"), *Requested.ToString());
+    } else Campaign=NewObject<UMaiCampaignAsset>(this);
+    return Campaign;
+}

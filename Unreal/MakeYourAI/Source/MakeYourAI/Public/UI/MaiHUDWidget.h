@@ -34,6 +34,7 @@ public:
     virtual void NativeDestruct() override;
     void HandleCommand(const FString& Command);
     void SelectLocation(const FString& Id, int32 Cell = -1);
+    void ShowWarehouse();
 protected:
     UPROPERTY(Transient) TObjectPtr<UMaiCompanySubsystem> Company;
     UPROPERTY(Transient) TObjectPtr<UTextBlock> CompanyText;

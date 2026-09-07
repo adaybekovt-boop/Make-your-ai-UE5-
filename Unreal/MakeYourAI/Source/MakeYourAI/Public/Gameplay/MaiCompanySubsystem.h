@@ -3,6 +3,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Gameplay/MaiViewTypes.h"
 #include "Gameplay/MaiCatalogAsset.h"
+#include "Campaign/MaiCampaignAsset.h"
 #include "MaiCompanySubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMaiCompanyChanged);
@@ -14,7 +15,7 @@ public:
     virtual void Deinitialize() override;
     UPROPERTY(BlueprintAssignable, Category="MakeYourAI") FMaiCompanyChanged OnChanged;
     UPROPERTY(BlueprintReadOnly, Category="MakeYourAI") FText LastMessage;
-    UFUNCTION(BlueprintPure, Category="MakeYourAI") bool IsReady() const { return Sim.IsValid(); }
+    UFUNCTION(BlueprintPure, Category="MakeYourAI") bool IsReady() const { return Game.IsValid(); }
     UFUNCTION(BlueprintPure, Category="MakeYourAI") int64 GetCashMicro() const;
     UFUNCTION(BlueprintPure, Category="MakeYourAI") EMaiLocationStatus GetLocationStatus(const FString& Id) const;
     UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult NewCompany(int32 Seed);
@@ -22,7 +23,10 @@ public:
     UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult SetPaused(bool bPaused);
     UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult SetSpeed(int32 Speed);
     UFUNCTION(BlueprintPure, Category="MakeYourAI") UMaiCatalogAsset* GetCatalog() const { return Catalog; }
-    const mai::Simulation* Domain() const { return Sim.Get(); }
+    const mai::Simulation* Domain() const { return Game ? &Game->Core() : nullptr; }
+    const mai::Campaign* CampaignDomain() const { return Game.Get(); }
+    UMaiCampaignAsset* CampaignDefinitions() const { return CampaignAsset; }
+    FMaiActionResult CampaignTransact(TFunctionRef<mai::Result(mai::Campaign&)> Action);
     FMaiActionResult Transact(TFunctionRef<mai::Result(mai::Simulation&)> Action);
     FMaiActionResult Advance(int64 RealMicroseconds);
     FMaiActionResult LoadPayload(const TArray<uint8>& Bytes);
@@ -31,6 +35,7 @@ public:
     uint64 Generation() const { return CompanyGeneration; }
 private:
     UPROPERTY(Transient) TObjectPtr<UMaiCatalogAsset> Catalog;
-    TUniquePtr<mai::Simulation> Sim;
+    UPROPERTY(Transient) TObjectPtr<UMaiCampaignAsset> CampaignAsset;
+    TUniquePtr<mai::Campaign> Game;
     uint64 CompanyGeneration = 0;
 };

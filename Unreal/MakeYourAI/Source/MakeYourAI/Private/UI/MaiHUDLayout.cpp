@@ -81,7 +81,7 @@ void UMaiHUDWidget::BuildLayout() {
     auto* BuyPage = Page();
     AddText(BuyPage, TEXT("Chassis")); RackPicker = AddPicker(BuyPage, {TEXT("Basic rack"), TEXT("Cooled rack"), TEXT("Enterprise rack")});
     AddText(BuyPage, TEXT("Chip")); ChipPicker = AddPicker(BuyPage, {TEXT("Terra T1"), TEXT("Titan X9"), TEXT("Helios HC"), TEXT("Zenith Z1")});
-    AddText(BuyPage, TEXT("Channel")); ChannelPicker = AddPicker(BuyPage, {TEXT("Official x1.6"), TEXT("Grey x1.1 / 8% defect at installation")});
+    AddText(BuyPage, TEXT("Channel")); ChannelPicker = AddPicker(BuyPage, {TEXT("Official x1.6"), TEXT("Grey x1.1 / profile-dependent defect at installation")});
     AddText(BuyPage, TEXT("Quantity, 1-24")); QuantityInput = AddInput(BuyPage, TEXT("1")); QuoteText = AddText(BuyPage, TEXT(""));
     AddButton(BuyPage, TEXT("Order complete kit"), TEXT("kit")); AddButton(BuyPage, TEXT("Order chassis only"), TEXT("rackorder"));
     AddButton(BuyPage, TEXT("Order chip to warehouse"), TEXT("chiporder")); AddButton(BuyPage, TEXT("Order chip upgrade for this cell"), TEXT("upgradeorder"));

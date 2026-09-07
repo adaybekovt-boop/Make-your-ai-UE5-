@@ -11,5 +11,6 @@ public:
     UFUNCTION(BlueprintCallable, Category="Persistence") FMaiActionResult SaveCompany(const FString& SlotName);
     UFUNCTION(BlueprintCallable, Category="Persistence") FMaiActionResult LoadCompany(const FString& SlotName);
     UFUNCTION(BlueprintPure, Category="Persistence") bool HasSave(const FString& SlotName) const;
+    UFUNCTION(BlueprintCallable, Category="Persistence") bool CanReturnToSave(const FString& SlotName) const;
     static bool IsSafeSlotName(const FString& Name);
 };

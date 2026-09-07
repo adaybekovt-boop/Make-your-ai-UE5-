@@ -2,6 +2,7 @@
 #include "Gameplay/MaiCompanySubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
+#include "World/MaiWalkCharacter.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 
@@ -15,7 +16,7 @@ void UMaiProximityComponent::TickComponent(float DeltaTime, ELevelTick TickType,
     if (!GetWorld() || !GetWorld()->GetGameInstance() || !Settings || !GetOwner()) return;
     auto* Company = GetWorld()->GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>();
     const auto* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    if (!Company || !Company->Domain() || !Player) return;
+    if (!Company || !Company->CampaignDomain() || !Cast<AMaiWalkCharacter>(Player) || !GetOwner()->ActorHasTag(TEXT("CampaignGarageNpc")) || Company->CampaignDomain()->View().interior!="garage") return;
     if (!FMath::IsFinite(Settings->RadiusCm) || Settings->RadiusCm <= 0 || Settings->StageGameMinutes < 1 || Settings->StageGameMinutes > 60 || Settings->CooldownGameMinutes < 2 * Settings->StageGameMinutes || Settings->CooldownGameMinutes > 1440) return;
     const bool bInside = FVector::DistSquared(Player->GetActorLocation(), GetOwner()->GetActorLocation()) <= FMath::Square(Settings->RadiusCm);
     Company->Proximity(bInside, static_cast<int64>(Settings->StageGameMinutes) * mai::Hour / 60, static_cast<int64>(Settings->CooldownGameMinutes) * mai::Hour / 60);

@@ -8,7 +8,7 @@
 AMaiGameMode::AMaiGameMode() { DefaultPawnClass = AMaiCameraPawn::StaticClass(); PlayerControllerClass = AMaiPlayerController::StaticClass(); }
 void AMaiGameMode::BeginPlay() {
     Super::BeginPlay();
-    if (!GetWorld()) return;
+    if (!GetWorld() || GetWorld()->GetMapName().Contains(TEXT("L_Campaign_Boot"))) return;
     for (TActorIterator<AMaiScaffoldWorld> It(GetWorld()); It; ++It) return;
     GetWorld()->SpawnActor<AMaiScaffoldWorld>();
 }

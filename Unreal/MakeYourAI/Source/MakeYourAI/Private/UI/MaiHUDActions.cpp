@@ -69,7 +69,9 @@ void UMaiHUDWidget::HandleCommand(const FString& Command) {
     else if (Command == TEXT("npc") && PC) PC->VisitNpc();
     else if (Command == TEXT("new")) {
         if (!bNewCompanyArmed) { bNewCompanyArmed = true; ActionMessage = FText::FromString(TEXT("Press New company again to discard the current unsaved session. Save slots are not deleted.")); }
-        else { bNewCompanyArmed = false; ShowResult(Company->NewCompany(1296124209)); RebuildGrid(); if (PC) PC->ShowCity(); }
+        else { bNewCompanyArmed = false; ShowResult(Company->CampaignTransact([](mai::Campaign& G){ return G.ShowScreen(mai::Screen::MainMenu); })); RebuildGrid(); }
     }
     Refresh();
 }
+
+void UMaiHUDWidget::ShowWarehouse() { SelectLocation(TEXT("garage")); if(PagePicker) PagePicker->SetSelectedIndex(2); }
