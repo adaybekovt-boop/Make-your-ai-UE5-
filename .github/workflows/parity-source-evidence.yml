@@ -1,0 +1,86 @@
+name: Browser parity source evidence (no Unreal verification)
+on:
+  push:
+    branches: [agent/browser-parity-cityv4-20260908]
+    paths: ['.github/workflows/parity-source-evidence.yml']
+permissions:
+  contents: read
+jobs:
+  source-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Export exact tracked source and tree without authoring binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init source
+          cd source
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          raw = subprocess.check_output(['git','ls-tree','-rz','FETCH_HEAD']).decode()
+          entries = []
+          allowed = {'.h','.cpp','.cs','.ini','.json','.py','.md','.txt','.ts','.tsx','.yml','.yaml','.uproject','.ps1','.sh','.css','.html','.svg','.csv','.toml'}
+          paths = []
+          for record in raw.split('\0'):
+              if not record: continue
+              metadata, path = record.split('\t',1)
+              mode, kind, sha = metadata.split()
+              entries.append(dict(path=path,mode=mode,type=kind,sha=sha))
+              if kind == 'blob' and (pathlib.Path(path).suffix.lower() in allowed or pathlib.Path(path).name in {'.gitignore','.gitattributes'}):
+                  paths.append('/'+path)
+          pathlib.Path('../source-tree.json').write_text(json.dumps(entries,indent=2))
+          subprocess.run(['git','sparse-checkout','init','--no-cone'],check=True)
+          subprocess.run(['git','sparse-checkout','set','--no-cone','--stdin'],input='\n'.join(paths).encode(),check=True)
+          PY
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git rev-parse HEAD > ../source-commit.txt
+          python3 - <<'PY'
+          import pathlib, subprocess, zipfile
+          with zipfile.ZipFile('../current-source.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for name in subprocess.check_output(['git','ls-files','-z']).decode().split('\0'):
+                  p = pathlib.Path(name)
+                  if name and p.is_file(): z.write(p,name)
+              z.write('../source-tree.json','SOURCE_TREE.json')
+              z.write('../source-commit.txt','SOURCE_COMMIT.txt')
+          PY
+      - name: Read-only browser reference at audited commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init browser
+          cd browser
+          git remote add origin https://github.com/adaybekovt-boop/Make-your-Ai.git
+          git fetch --depth=1 origin fd270196525c4c6fe61217327c81274e67a58d4b
+          git checkout --detach FETCH_HEAD
+          git rev-parse HEAD > ../browser-commit.txt
+          git archive --format=tar.gz -o ../browser-reference.tar.gz HEAD
+          npm ci
+          npm test 2>&1 | tee ../browser-tests.log
+          npm run typecheck 2>&1 | tee ../browser-typecheck.log
+          npm run build 2>&1 | tee ../browser-build.log
+          tar -czf ../browser-dist.tar.gz dist
+          tar -czf ../browser-dependencies-linux.tar.gz node_modules
+      - name: Retain source and real browser test evidence, not UE results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: parity-source-evidence
+          path: |
+            current-source.zip
+            source-tree.json
+            source-commit.txt
+            browser-reference.tar.gz
+            browser-commit.txt
+            browser-tests.log
+            browser-typecheck.log
+            browser-build.log
+            browser-dist.tar.gz
+            browser-dependencies-linux.tar.gz
+          retention-days: 3
