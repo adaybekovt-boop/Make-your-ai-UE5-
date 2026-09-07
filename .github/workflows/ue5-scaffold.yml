@@ -2,7 +2,7 @@ name: UE5 scaffold - native domain and browser, NOT engine verification
 on:
   push:
     branches: [agent/ue5-core-vertical-slice]
-    paths: ['Unreal/MakeYourAI/**', 'Unreal/Tests/**', 'Unreal/Tools/**', '.github/workflows/ue5-scaffold.yml']
+    paths: ['Unreal/MakeYourAI/**', 'Unreal/Tests/**', 'Unreal/Tools/**', 'Unreal/Evidence/campaign/**', '.github/workflows/ue5-scaffold.yml']
 permissions:
   contents: read
 jobs:

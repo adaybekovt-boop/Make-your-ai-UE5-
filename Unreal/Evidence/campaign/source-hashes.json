@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Campaign change set; native source is compiled, UE integration is source-only",
   "git_blob_sha1": {
-    ".github/workflows/ue5-scaffold.yml": "07f1d3b0f01cdf88bb47d31b3c7342fde2b153ef",
+    ".github/workflows/ue5-scaffold.yml": "1db6c58a99ff8295a464406d8c1f1d2fa0908408",
     "Unreal/MakeYourAI/Config/DefaultInput.ini": "1e7541156f84710a0ac056a1dcfb407a48efa26d",
     "Unreal/MakeYourAI/Source/MakeYourAI/Private/Campaign/MaiCampaign.cpp": "f17a0dc26c6f5d0772d979c71cc079d34bd2fb04",
     "Unreal/MakeYourAI/Source/MakeYourAI/Private/Campaign/MaiCampaignCodec.cpp": "adbe6970a55b7167a68117a0cae90e2f5797ba47",
