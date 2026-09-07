@@ -11,11 +11,11 @@
 | Prompt expected start | `4d66cab0317aa416b76228dfef44db7573a1d348` |
 | Actual start of this session | `35d5a0bd5256bbd788026d711ee779c9902aad16` (`feat(ue5): add deterministic campaign, review methods, training and five endings`) |
 | `main` (unchanged) | `cda0b460257e656c57b31c8ccebfb79097023d4a` |
-| Remote overlap kept under this rebase | `f8d48a5` (43 campaign CI tests), `ca785c2` (loading / Flow UMG / Garage walk source) |
-| Rebased implementation | `3bfc69c` `feat(ue5): complete portable campaign slice, UMG flow and walk pawn` |
-| Report pin after rebase | `1230683` (later commits may follow this file) |
+| Remote overlap kept under this rebase | `f8d48a5` (43 campaign CI tests), `ca785c2` (loading / Flow UMG / Garage walk), `c9c3e0e` (Editor bootstrap / source hashes) |
+| Rebased implementation | `a71d176` portable campaign slice + UMG/walk |
+| Elon Max remade source | `04ba7d5` |
 
-The extra campaign commit already on the branch was **kept**. Remote commits `f8d48a5` / `ca785c2` were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
+The extra campaign commit already on the branch was **kept**. Remote commits `f8d48a5` / `ca785c2` / `c9c3e0e` were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
 
 ## 2. Major changes
 
