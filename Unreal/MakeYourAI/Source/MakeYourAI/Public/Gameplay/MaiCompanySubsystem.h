@@ -1,0 +1,36 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "Gameplay/MaiViewTypes.h"
+#include "Gameplay/MaiCatalogAsset.h"
+#include "MaiCompanySubsystem.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMaiCompanyChanged);
+UCLASS()
+class MAKEYOURAI_API UMaiCompanySubsystem : public UGameInstanceSubsystem {
+    GENERATED_BODY()
+public:
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
+    UPROPERTY(BlueprintAssignable, Category="MakeYourAI") FMaiCompanyChanged OnChanged;
+    UPROPERTY(BlueprintReadOnly, Category="MakeYourAI") FText LastMessage;
+    UFUNCTION(BlueprintPure, Category="MakeYourAI") bool IsReady() const { return Sim.IsValid(); }
+    UFUNCTION(BlueprintPure, Category="MakeYourAI") int64 GetCashMicro() const;
+    UFUNCTION(BlueprintPure, Category="MakeYourAI") EMaiLocationStatus GetLocationStatus(const FString& Id) const;
+    UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult NewCompany(int32 Seed);
+    UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult BuyLocation(const FString& Id);
+    UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult SetPaused(bool bPaused);
+    UFUNCTION(BlueprintCallable, Category="MakeYourAI") FMaiActionResult SetSpeed(int32 Speed);
+    UFUNCTION(BlueprintPure, Category="MakeYourAI") UMaiCatalogAsset* GetCatalog() const { return Catalog; }
+    const mai::Simulation* Domain() const { return Sim.Get(); }
+    FMaiActionResult Transact(TFunctionRef<mai::Result(mai::Simulation&)> Action);
+    FMaiActionResult Advance(int64 RealMicroseconds);
+    FMaiActionResult LoadPayload(const TArray<uint8>& Bytes);
+    TArray<uint8> SavePayload() const;
+    bool Proximity(bool bInside, int64 Duration, int64 Cooldown);
+    uint64 Generation() const { return CompanyGeneration; }
+private:
+    UPROPERTY(Transient) TObjectPtr<UMaiCatalogAsset> Catalog;
+    TUniquePtr<mai::Simulation> Sim;
+    uint64 CompanyGeneration = 0;
+};
