@@ -1,0 +1,25 @@
+{
+  "changes": [
+    "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+    "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+    "Separate fabric, skin, hair and leather PBR slots",
+    "22-bone custom deform skeleton with 25-frame walk preview"
+  ],
+  "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+  "id": "person-4",
+  "group": "characters",
+  "source": "artifacts/actors/person-4.blend",
+  "objects": 5,
+  "triangles": 49060,
+  "enclosure_triangles": 0,
+  "dimensions_m": [
+    0.5799999237060547,
+    0.2709999084472656,
+    1.7489999532699585
+  ],
+  "bones": 22,
+  "fbx_bytes": 4605132,
+  "glb_bytes": 3699208,
+  "unreal_editor_verified": false,
+  "removed_degenerate_faces": 40
+}

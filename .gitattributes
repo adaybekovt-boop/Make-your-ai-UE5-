@@ -1,0 +1,10 @@
+* text=auto
+
+*.fbx binary
+*.glb binary
+*.blend binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.wasm binary

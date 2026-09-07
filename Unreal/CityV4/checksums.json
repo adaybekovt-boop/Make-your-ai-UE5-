@@ -1,0 +1,17 @@
+{
+  "city-v4.blend": "a25970ac39b81def36ddc6564a4aa2af1988f205f393912cc16432969e4610fe",
+  "city-v4.fbx": "ebea2633562cf35ed1719e13e0001ec6305431054edb08a749889f5137ce5dea",
+  "city-v4-day.png": "b22cbc1e50bce1cb45cfa931bb8900fb6b9ff5374818a8f5308e35ba2806d2dd",
+  "city-v4-night.png": "28afe4c4a5c841ac2376cd94ef78b71828e72157673ff116fee1a3407770bf19",
+  "city-v4-nuclear.png": "dc001d33dce37539ad90aeda9e566e6c580fc5292a871baff4bd88424284ab35",
+  "city-v4-suburb.png": "7fb97c383fc3f5a46b2550a2418711d4a2972b5d25fe5ba0fe9c18207f5f40db",
+  "city-v4-auction.png": "1b1d1ee6da723bbacb53990337dc5271aa067398e3b433807a7b349b6f0f408a",
+  "README_RU.md": "65d8481ba1af0384710d23191d2f17966c28b46d04822e4582c3000a908c4663",
+  "city-v4-report.json": "79b813e07e62f2f3a0fa20f4809f34ca613ae2586b552240627f048f041e3ee9",
+  "city-v4-fbx-validation.json": "a9c95c471aa57ecfd5172eaf6ed96c4a2ceb76c70e31d44e93ea508d02246b9e",
+  "build_city_v4.py": "b0087e9c3ea0208ca0629258aa8fb18592ba408fe26ef7219c78867a98f74961",
+  "polish_night.py": "c3bba94c367ed53f5a3566493ff42e79041f64a1650fc3c4d52244eb7cbf715f",
+  "render_city_v4.py": "b9aaa0d210e567e273510722599da335de7463a6e8e6debc10b63f7beae3f70d",
+  "source_city_v3.py": "79c8c6d4fc3e49ae044fcb987efbc3d8b4dcd7a4f9f33169a7cd45ee6c472059",
+  "validate_fbx.py": "3c853fdee8b919ac3e051176389179abc448f21d8866778a8282bdd0c1077b08"
+}

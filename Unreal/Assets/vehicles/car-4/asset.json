@@ -1,0 +1,27 @@
+{
+  "changes": [
+    "Metre-scale coupe master retained",
+    "Clearcoat paint and micro-surface PBR maps",
+    "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+    "Layered lamps, grille and model-specific exterior fittings"
+  ],
+  "rig": "four static wheel assemblies; no Chaos vehicle setup",
+  "id": "car-4",
+  "group": "vehicles",
+  "source": "artifacts/actors/hero-coupe/car-4.blend",
+  "objects": 12,
+  "triangles": 86168,
+  "enclosure_triangles": 0,
+  "dimensions_m": [
+    2.330000162124634,
+    5.059999942779541,
+    1.4977550506591797
+  ],
+  "bones": 0,
+  "fbx_bytes": 5064124,
+  "glb_bytes": 5812584,
+  "unreal_editor_verified": false,
+  "wheels_circularized": true,
+  "studio_polished": true,
+  "removed_degenerate_faces": 416
+}

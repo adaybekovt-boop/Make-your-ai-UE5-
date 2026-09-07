@@ -1,0 +1,652 @@
+{
+  "source_commit": "fd270196525c4c6fe61217327c81274e67a58d4b",
+  "asset_count": 23,
+  "mesh_objects": 208,
+  "triangles": 2133211,
+  "enclosure_triangles": 373440,
+  "fbx_bytes": 150113556,
+  "glb_bytes": 123932196,
+  "unreal_editor_verified": false,
+  "source_repository_modified": false,
+  "city_v3_modified": false,
+  "assets": [
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-1",
+      "group": "characters",
+      "source": "artifacts/actors/person-1.blend",
+      "objects": 5,
+      "triangles": 58579,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.6299999952316284,
+        0.26827341318130493,
+        1.7590000629425049
+      ],
+      "bones": 22,
+      "fbx_bytes": 5302972,
+      "glb_bytes": 4201836,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 117
+    },
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-2",
+      "group": "characters",
+      "source": "artifacts/actors/person-2.blend",
+      "objects": 5,
+      "triangles": 58579,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.6299999952316284,
+        0.26827341318130493,
+        1.7590000629425049
+      ],
+      "bones": 22,
+      "fbx_bytes": 5303020,
+      "glb_bytes": 4201840,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 117
+    },
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-3",
+      "group": "characters",
+      "source": "artifacts/actors/person-3.blend",
+      "objects": 5,
+      "triangles": 58276,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.6299999952316284,
+        0.26827341318130493,
+        1.7590000629425049
+      ],
+      "bones": 22,
+      "fbx_bytes": 5282460,
+      "glb_bytes": 4176548,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 0
+    },
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-4",
+      "group": "characters",
+      "source": "artifacts/actors/person-4.blend",
+      "objects": 5,
+      "triangles": 49060,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.5799999237060547,
+        0.2709999084472656,
+        1.7489999532699585
+      ],
+      "bones": 22,
+      "fbx_bytes": 4605132,
+      "glb_bytes": 3699208,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 40
+    },
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-5",
+      "group": "characters",
+      "source": "artifacts/actors/person-5.blend",
+      "objects": 5,
+      "triangles": 57928,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.5799999237060547,
+        0.30299997329711914,
+        1.7489999532699585
+      ],
+      "bones": 22,
+      "fbx_bytes": 5241276,
+      "glb_bytes": 4147496,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 40
+    },
+    {
+      "changes": [
+        "32-section clothing and 32x20 organic surfaces rebuilt from source proportions",
+        "Eyes with iris and pupil, separated fingers, garment seams, pockets, watch and shoe fittings",
+        "Separate fabric, skin, hair and leather PBR slots",
+        "22-bone custom deform skeleton with 25-frame walk preview"
+      ],
+      "rig": "Custom Neuron, not Epic mannequin; no facial rig or finger articulation; animation needs production polish",
+      "id": "person-6",
+      "group": "characters",
+      "source": "artifacts/actors/person-6.blend",
+      "objects": 5,
+      "triangles": 53104,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.5799999237060547,
+        0.30299997329711914,
+        1.7489999532699585
+      ],
+      "bones": 22,
+      "fbx_bytes": 4882604,
+      "glb_bytes": 3891320,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 80
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        13.5,
+        19.35,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "campus",
+      "group": "interiors",
+      "source": "artifacts/interiors/campus.blend",
+      "objects": 12,
+      "triangles": 51662,
+      "enclosure_triangles": 67080,
+      "dimensions_m": [
+        14.0121431350708,
+        19.5,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 3937292,
+      "glb_bytes": 3717188,
+      "unreal_editor_verified": false,
+      "detailed_foliage": true,
+      "removed_degenerate_faces": 586
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        13.5,
+        19.35,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "dc-north",
+      "group": "interiors",
+      "source": "artifacts/interiors/dc-north.blend",
+      "objects": 10,
+      "triangles": 34789,
+      "enclosure_triangles": 67080,
+      "dimensions_m": [
+        13.680000305175781,
+        19.5,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 2361692,
+      "glb_bytes": 2829060,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 319
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        13.5,
+        19.35,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "dc-south",
+      "group": "interiors",
+      "source": "artifacts/interiors/dc-south.blend",
+      "objects": 10,
+      "triangles": 34915,
+      "enclosure_triangles": 67080,
+      "dimensions_m": [
+        13.680000305175781,
+        19.5,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 2370220,
+      "glb_bytes": 2839800,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 321
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        7.0,
+        8.1,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "garage",
+      "group": "interiors",
+      "source": "artifacts/interiors/garage.blend",
+      "objects": 11,
+      "triangles": 52740,
+      "enclosure_triangles": 23560,
+      "dimensions_m": [
+        7.179999828338623,
+        8.25,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 3979452,
+      "glb_bytes": 3349028,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 120
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        6.6,
+        6,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "hq",
+      "group": "interiors",
+      "source": "artifacts/interiors/hq.blend",
+      "objects": 12,
+      "triangles": 54610,
+      "enclosure_triangles": 23560,
+      "dimensions_m": [
+        6.779999732971191,
+        6.149999618530273,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 4224188,
+      "glb_bytes": 3456140,
+      "unreal_editor_verified": false,
+      "detailed_foliage": true,
+      "removed_degenerate_faces": 446
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        10.9,
+        14.85,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "server-hall",
+      "group": "interiors",
+      "source": "artifacts/interiors/server-hall.blend",
+      "objects": 10,
+      "triangles": 29359,
+      "enclosure_triangles": 45320,
+      "dimensions_m": [
+        11.079999923706055,
+        15.0,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 2163852,
+      "glb_bytes": 2418832,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 309
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        9.6,
+        12.6,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "technopark",
+      "group": "interiors",
+      "source": "artifacts/interiors/technopark.blend",
+      "objects": 12,
+      "triangles": 111266,
+      "enclosure_triangles": 45320,
+      "dimensions_m": [
+        9.780000686645508,
+        12.75,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 7917260,
+      "glb_bytes": 5985936,
+      "unreal_editor_verified": false,
+      "detailed_foliage": true,
+      "removed_degenerate_faces": 578
+    },
+    {
+      "changes": [
+        "Source floor plan and equipment bay grid retained",
+        "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+        "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+        "Suspended lights, wall reveals and floor joints",
+        "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+      ],
+      "interior_dimensions": [
+        8.3,
+        10.35,
+        3.3
+      ],
+      "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+      "id": "workshop",
+      "group": "interiors",
+      "source": "artifacts/interiors/workshop.blend",
+      "objects": 11,
+      "triangles": 50324,
+      "enclosure_triangles": 34440,
+      "dimensions_m": [
+        8.480000495910645,
+        10.5,
+        3.679999828338623
+      ],
+      "bones": 0,
+      "fbx_bytes": 3718252,
+      "glb_bytes": 3398964,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 120
+    },
+    {
+      "changes": [
+        "Physical rack chassis with mounting rails, levelling feet and captive screws",
+        "Removable hot swap compute modules; layered drive caddies, ventilation, latches and LEDs",
+        "Rear network sockets, fan grilles and patch cables",
+        "Tier-specific exhaust fans and coolant manifolds"
+      ],
+      "dimensions_note": "New equipment proportions: 0.8 x 1.0 m footprint, chassis heights 1.25 / 1.85 / 2.20 m",
+      "id": "rack-basic",
+      "group": "racks",
+      "source": "artifacts/racks/v2/rack-basic.blend",
+      "objects": 6,
+      "triangles": 165920,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.8050000667572021,
+        1.0458624362945557,
+        1.274999976158142
+      ],
+      "bones": 0,
+      "fbx_bytes": 11038716,
+      "glb_bytes": 7767004,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 2320
+    },
+    {
+      "changes": [
+        "Physical rack chassis with mounting rails, levelling feet and captive screws",
+        "Removable hot swap compute modules; layered drive caddies, ventilation, latches and LEDs",
+        "Rear network sockets, fan grilles and patch cables",
+        "Tier-specific exhaust fans and coolant manifolds"
+      ],
+      "dimensions_note": "New equipment proportions: 0.8 x 1.0 m footprint, chassis heights 1.25 / 1.85 / 2.20 m",
+      "id": "rack-cooled",
+      "group": "racks",
+      "source": "artifacts/racks/v2/rack-cooled.blend",
+      "objects": 10,
+      "triangles": 298100,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.8050000667572021,
+        1.0458624362945557,
+        1.9270000457763672
+      ],
+      "bones": 0,
+      "fbx_bytes": 19653500,
+      "glb_bytes": 13378568,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 4560
+    },
+    {
+      "changes": [
+        "Physical rack chassis with mounting rails, levelling feet and captive screws",
+        "Removable hot swap compute modules; layered drive caddies, ventilation, latches and LEDs",
+        "Rear network sockets, fan grilles and patch cables",
+        "Tier-specific exhaust fans and coolant manifolds"
+      ],
+      "dimensions_note": "New equipment proportions: 0.8 x 1.0 m footprint, chassis heights 1.25 / 1.85 / 2.20 m",
+      "id": "rack-enterprise",
+      "group": "racks",
+      "source": "artifacts/racks/v2/rack-enterprise.blend",
+      "objects": 12,
+      "triangles": 392160,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        0.9259999990463257,
+        1.0458624362945557,
+        2.292492389678955
+      ],
+      "bones": 0,
+      "fbx_bytes": 25756140,
+      "glb_bytes": 17007472,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 5440
+    },
+    {
+      "changes": [
+        "96-point interpolated body shell",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-1",
+      "group": "vehicles",
+      "source": "artifacts/actors/reference-v2/car-1.blend",
+      "objects": 10,
+      "triangles": 83443,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        2.196000099182129,
+        4.723875045776367,
+        1.6428179740905762
+      ],
+      "bones": 0,
+      "fbx_bytes": 5228172,
+      "glb_bytes": 5294872,
+      "unreal_editor_verified": false,
+      "removed_degenerate_faces": 0,
+      "studio_polished": true,
+      "wheels_circularized": true
+    },
+    {
+      "changes": [
+        "96-point interpolated body shell",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-2",
+      "group": "vehicles",
+      "source": "artifacts/actors/reference-v2/car-2.blend",
+      "objects": 10,
+      "triangles": 90020,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        2.440000057220459,
+        5.302499771118164,
+        2.4348630905151367
+      ],
+      "bones": 0,
+      "fbx_bytes": 5665740,
+      "glb_bytes": 5637216,
+      "unreal_editor_verified": false,
+      "wheels_circularized": true,
+      "studio_polished": true,
+      "removed_degenerate_faces": 474
+    },
+    {
+      "changes": [
+        "96-point interpolated body shell",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-3",
+      "group": "vehicles",
+      "source": "artifacts/actors/reference-v2/car-3.blend",
+      "objects": 10,
+      "triangles": 83617,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        2.196000099182129,
+        4.390749931335449,
+        1.6428179740905762
+      ],
+      "bones": 0,
+      "fbx_bytes": 5232060,
+      "glb_bytes": 5343616,
+      "unreal_editor_verified": false,
+      "wheels_circularized": true,
+      "studio_polished": true,
+      "removed_degenerate_faces": 477
+    },
+    {
+      "changes": [
+        "Metre-scale coupe master retained",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-4",
+      "group": "vehicles",
+      "source": "artifacts/actors/hero-coupe/car-4.blend",
+      "objects": 12,
+      "triangles": 86168,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        2.330000162124634,
+        5.059999942779541,
+        1.4977550506591797
+      ],
+      "bones": 0,
+      "fbx_bytes": 5064124,
+      "glb_bytes": 5812584,
+      "unreal_editor_verified": false,
+      "wheels_circularized": true,
+      "studio_polished": true,
+      "removed_degenerate_faces": 416
+    },
+    {
+      "changes": [
+        "96-point interpolated body shell",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-5",
+      "group": "vehicles",
+      "source": "artifacts/actors/reference-v2/car-5.blend",
+      "objects": 10,
+      "triangles": 94259,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        3.200000047683716,
+        8.864175796508789,
+        3.581007957458496
+      ],
+      "bones": 0,
+      "fbx_bytes": 5917148,
+      "glb_bytes": 5993856,
+      "unreal_editor_verified": false,
+      "wheels_circularized": true,
+      "studio_polished": true,
+      "removed_degenerate_faces": 805
+    },
+    {
+      "changes": [
+        "96-point interpolated body shell",
+        "Clearcoat paint and micro-surface PBR maps",
+        "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+        "Layered lamps, grille and model-specific exterior fittings"
+      ],
+      "rig": "four static wheel assemblies; no Chaos vehicle setup",
+      "id": "car-6",
+      "group": "vehicles",
+      "source": "artifacts/actors/reference-v2/car-6.blend",
+      "objects": 10,
+      "triangles": 84333,
+      "enclosure_triangles": 0,
+      "dimensions_m": [
+        2.196000099182129,
+        4.723875045776367,
+        1.9483431577682495
+      ],
+      "bones": 0,
+      "fbx_bytes": 5268284,
+      "glb_bytes": 5383812,
+      "unreal_editor_verified": false,
+      "wheels_circularized": true,
+      "studio_polished": true,
+      "removed_degenerate_faces": 479
+    }
+  ]
+}

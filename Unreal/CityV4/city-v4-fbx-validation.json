@@ -1,0 +1,9 @@
+{
+  "mesh_objects": 29395,
+  "triangles_instances": 8162396,
+  "unique_meshes": 251,
+  "fbx_bytes": 57088860,
+  "blender_roundtrip_only": true,
+  "ue5_import_tested": false,
+  "counts_match": true
+}

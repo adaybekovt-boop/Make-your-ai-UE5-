@@ -1,0 +1,548 @@
+[
+  {
+    "id": "person-1",
+    "source_blend_triangles": 58579,
+    "fbx_import_triangles": 58579,
+    "glb_triangles": 58579,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-2",
+    "source_blend_triangles": 58579,
+    "fbx_import_triangles": 58579,
+    "glb_triangles": 58579,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-3",
+    "source_blend_triangles": 58276,
+    "fbx_import_triangles": 58276,
+    "glb_triangles": 58276,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-4",
+    "source_blend_triangles": 49060,
+    "fbx_import_triangles": 49060,
+    "glb_triangles": 49060,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.27099980413913727,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-5",
+    "source_blend_triangles": 57928,
+    "fbx_import_triangles": 57928,
+    "glb_triangles": 57928,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.30299989879131317,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-6",
+    "source_blend_triangles": 53104,
+    "fbx_import_triangles": 53104,
+    "glb_triangles": 53104,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.30299989879131317,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "campus",
+    "source_blend_triangles": 51662,
+    "fbx_import_triangles": 51662,
+    "glb_triangles": 51662,
+    "fbx_dimensions_m": [
+      14.0121431350708,
+      19.500001907348633,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 9.781275040064102e-08,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 2,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 67080,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "dc-north",
+    "source_blend_triangles": 34789,
+    "fbx_import_triangles": 34789,
+    "glb_triangles": 34789,
+    "fbx_dimensions_m": [
+      13.680002212524414,
+      19.500001907348633,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.3942606653969598e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 11,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 67080,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "dc-south",
+    "source_blend_triangles": 34915,
+    "fbx_import_triangles": 34915,
+    "glb_triangles": 34915,
+    "fbx_dimensions_m": [
+      13.680002212524414,
+      19.500001907348633,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.3942606653969598e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 9,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 67080,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "garage",
+    "source_blend_triangles": 52740,
+    "fbx_import_triangles": 52740,
+    "glb_triangles": 52740,
+    "fbx_dimensions_m": [
+      7.18000054359436,
+      8.250001430511475,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.7339533025568182e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 23560,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "hq",
+    "source_blend_triangles": 54610,
+    "fbx_import_triangles": 54610,
+    "glb_triangles": 54610,
+    "fbx_dimensions_m": [
+      6.78000020980835,
+      6.150000333786011,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.1630175311711959e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 4,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 23560,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "server-hall",
+    "source_blend_triangles": 29359,
+    "fbx_import_triangles": 29359,
+    "glb_triangles": 29359,
+    "fbx_dimensions_m": [
+      11.080000877380371,
+      15.000001430511475,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 9.5367431640625e-08,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 8,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 45320,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "technopark",
+    "source_blend_triangles": 111266,
+    "fbx_import_triangles": 111266,
+    "glb_triangles": 111266,
+    "fbx_dimensions_m": [
+      9.780001640319824,
+      12.750001430511475,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.1219697840073529e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 4,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 45320,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "workshop",
+    "source_blend_triangles": 50324,
+    "fbx_import_triangles": 50324,
+    "glb_triangles": 50324,
+    "fbx_dimensions_m": [
+      8.480001449584961,
+      10.500001430511475,
+      3.6799999475479126
+    ],
+    "relative_scale_error": 1.362391880580357e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true,
+    "enclosure_fbx": {
+      "triangles": 34440,
+      "collision_meshes": 6,
+      "passed": true
+    }
+  },
+  {
+    "id": "rack-basic",
+    "source_blend_triangles": 165920,
+    "fbx_import_triangles": 165920,
+    "glb_triangles": 165920,
+    "fbx_dimensions_m": [
+      0.8050001263618469,
+      1.0458624958992004,
+      1.2750000208616257
+    ],
+    "relative_scale_error": 7.40430308478075e-08,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "rack-cooled",
+    "source_blend_triangles": 298100,
+    "fbx_import_triangles": 298100,
+    "glb_triangles": 298100,
+    "fbx_dimensions_m": [
+      0.8050001263618469,
+      1.0458624958992004,
+      1.9270000904798508
+    ],
+    "relative_scale_error": 7.40430308478075e-08,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "rack-enterprise",
+    "source_blend_triangles": 392160,
+    "fbx_import_triangles": 392160,
+    "glb_triangles": 392160,
+    "fbx_dimensions_m": [
+      0.9260000586509705,
+      1.0458624958992004,
+      2.2924924343824387
+    ],
+    "relative_scale_error": 6.436786699435919e-08,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-1",
+    "source_blend_triangles": 83443,
+    "fbx_import_triangles": 83443,
+    "glb_triangles": 83443,
+    "fbx_dimensions_m": [
+      2.196000576019287,
+      4.723874807357788,
+      1.6428179442882538
+    ],
+    "relative_scale_error": 2.1713895112332493e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-2",
+    "source_blend_triangles": 90020,
+    "fbx_import_triangles": 90020,
+    "glb_triangles": 90020,
+    "fbx_dimensions_m": [
+      2.440000534057617,
+      5.302500009536743,
+      2.434863120317459
+    ],
+    "relative_scale_error": 1.954250602544317e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-3",
+    "source_blend_triangles": 83617,
+    "fbx_import_triangles": 83617,
+    "glb_triangles": 83617,
+    "fbx_dimensions_m": [
+      2.196000576019287,
+      4.390750169754028,
+      1.6428179442882538
+    ],
+    "relative_scale_error": 2.1713895112332493e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-4",
+    "source_blend_triangles": 86168,
+    "fbx_import_triangles": 86168,
+    "glb_triangles": 86168,
+    "fbx_dimensions_m": [
+      2.3300005197525024,
+      5.059999942779541,
+      1.497755080461502
+    ],
+    "relative_scale_error": 1.5348834496485066e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-5",
+    "source_blend_triangles": 94259,
+    "fbx_import_triangles": 94259,
+    "glb_triangles": 94259,
+    "fbx_dimensions_m": [
+      3.200000762939453,
+      8.86417531967163,
+      3.5810078382492065
+    ],
+    "relative_scale_error": 2.2351741457704582e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 0,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "car-6",
+    "source_blend_triangles": 84333,
+    "fbx_import_triangles": 84333,
+    "glb_triangles": 84333,
+    "fbx_dimensions_m": [
+      2.196000576019287,
+      4.723874807357788,
+      1.9483431279659271
+    ],
+    "relative_scale_error": 2.1713895112332493e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 2,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 0,
+    "animation_max_vertex_motion_m": null,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 0,
+    "unreal_editor_tested": false,
+    "passed": true
+  }
+]

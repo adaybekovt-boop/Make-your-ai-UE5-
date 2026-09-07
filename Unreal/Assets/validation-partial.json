@@ -1,0 +1,134 @@
+[
+  {
+    "id": "person-1",
+    "source_blend_triangles": 58696,
+    "fbx_import_triangles": 58696,
+    "glb_triangles": 58696,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 114,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-2",
+    "source_blend_triangles": 58696,
+    "fbx_import_triangles": 58696,
+    "glb_triangles": 58696,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 114,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-3",
+    "source_blend_triangles": 58316,
+    "fbx_import_triangles": 58316,
+    "glb_triangles": 58316,
+    "fbx_dimensions_m": [
+      0.6300001740455627,
+      0.26827331632375717,
+      1.7590000471100211
+    ],
+    "relative_scale_error": 3.610404274185432e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 40,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-4",
+    "source_blend_triangles": 49100,
+    "fbx_import_triangles": 49100,
+    "glb_triangles": 49100,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.27099980413913727,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 40,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-5",
+    "source_blend_triangles": 57968,
+    "fbx_import_triangles": 57968,
+    "glb_triangles": 57968,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.30299989879131317,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 40,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  },
+  {
+    "id": "person-6",
+    "source_blend_triangles": 53184,
+    "fbx_import_triangles": 53184,
+    "glb_triangles": 53184,
+    "fbx_dimensions_m": [
+      0.5800001621246338,
+      0.30299989879131317,
+      1.7489999374374747
+    ],
+    "relative_scale_error": 4.1106656976457395e-07,
+    "nonfinite_vertices": 0,
+    "nontriangle_faces": 0,
+    "degenerate_faces": 80,
+    "unweighted_vertices": 0,
+    "bones_after_fbx_import": 22,
+    "animation_max_vertex_motion_m": 0.23432508329156854,
+    "gltf_tangents_present": true,
+    "fbx_armature_actions": 1,
+    "unreal_editor_tested": false,
+    "passed": true
+  }
+]

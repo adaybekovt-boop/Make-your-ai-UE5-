@@ -1,0 +1,27 @@
+{
+  "changes": [
+    "96-point interpolated body shell",
+    "Clearcoat paint and micro-surface PBR maps",
+    "Four independent wheel pivots; tread, sidewalls, rim lips, brake rotors, calipers and fasteners",
+    "Layered lamps, grille and model-specific exterior fittings"
+  ],
+  "rig": "four static wheel assemblies; no Chaos vehicle setup",
+  "id": "car-3",
+  "group": "vehicles",
+  "source": "artifacts/actors/reference-v2/car-3.blend",
+  "objects": 10,
+  "triangles": 83617,
+  "enclosure_triangles": 0,
+  "dimensions_m": [
+    2.196000099182129,
+    4.390749931335449,
+    1.6428179740905762
+  ],
+  "bones": 0,
+  "fbx_bytes": 5232060,
+  "glb_bytes": 5343616,
+  "unreal_editor_verified": false,
+  "wheels_circularized": true,
+  "studio_polished": true,
+  "removed_degenerate_faces": 477
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Rubber and grille recess",
+    "base_color_linear": [
+      0.00800000037997961,
+      0.012000000104308128,
+      0.01600000075995922,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.699999988079071,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.00800000037997961,
+      0.012000000104308128,
+      0.01600000075995922,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "rubber",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "Brushed aluminium",
+    "base_color_linear": [
+      0.33000001311302185,
+      0.38999998569488525,
+      0.4300000071525574,
+      1.0
+    ],
+    "metallic": 0.8500000238418579,
+    "roughness_scalar": 0.30000001192092896,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.33000001311302185,
+      0.38999998569488525,
+      0.4300000071525574,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "Powder coated rack shell",
+    "base_color_linear": [
+      0.03799999877810478,
+      0.05999999865889549,
+      0.07500000298023224,
+      1.0
+    ],
+    "metallic": 0.6499999761581421,
+    "roughness_scalar": 0.3499999940395355,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.03799999877810478,
+      0.05999999865889549,
+      0.07500000298023224,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "chip_indicator",
+    "base_color_linear": [
+      0.029999999329447746,
+      0.699999988079071,
+      0.5,
+      1.0
+    ],
+    "metallic": 0.10000000149011612,
+    "roughness_scalar": 0.25,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.029999999329447746,
+      0.699999988079071,
+      0.5,
+      1.0
+    ],
+    "emission_strength": 3.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "Copper coolant",
+    "base_color_linear": [
+      0.44999998807907104,
+      0.15000000596046448,
+      0.04500000178813934,
+      1.0
+    ],
+    "metallic": 0.800000011920929,
+    "roughness_scalar": 0.27000001072883606,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.44999998807907104,
+      0.15000000596046448,
+      0.04500000178813934,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "Network cable blue",
+    "base_color_linear": [
+      0.014999999664723873,
+      0.11999999731779099,
+      0.36000001430511475,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.550000011920929,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.014999999664723873,
+      0.11999999731779099,
+      0.36000001430511475,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "rubber",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "Link amber",
+    "base_color_linear": [
+      0.949999988079071,
+      0.23999999463558197,
+      0.009999999776482582,
+      1.0
+    ],
+    "metallic": 0.10000000149011612,
+    "roughness_scalar": 0.30000001192092896,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.949999988079071,
+      0.23999999463558197,
+      0.009999999776482582,
+      1.0
+    ],
+    "emission_strength": 2.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  }
+]

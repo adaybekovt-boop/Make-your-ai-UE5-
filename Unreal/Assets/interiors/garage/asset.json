@@ -1,0 +1,31 @@
+{
+  "changes": [
+    "Source floor plan and equipment bay grid retained",
+    "Furniture hardware: individual keys, monitor vents and leads, chair arms, casters and stitching",
+    "Electrical sockets, extinguisher fittings, utility bench or telemetry board",
+    "Suspended lights, wall reveals and floor joints",
+    "Separate enclosure FBX: full-height walls, ceiling and open entrance"
+  ],
+  "interior_dimensions": [
+    7.0,
+    8.1,
+    3.3
+  ],
+  "enclosure_note": "Cutaway mesh is the authoring preview. Add the separate enclosure FBX for a closed room. No collision generated for furniture.",
+  "id": "garage",
+  "group": "interiors",
+  "source": "artifacts/interiors/garage.blend",
+  "objects": 11,
+  "triangles": 52740,
+  "enclosure_triangles": 23560,
+  "dimensions_m": [
+    7.179999828338623,
+    8.25,
+    3.679999828338623
+  ],
+  "bones": 0,
+  "fbx_bytes": 3979452,
+  "glb_bytes": 3349028,
+  "unreal_editor_verified": false,
+  "removed_degenerate_faces": 120
+}

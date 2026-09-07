@@ -1,0 +1,194 @@
+[
+  {
+    "name": "Paint",
+    "base_color_linear": [
+      0.75,
+      0.75,
+      0.6700000166893005,
+      1.0
+    ],
+    "metallic": 0.5,
+    "roughness_scalar": 0.23999999463558197,
+    "coat_weight": 0.8500000238418579,
+    "emission_color_linear": [
+      0.75,
+      0.75,
+      0.6700000166893005,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.1599999964237213,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "Tinted glazing",
+    "base_color_linear": [
+      0.012000000104308128,
+      0.026000000536441803,
+      0.032999999821186066,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.1899999976158142,
+    "coat_weight": 0.11999999731779099,
+    "emission_color_linear": [
+      0.06499999761581421,
+      0.12999999523162842,
+      0.1599999964237213,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "Tyres and trim",
+    "base_color_linear": [
+      0.012000000104308128,
+      0.01600000075995922,
+      0.020999999716877937,
+      1.0
+    ],
+    "metallic": 0.019999999552965164,
+    "roughness_scalar": 0.699999988079071,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.012000000104308128,
+      0.01600000075995922,
+      0.020999999716877937,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "rubber",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "Machined alloy",
+    "base_color_linear": [
+      0.4000000059604645,
+      0.4699999988079071,
+      0.5,
+      1.0
+    ],
+    "metallic": 0.8199999928474426,
+    "roughness_scalar": 0.2199999988079071,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.4000000059604645,
+      0.4699999988079071,
+      0.5,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "Vented rotor steel",
+    "base_color_linear": [
+      0.2199999988079071,
+      0.23499999940395355,
+      0.25,
+      1.0
+    ],
+    "metallic": 0.8199999928474426,
+    "roughness_scalar": 0.3799999952316284,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.2199999988079071,
+      0.23499999940395355,
+      0.25,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "Brake caliper ceramic red",
+    "base_color_linear": [
+      0.47999998927116394,
+      0.027000000700354576,
+      0.012000000104308128,
+      1.0
+    ],
+    "metallic": 0.44999998807907104,
+    "roughness_scalar": 0.30000001192092896,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.47999998927116394,
+      0.027000000700354576,
+      0.012000000104308128,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "Headlight lens",
+    "base_color_linear": [
+      0.7799999713897705,
+      0.8700000047683716,
+      0.9100000262260437,
+      1.0
+    ],
+    "metallic": 0.2800000011920929,
+    "roughness_scalar": 0.1899999976158142,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.7799999713897705,
+      0.8700000047683716,
+      0.9100000262260437,
+      1.0
+    ],
+    "emission_strength": 0.44999998807907104,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "Rear LED",
+    "base_color_linear": [
+      0.6000000238418579,
+      0.012000000104308128,
+      0.020999999716877937,
+      1.0
+    ],
+    "metallic": 0.20000000298023224,
+    "roughness_scalar": 0.25999999046325684,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.6000000238418579,
+      0.012000000104308128,
+      0.020999999716877937,
+      1.0
+    ],
+    "emission_strength": 0.3499999940395355,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  }
+]

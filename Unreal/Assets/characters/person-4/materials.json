@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Skin",
+    "base_color_linear": [
+      0.7900000214576721,
+      0.550000011920929,
+      0.4000000059604645,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.7900000214576721,
+      0.550000011920929,
+      0.4000000059604645,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "skin",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Shirt",
+    "base_color_linear": [
+      0.014000000432133675,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.014000000432133675,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "fabric",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Features",
+    "base_color_linear": [
+      0.027000000700354576,
+      0.019999999552965164,
+      0.017999999225139618,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.027000000700354576,
+      0.019999999552965164,
+      0.017999999225139618,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Hair",
+    "base_color_linear": [
+      0.47999998927116394,
+      0.3400000035762787,
+      0.15000000596046448,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.47999998927116394,
+      0.3400000035762787,
+      0.15000000596046448,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "leather",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Trousers",
+    "base_color_linear": [
+      0.12999999523162842,
+      0.27000001072883606,
+      0.3499999940395355,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.12999999523162842,
+      0.27000001072883606,
+      0.3499999940395355,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "fabric",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Metal",
+    "base_color_linear": [
+      0.49000000953674316,
+      0.5,
+      0.44999998807907104,
+      1.0
+    ],
+    "metallic": 0.6000000238418579,
+    "roughness_scalar": 0.4000000059604645,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.49000000953674316,
+      0.5,
+      0.44999998807907104,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Eye sclera",
+    "base_color_linear": [
+      0.800000011920929,
+      0.8199999928474426,
+      0.7300000190734863,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.20000000298023224,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.800000011920929,
+      0.8199999928474426,
+      0.7300000190734863,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Iris",
+    "base_color_linear": [
+      0.14000000059604645,
+      0.20999999344348907,
+      0.1599999964237213,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.25999999046325684,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.14000000059604645,
+      0.20999999344348907,
+      0.1599999964237213,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Shoes",
+    "base_color_linear": [
+      0.019999999552965164,
+      0.024000000208616257,
+      0.026000000536441803,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.019999999552965164,
+      0.024000000208616257,
+      0.026000000536441803,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "leather",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  },
+  {
+    "name": "Light fabric",
+    "base_color_linear": [
+      0.8799999952316284,
+      0.8799999952316284,
+      0.7799999713897705,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.8799999952316284,
+      0.8799999952316284,
+      0.7799999713897705,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV"
+  }
+]

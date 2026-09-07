@@ -1,0 +1,186 @@
+{
+  "base_sha256": "ce9e29c319546b4e6b32dbe20d8a8e17d07acc0f820f9114c310ade7df6e141b",
+  "objects": 29401,
+  "visible_mesh_objects": 29395,
+  "triangles_instances": 8162396,
+  "unique_meshes": 251,
+  "unique_mesh_triangles": 756364,
+  "counts_added": {
+    "bridges": 3,
+    "new_houses": 476,
+    "new_trees": 5131
+  },
+  "original_game_locations_preserved": true,
+  "placements": [
+    {
+      "id": "meridian",
+      "object": "tower_meridian",
+      "district": "Southgate / waterfront",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "horizon",
+      "object": "tower_horizon",
+      "district": "Eastridge",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "orbit",
+      "object": "tower_orbit",
+      "district": "Crown / anchor cluster",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "silicon-market",
+      "object": "shop_silicon-market",
+      "district": "Crown / technology",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "chip-depot",
+      "object": "shop_chip-depot",
+      "district": "Southgate / founders",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "dc-north",
+      "object": "location_dc-north",
+      "district": "North reaches / data campus",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "dc-south",
+      "object": "location_dc-south",
+      "district": "Riverside / data campus",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "garage",
+      "object": "location_garage",
+      "district": "Southgate / founders",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "workshop",
+      "object": "location_workshop",
+      "district": "Southgate / founders",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "technopark",
+      "object": "location_technopark",
+      "district": "Crown / technology",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "server-hall",
+      "object": "location_server-hall",
+      "district": "Crown / technology",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "campus",
+      "object": "location_campus",
+      "district": "Crown / premium campus",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "nuclear-power",
+      "object": "nuclear-power",
+      "district": "Nuclear coast",
+      "position": [
+        -250.0,
+        -30.0,
+        1.0
+      ]
+    },
+    {
+      "id": "suburb-region",
+      "object": "suburb-region",
+      "district": "Greenhaven suburb",
+      "position": [
+        230.0,
+        80.0,
+        1.0
+      ]
+    },
+    {
+      "id": "auction",
+      "object": "Auction / main hall",
+      "district": "Crown waterfront",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "ue5_verified": false,
+  "gameplay_integrated": false,
+  "collision_status": "two draft proxies only; full map collision not complete",
+  "source_file_unchanged": true,
+  "stage": "Blender composition review; UE5 gate deferred by user approval",
+  "geometry_reuse": "shared Blender mesh datablocks",
+  "base_files_checksum_verification": "all 3 original repository city files passed sha256sum -c",
+  "fbx_bytes": 57088860,
+  "blend_bytes": 14854174,
+  "fbx_validation": {
+    "mesh_objects": 29395,
+    "triangles_instances": 8162396,
+    "unique_meshes": 251,
+    "fbx_bytes": 57088860,
+    "blender_roundtrip_only": true,
+    "ue5_import_tested": false,
+    "counts_match": true
+  },
+  "night_only_area_lights_added": 2,
+  "fbx_sha256": "ebea2633562cf35ed1719e13e0001ec6305431054edb08a749889f5137ce5dea"
+}

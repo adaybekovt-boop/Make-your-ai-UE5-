@@ -1,0 +1,25 @@
+{
+  "changes": [
+    "Physical rack chassis with mounting rails, levelling feet and captive screws",
+    "Removable hot swap compute modules; layered drive caddies, ventilation, latches and LEDs",
+    "Rear network sockets, fan grilles and patch cables",
+    "Tier-specific exhaust fans and coolant manifolds"
+  ],
+  "dimensions_note": "New equipment proportions: 0.8 x 1.0 m footprint, chassis heights 1.25 / 1.85 / 2.20 m",
+  "id": "rack-enterprise",
+  "group": "racks",
+  "source": "artifacts/racks/v2/rack-enterprise.blend",
+  "objects": 12,
+  "triangles": 392160,
+  "enclosure_triangles": 0,
+  "dimensions_m": [
+    0.9259999990463257,
+    1.0458624362945557,
+    2.292492389678955
+  ],
+  "bones": 0,
+  "fbx_bytes": 25756140,
+  "glb_bytes": 17007472,
+  "unreal_editor_verified": false,
+  "removed_degenerate_faces": 5440
+}

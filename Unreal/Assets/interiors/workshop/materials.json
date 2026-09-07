@@ -1,0 +1,266 @@
+[
+  {
+    "name": "03 / charcoal steel",
+    "base_color_linear": [
+      0.04500000178813934,
+      0.0729999989271164,
+      0.08399999886751175,
+      1.0
+    ],
+    "metallic": 0.44999998807907104,
+    "roughness_scalar": 0.4000000059604645,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.04500000178813934,
+      0.0729999989271164,
+      0.08399999886751175,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "01 / mineral floor",
+    "base_color_linear": [
+      0.2199999988079071,
+      0.25,
+      0.23999999463558197,
+      1.0
+    ],
+    "metallic": 0.10000000149011612,
+    "roughness_scalar": 0.8199999928474426,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.2199999988079071,
+      0.25,
+      0.23999999463558197,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "concrete",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "02 / painted plaster",
+    "base_color_linear": [
+      0.5699999928474426,
+      0.6499999761581421,
+      0.6200000047683716,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.5699999928474426,
+      0.6499999761581421,
+      0.6200000047683716,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "concrete",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "11 / safety paint",
+    "base_color_linear": [
+      0.6700000166893005,
+      0.46000000834465027,
+      0.14000000059604645,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.6700000166893005,
+      0.46000000834465027,
+      0.14000000059604645,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "04 / brushed alloy",
+    "base_color_linear": [
+      0.3400000035762787,
+      0.4300000071525574,
+      0.44999998807907104,
+      1.0
+    ],
+    "metallic": 0.6499999761581421,
+    "roughness_scalar": 0.30000001192092896,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.3400000035762787,
+      0.4300000071525574,
+      0.44999998807907104,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "metal",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.44999998807907104
+  },
+  {
+    "name": "05 / warm oak",
+    "base_color_linear": [
+      0.4000000059604645,
+      0.2199999988079071,
+      0.10000000149011612,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.699999988079071,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.4000000059604645,
+      0.2199999988079071,
+      0.10000000149011612,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "oak",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "12 / screen",
+    "base_color_linear": [
+      0.10000000149011612,
+      0.46000000834465027,
+      0.49000000953674316,
+      1.0
+    ],
+    "metallic": 0.20000000298023224,
+    "roughness_scalar": 0.25,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.10000000149011612,
+      0.46000000834465027,
+      0.49000000953674316,
+      1.0
+    ],
+    "emission_strength": 0.6000000238418579,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "06 / ivory",
+    "base_color_linear": [
+      0.7699999809265137,
+      0.7900000214576721,
+      0.6700000166893005,
+      1.0
+    ],
+    "metallic": 0.10000000149011612,
+    "roughness_scalar": 0.550000011920929,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.7699999809265137,
+      0.7900000214576721,
+      0.6700000166893005,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": "concrete",
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 0.75
+  },
+  {
+    "name": "08 / glass",
+    "base_color_linear": [
+      0.07999999821186066,
+      0.30000001192092896,
+      0.3400000035762787,
+      1.0
+    ],
+    "metallic": 0.5,
+    "roughness_scalar": 0.20000000298023224,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.07999999821186066,
+      0.30000001192092896,
+      0.3400000035762787,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "09 / vermilion",
+    "base_color_linear": [
+      0.5600000023841858,
+      0.11999999731779099,
+      0.06499999761581421,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.6499999761581421,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.5600000023841858,
+      0.11999999731779099,
+      0.06499999761581421,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  },
+  {
+    "name": "07 / illumination",
+    "base_color_linear": [
+      0.9800000190734863,
+      0.6700000166893005,
+      0.28999999165534973,
+      1.0
+    ],
+    "metallic": 0.0,
+    "roughness_scalar": 0.3499999940395355,
+    "coat_weight": 0.0,
+    "emission_color_linear": [
+      0.9800000190734863,
+      0.6700000166893005,
+      0.28999999165534973,
+      1.0
+    ],
+    "emission_strength": 2.0,
+    "texture_family": null,
+    "normal_convention": "OpenGL +Y; flip green in Unreal",
+    "uv0": "box projected, tiling; not a lightmap UV",
+    "coat_roughness": 0.029999999329447746,
+    "normal_strength": 1.0
+  }
+]

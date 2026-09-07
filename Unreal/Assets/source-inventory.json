@@ -1,0 +1,2944 @@
+[
+  {
+    "id": "car-1",
+    "group": "actors",
+    "source": "artifacts/actors/reference-v2/car-1.blend",
+    "mesh_objects": 6,
+    "triangles": 7996,
+    "bounds": [
+      [
+        -0.18299999833106995,
+        -0.41171178221702576,
+        0.0
+      ],
+      [
+        0.18299999833106995,
+        0.3579000234603882,
+        0.32499998807907104
+      ]
+    ],
+    "dimensions": [
+      0.3659999966621399,
+      0.7696118056774139,
+      0.32499998807907104
+    ],
+    "meshes": [
+      {
+        "name": "Paint",
+        "dims": [
+          0.3659999966621399,
+          0.6899999976158142,
+          0.24221839010715485
+        ],
+        "tris": 2680,
+        "materials": [
+          "Paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Integrated cabin",
+        "dims": [
+          0.2871200144290924,
+          0.38499999046325684,
+          0.11999998986721039
+        ],
+        "tris": 60,
+        "materials": [
+          "Paint",
+          "Tinted glazing"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tyres and trim",
+        "dims": [
+          0.3320000171661377,
+          0.6229299902915955,
+          0.3199925720691681
+        ],
+        "tris": 2888,
+        "materials": [
+          "Tyres and trim"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Machined alloy",
+        "dims": [
+          0.1550600230693817,
+          0.7022799253463745,
+          0.340999960899353
+        ],
+        "tris": 1616,
+        "materials": [
+          "Machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight lens",
+        "dims": [
+          0.26787006855010986,
+          0.0738518163561821,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Headlight lens"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Rear LED",
+        "dims": [
+          0.28119999170303345,
+          0.012000024318695068,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Rear LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "car-2",
+    "group": "actors",
+    "source": "artifacts/actors/reference-v2/car-2.blend",
+    "mesh_objects": 6,
+    "triangles": 9044,
+    "bounds": [
+      [
+        -0.31129661202430725,
+        -0.43354859948158264,
+        0.0
+      ],
+      [
+        0.2937104403972626,
+        0.373199999332428,
+        0.40549999475479126
+      ]
+    ],
+    "dimensions": [
+      0.6050070524215698,
+      0.8067485988140106,
+      0.40549999475479126
+    ],
+    "meshes": [
+      {
+        "name": "Paint",
+        "dims": [
+          0.4000000059604645,
+          0.7200000286102295,
+          0.3305000066757202
+        ],
+        "tris": 2856,
+        "materials": [
+          "Paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tinted glazing",
+        "dims": [
+          0.3102000057697296,
+          0.29499998688697815,
+          0.19199998676776886
+        ],
+        "tris": 236,
+        "materials": [
+          "Tinted glazing"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tyres and trim",
+        "dims": [
+          0.3659999966621399,
+          0.7215999960899353,
+          0.3657778203487396
+        ],
+        "tris": 2832,
+        "materials": [
+          "Tyres and trim"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Machined alloy",
+        "dims": [
+          0.1550600230693817,
+          0.7326399683952332,
+          0.375
+        ],
+        "tris": 1616,
+        "materials": [
+          "Machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight lens",
+        "dims": [
+          0.4624040126800537,
+          0.7045244574546814,
+          0.023000001907348633
+        ],
+        "tris": 1128,
+        "materials": [
+          "Headlight lens"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Rear LED",
+        "dims": [
+          0.31349998712539673,
+          0.012000024318695068,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Rear LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "car-3",
+    "group": "actors",
+    "source": "artifacts/actors/reference-v2/car-3.blend",
+    "mesh_objects": 6,
+    "triangles": 7988,
+    "bounds": [
+      [
+        -0.18299999833106995,
+        -0.3862117826938629,
+        0.0
+      ],
+      [
+        0.18299999833106995,
+        0.33240002393722534,
+        0.32499998807907104
+      ]
+    ],
+    "dimensions": [
+      0.3659999966621399,
+      0.7186118066310883,
+      0.32499998807907104
+    ],
+    "meshes": [
+      {
+        "name": "Paint",
+        "dims": [
+          0.3659999966621399,
+          0.6399999856948853,
+          0.2406867891550064
+        ],
+        "tris": 2672,
+        "materials": [
+          "Paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Integrated cabin",
+        "dims": [
+          0.2871200144290924,
+          0.3400000035762787,
+          0.11999998986721039
+        ],
+        "tris": 60,
+        "materials": [
+          "Paint",
+          "Tinted glazing"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tyres and trim",
+        "dims": [
+          0.3320000171661377,
+          0.5830800533294678,
+          0.3199925720691681
+        ],
+        "tris": 2888,
+        "materials": [
+          "Tyres and trim"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Machined alloy",
+        "dims": [
+          0.1550600230693817,
+          0.6516799926757812,
+          0.340999960899353
+        ],
+        "tris": 1616,
+        "materials": [
+          "Machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight lens",
+        "dims": [
+          0.26787006855010986,
+          0.07385184615850449,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Headlight lens"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Rear LED",
+        "dims": [
+          0.28119999170303345,
+          0.012000024318695068,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Rear LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "person-1",
+    "group": "actors",
+    "source": "artifacts/actors/person-1.blend",
+    "mesh_objects": 7,
+    "triangles": 2064,
+    "bounds": [
+      [
+        -0.056699998676776886,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.056699998676776886,
+        0.02070000022649765,
+        0.3189600110054016
+      ]
+    ],
+    "dimensions": [
+      0.11339999735355377,
+      0.04824000038206577,
+      0.31662001460790634
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.0828000009059906,
+          0.04346353933215141,
+          0.17136001586914062
+        ],
+        "tris": 1288,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 196,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 196,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "person-2",
+    "group": "actors",
+    "source": "artifacts/actors/person-2.blend",
+    "mesh_objects": 7,
+    "triangles": 2064,
+    "bounds": [
+      [
+        -0.056699998676776886,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.056699998676776886,
+        0.02070000022649765,
+        0.3189600110054016
+      ]
+    ],
+    "dimensions": [
+      0.11339999735355377,
+      0.04824000038206577,
+      0.31662001460790634
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.0828000009059906,
+          0.04346353933215141,
+          0.17136001586914062
+        ],
+        "tris": 1288,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 196,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 196,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "person-3",
+    "group": "actors",
+    "source": "artifacts/actors/person-3.blend",
+    "mesh_objects": 7,
+    "triangles": 2108,
+    "bounds": [
+      [
+        -0.056699998676776886,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.056699998676776886,
+        0.02070000022649765,
+        0.3189600110054016
+      ]
+    ],
+    "dimensions": [
+      0.11339999735355377,
+      0.04824000038206577,
+      0.31662001460790634
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.0828000009059906,
+          0.04346353933215141,
+          0.17136001586914062
+        ],
+        "tris": 1420,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.021599996834993362,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "person-4",
+    "group": "actors",
+    "source": "artifacts/actors/person-4.blend",
+    "mesh_objects": 7,
+    "triangles": 1816,
+    "bounds": [
+      [
+        -0.05220000073313713,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.05220000073313713,
+        0.020799506455659866,
+        0.3171599805355072
+      ]
+    ],
+    "dimensions": [
+      0.10440000146627426,
+      0.04833950661122799,
+      0.31481998413801193
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.0737999975681305,
+          0.04185950756072998,
+          0.16955998539924622
+        ],
+        "tris": 1128,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "person-5",
+    "group": "actors",
+    "source": "artifacts/actors/person-5.blend",
+    "mesh_objects": 7,
+    "triangles": 1996,
+    "bounds": [
+      [
+        -0.05220000073313713,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.05220000073313713,
+        0.027000000700354576,
+        0.3171599805355072
+      ]
+    ],
+    "dimensions": [
+      0.10440000146627426,
+      0.0545400008559227,
+      0.31481998413801193
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.09359999746084213,
+          0.05400000140070915,
+          0.20555998384952545
+        ],
+        "tris": 1308,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "person-6",
+    "group": "actors",
+    "source": "artifacts/actors/person-6.blend",
+    "mesh_objects": 7,
+    "triangles": 1972,
+    "bounds": [
+      [
+        -0.05220000073313713,
+        -0.027540000155568123,
+        0.0023399963974952698
+      ],
+      [
+        0.05220000073313713,
+        0.027000000700354576,
+        0.3171599805355072
+      ]
+    ],
+    "dimensions": [
+      0.10440000146627426,
+      0.0545400008559227,
+      0.31481998413801193
+    ],
+    "meshes": [
+      {
+        "name": "body",
+        "dims": [
+          0.09359999746084213,
+          0.05400000140070915,
+          0.20555998384952545
+        ],
+        "tris": 1284,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "body"
+      },
+      {
+        "name": "arm_l",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_l"
+      },
+      {
+        "name": "arm_r",
+        "dims": [
+          0.02160000056028366,
+          0.021960001438856125,
+          0.09306000173091888
+        ],
+        "tris": 152,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "arm_r"
+      },
+      {
+        "name": "leg_l",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_l"
+      },
+      {
+        "name": "knee_l",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_l"
+      },
+      {
+        "name": "leg_r",
+        "dims": [
+          0.02735999971628189,
+          0.02879999950528145,
+          0.08100000023841858
+        ],
+        "tris": 60,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "leg_r"
+      },
+      {
+        "name": "knee_r",
+        "dims": [
+          0.020160000771284103,
+          0.040139999240636826,
+          0.07506000250577927
+        ],
+        "tris": 132,
+        "materials": [
+          "Pedestrian vertex palette"
+        ],
+        "joint": "knee_r"
+      }
+    ],
+    "armatures": [],
+    "actions": [
+      "arm_lAction",
+      "arm_rAction",
+      "knee_lAction",
+      "knee_rAction",
+      "leg_lAction",
+      "leg_rAction"
+    ]
+  },
+  {
+    "id": "car-4",
+    "group": "actors",
+    "source": "artifacts/actors/hero-coupe/car-4.blend",
+    "mesh_objects": 9,
+    "triangles": 19768,
+    "bounds": [
+      [
+        -0.16543002426624298,
+        -0.3621000051498413,
+        0.0
+      ],
+      [
+        0.16543002426624298,
+        0.35642001032829285,
+        0.21243201196193695
+      ]
+    ],
+    "dimensions": [
+      0.33086004853248596,
+      0.7185200154781342,
+      0.21243201196193695
+    ],
+    "meshes": [
+      {
+        "name": "Continuous sculpted body",
+        "dims": [
+          0.293940007686615,
+          0.6972200274467468,
+          0.11645136773586273
+        ],
+        "tris": 3014,
+        "materials": [
+          "Obsidian clearcoat",
+          "Satin trim and tyres",
+          "Dark automotive glass",
+          "Dark machined alloy",
+          "Headlight halo",
+          "Tail LED",
+          "Brake disc"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Integrated roof and glazing",
+        "dims": [
+          0.26128000020980835,
+          0.3337000012397766,
+          0.06759200990200043
+        ],
+        "tris": 70,
+        "materials": [
+          "Obsidian clearcoat",
+          "Satin trim and tyres",
+          "Dark automotive glass",
+          "Dark machined alloy",
+          "Headlight halo",
+          "Tail LED",
+          "Brake disc"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Obsidian clearcoat",
+        "dims": [
+          0.33086004853248596,
+          0.6050599813461304,
+          0.17110422253608704
+        ],
+        "tris": 2420,
+        "materials": [
+          "Obsidian clearcoat"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Satin trim and tyres",
+        "dims": [
+          0.31808000802993774,
+          0.7185200452804565,
+          0.20765070617198944
+        ],
+        "tris": 6456,
+        "materials": [
+          "Satin trim and tyres"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Dark machined alloy",
+        "dims": [
+          0.324612021446228,
+          0.7068760395050049,
+          0.14505302906036377
+        ],
+        "tris": 5408,
+        "materials": [
+          "Dark machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Brake disc",
+        "dims": [
+          0.061912018805742264,
+          0.48791199922561646,
+          0.31893202662467957
+        ],
+        "tris": 496,
+        "materials": [
+          "Brake disc"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Dark automotive glass",
+        "dims": [
+          0.21442002058029175,
+          0.024139992892742157,
+          0.0017040073871612549
+        ],
+        "tris": 496,
+        "materials": [
+          "Dark automotive glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight halo",
+        "dims": [
+          0.21697337925434113,
+          0.0017040073871612549,
+          0.026695996522903442
+        ],
+        "tris": 1280,
+        "materials": [
+          "Headlight halo"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tail LED",
+        "dims": [
+          0.2320309728384018,
+          0.0036920011043548584,
+          0.022011496126651764
+        ],
+        "tris": 128,
+        "materials": [
+          "Tail LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "car-5",
+    "group": "actors",
+    "source": "artifacts/actors/reference-v2/car-5.blend",
+    "mesh_objects": 6,
+    "triangles": 12840,
+    "bounds": [
+      [
+        -0.4077377915382385,
+        -0.6484802961349487,
+        0.0
+      ],
+      [
+        0.38573968410491943,
+        0.5823000073432922,
+        0.5679999589920044
+      ]
+    ],
+    "dimensions": [
+      0.793477475643158,
+      1.230780303478241,
+      0.5679999589920044
+    ],
+    "meshes": [
+      {
+        "name": "Paint",
+        "dims": [
+          0.5,
+          1.159500002861023,
+          0.47449997067451477
+        ],
+        "tris": 2432,
+        "materials": [
+          "Paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Machined alloy",
+        "dims": [
+          0.4129999876022339,
+          1.1475600004196167,
+          0.49208003282546997
+        ],
+        "tris": 2368,
+        "materials": [
+          "Machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tinted glazing",
+        "dims": [
+          0.3855000138282776,
+          1.1299400329589844,
+          0.32249999046325684
+        ],
+        "tris": 2632,
+        "materials": [
+          "Tinted glazing"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tyres and trim",
+        "dims": [
+          0.40400001406669617,
+          0.9966099858283997,
+          0.5679999589920044
+        ],
+        "tris": 3904,
+        "materials": [
+          "Tyres and trim"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight lens",
+        "dims": [
+          0.5743210315704346,
+          1.0676780939102173,
+          0.06400001049041748
+        ],
+        "tris": 1128,
+        "materials": [
+          "Headlight lens"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Rear LED",
+        "dims": [
+          0.34960001707077026,
+          0.011999964714050293,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Rear LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "car-6",
+    "group": "actors",
+    "source": "artifacts/actors/reference-v2/car-6.blend",
+    "mesh_objects": 6,
+    "triangles": 8597,
+    "bounds": [
+      [
+        -0.18299999833106995,
+        -0.41171178221702576,
+        0.0
+      ],
+      [
+        0.18299999833106995,
+        0.3579000234603882,
+        0.3855000138282776
+      ]
+    ],
+    "dimensions": [
+      0.3659999966621399,
+      0.7696118056774139,
+      0.3855000138282776
+    ],
+    "meshes": [
+      {
+        "name": "Paint",
+        "dims": [
+          0.3659999966621399,
+          0.6899999976158142,
+          0.31050002574920654
+        ],
+        "tris": 2116,
+        "materials": [
+          "Paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Integrated cabin",
+        "dims": [
+          0.2871200144290924,
+          0.38499999046325684,
+          0.11999998986721039
+        ],
+        "tris": 60,
+        "materials": [
+          "Paint",
+          "Tinted glazing"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Tyres and trim",
+        "dims": [
+          0.3320000171661377,
+          0.6229299902915955,
+          0.361952006816864
+        ],
+        "tris": 4053,
+        "materials": [
+          "Tyres and trim"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Machined alloy",
+        "dims": [
+          0.1550600230693817,
+          0.7022799253463745,
+          0.340999960899353
+        ],
+        "tris": 1616,
+        "materials": [
+          "Machined alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Headlight lens",
+        "dims": [
+          0.26787006855010986,
+          0.0738518163561821,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Headlight lens"
+        ],
+        "joint": null
+      },
+      {
+        "name": "Rear LED",
+        "dims": [
+          0.28119999170303345,
+          0.012000024318695068,
+          0.023000001907348633
+        ],
+        "tris": 376,
+        "materials": [
+          "Rear LED"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "rack-basic",
+    "group": "racks",
+    "source": "artifacts/racks/v2/rack-basic.blend",
+    "mesh_objects": 2,
+    "triangles": 932,
+    "bounds": [
+      [
+        -0.38499999046325684,
+        -0.3449999988079071,
+        0.0
+      ],
+      [
+        0.38499999046325684,
+        0.33500000834465027,
+        0.9850000143051147
+      ]
+    ],
+    "dimensions": [
+      0.7699999809265137,
+      0.6800000071525574,
+      0.9850000143051147
+    ],
+    "meshes": [
+      {
+        "name": "rack_chassis",
+        "dims": [
+          0.7699999809265137,
+          0.6700000166893005,
+          0.9850000143051147
+        ],
+        "tris": 324,
+        "materials": [
+          "rack_frame",
+          "rack_shell",
+          "rack_alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "compute_modules",
+        "dims": [
+          0.5600000023841858,
+          0.574999988079071,
+          0.5950000286102295
+        ],
+        "tris": 608,
+        "materials": [
+          "rack_shell",
+          "rack_alloy",
+          "rack_frame",
+          "copper",
+          "chip_indicator"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "rack-cooled",
+    "group": "racks",
+    "source": "artifacts/racks/v2/rack-cooled.blend",
+    "mesh_objects": 2,
+    "triangles": 1548,
+    "bounds": [
+      [
+        -0.38499999046325684,
+        -0.3449999988079071,
+        0.0
+      ],
+      [
+        0.38499999046325684,
+        0.33500000834465027,
+        1.214500069618225
+      ]
+    ],
+    "dimensions": [
+      0.7699999809265137,
+      0.6800000071525574,
+      1.214500069618225
+    ],
+    "meshes": [
+      {
+        "name": "rack_chassis",
+        "dims": [
+          0.7699999809265137,
+          0.6700000166893005,
+          1.1649999618530273
+        ],
+        "tris": 324,
+        "materials": [
+          "rack_frame",
+          "rack_shell",
+          "rack_alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "compute_modules",
+        "dims": [
+          0.5699999928474426,
+          0.574999988079071,
+          1.0795000791549683
+        ],
+        "tris": 1224,
+        "materials": [
+          "rack_shell",
+          "rack_alloy",
+          "rack_frame",
+          "copper",
+          "chip_indicator"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "rack-enterprise",
+    "group": "racks",
+    "source": "artifacts/racks/v2/rack-enterprise.blend",
+    "mesh_objects": 2,
+    "triangles": 1928,
+    "bounds": [
+      [
+        -0.4169999957084656,
+        -0.3449999988079071,
+        0.0
+      ],
+      [
+        0.4169999957084656,
+        0.33500000834465027,
+        1.3545000553131104
+      ]
+    ],
+    "dimensions": [
+      0.8339999914169312,
+      0.6800000071525574,
+      1.3545000553131104
+    ],
+    "meshes": [
+      {
+        "name": "rack_chassis",
+        "dims": [
+          0.7699999809265137,
+          0.6700000166893005,
+          1.3049999475479126
+        ],
+        "tris": 324,
+        "materials": [
+          "rack_frame",
+          "rack_shell",
+          "rack_alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "compute_modules",
+        "dims": [
+          0.8339999914169312,
+          0.574999988079071,
+          1.2195000648498535
+        ],
+        "tris": 1604,
+        "materials": [
+          "rack_shell",
+          "rack_alloy",
+          "rack_frame",
+          "copper",
+          "chip_indicator"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "garage",
+    "group": "interiors",
+    "source": "artifacts/interiors/garage.blend",
+    "mesh_objects": 11,
+    "triangles": 4241,
+    "bounds": [
+      [
+        -3.5899999141693115,
+        -4.110000133514404,
+        -0.3799999952316284
+      ],
+      [
+        3.5899999141693115,
+        4.140000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      7.179999828338623,
+      8.250000476837158,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          7.119999885559082,
+          8.220000267028809,
+          3.679999828338623
+        ],
+        "tris": 1076,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          7.0,
+          8.100000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          7.179999828338623,
+          8.190000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          4.904999732971191,
+          5.5,
+          0.699999988079071
+        ],
+        "tris": 924,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          6.272000312805176,
+          6.7170000076293945,
+          2.5820000171661377
+        ],
+        "tris": 1136,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "05 / warm oak",
+        "dims": [
+          2.2300000190734863,
+          3.2900002002716064,
+          2.4099998474121094
+        ],
+        "tris": 308,
+        "materials": [
+          "05 / warm oak"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.5700000524520874,
+          0.012000083923339844,
+          0.309999942779541
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          2.084360122680664,
+          3.186999797821045,
+          2.650559902191162
+        ],
+        "tris": 285,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "08 / glass",
+        "dims": [
+          0.48000001907348633,
+          0.4849998950958252,
+          0.5700000524520874
+        ],
+        "tris": 88,
+        "materials": [
+          "08 / glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          6.417076587677002,
+          5.446633338928223,
+          2.047999858856201
+        ],
+        "tris": 208,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          0.4399999976158142,
+          0.440000057220459,
+          0.02500009536743164
+        ],
+        "tris": 60,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "workshop",
+    "group": "interiors",
+    "source": "artifacts/interiors/workshop.blend",
+    "mesh_objects": 11,
+    "triangles": 4136,
+    "bounds": [
+      [
+        -4.240000247955322,
+        -5.235000133514404,
+        -0.3799999952316284
+      ],
+      [
+        4.240000247955322,
+        5.265000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      8.480000495910645,
+      10.500000476837158,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          8.420000076293945,
+          10.470000267028809,
+          3.679999828338623
+        ],
+        "tris": 828,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          8.300000190734863,
+          10.350000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          8.480000495910645,
+          10.440000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          5.0,
+          7.75,
+          0.0040000006556510925
+        ],
+        "tris": 1536,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          7.990000247955322,
+          8.592000007629395,
+          2.4020001888275146
+        ],
+        "tris": 844,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "05 / warm oak",
+        "dims": [
+          2.799999952316284,
+          0.6999998092651367,
+          0.09000003337860107
+        ],
+        "tris": 44,
+        "materials": [
+          "05 / warm oak"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.5699999332427979,
+          0.012000083923339844,
+          0.309999942779541
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          2.888784885406494,
+          0.6749997138977051,
+          1.9812898635864258
+        ],
+        "tris": 352,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "08 / glass",
+        "dims": [
+          7.789999961853027,
+          1.7849996089935303,
+          0.8550000190734863
+        ],
+        "tris": 264,
+        "materials": [
+          "08 / glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.869999885559082,
+          0.75,
+          1.2999999523162842
+        ],
+        "tris": 88,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          7.183333396911621,
+          0.024999618530273438,
+          0.04500007629394531
+        ],
+        "tris": 24,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "technopark",
+    "group": "interiors",
+    "source": "artifacts/interiors/technopark.blend",
+    "mesh_objects": 12,
+    "triangles": 5684,
+    "bounds": [
+      [
+        -4.890000343322754,
+        -6.360000133514404,
+        -0.3799999952316284
+      ],
+      [
+        4.890000343322754,
+        6.390000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      9.780000686645508,
+      12.750000476837158,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          9.720000267028809,
+          12.720000267028809,
+          3.679999828338623
+        ],
+        "tris": 1288,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          9.600000381469727,
+          12.600000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          9.780000686645508,
+          12.690000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          6.299999713897705,
+          10.0,
+          0.0040000006556510925
+        ],
+        "tris": 2400,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          8.871999740600586,
+          10.467000007629395,
+          2.8550000190734863
+        ],
+        "tris": 652,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "08 / glass",
+        "dims": [
+          8.670000076293945,
+          1.5424995422363281,
+          2.505000114440918
+        ],
+        "tris": 300,
+        "materials": [
+          "08 / glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "05 / warm oak",
+        "dims": [
+          7.850000381469727,
+          0.6999998092651367,
+          0.09000003337860107
+        ],
+        "tris": 132,
+        "materials": [
+          "05 / warm oak"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          6.970000267028809,
+          0.012000083923339844,
+          0.309999942779541
+        ],
+        "tris": 36,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          9.0,
+          10.077999114990234,
+          1.316499948501587
+        ],
+        "tris": 328,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "10 / foliage",
+        "dims": [
+          9.154531478881836,
+          8.866273880004883,
+          1.1639999151229858
+        ],
+        "tris": 336,
+        "materials": [
+          "10 / foliage"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          8.049999237060547,
+          0.024999618530273438,
+          0.04500007629394531
+        ],
+        "tris": 24,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.18999958038330078,
+          0.18999958038330078,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "server-hall",
+    "group": "interiors",
+    "source": "artifacts/interiors/server-hall.blend",
+    "mesh_objects": 9,
+    "triangles": 5555,
+    "bounds": [
+      [
+        -5.539999961853027,
+        -7.485000133514404,
+        -0.3799999952316284
+      ],
+      [
+        5.539999961853027,
+        7.515000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      11.079999923706055,
+      15.000000476837158,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          11.020000457763672,
+          14.970000267028809,
+          3.679999828338623
+        ],
+        "tris": 992,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          10.899999618530273,
+          14.850000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          11.079999923706055,
+          14.940000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          10.164000511169434,
+          13.94999885559082,
+          2.6450002193450928
+        ],
+        "tris": 3472,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          10.36199951171875,
+          14.649999618530273,
+          2.9700000286102295
+        ],
+        "tris": 628,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.6499999761581421,
+          0.024999618530273438,
+          0.3299999237060547
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          8.916666984558105,
+          1.7774999141693115,
+          0.024999618530273438
+        ],
+        "tris": 108,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          1.8170000314712524,
+          0.1400001049041748,
+          0.0
+        ],
+        "tris": 155,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.18999958038330078,
+          0.18999958038330078,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "campus",
+    "group": "interiors",
+    "source": "artifacts/interiors/campus.blend",
+    "mesh_objects": 11,
+    "triangles": 8132,
+    "bounds": [
+      [
+        -7.0060715675354,
+        -9.734999656677246,
+        -0.3799999952316284
+      ],
+      [
+        7.0060715675354,
+        9.765000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      14.0121431350708,
+      19.5,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          13.619999885559082,
+          19.469999313354492,
+          3.679999828338623
+        ],
+        "tris": 616,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          13.5,
+          19.350000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          13.680000305175781,
+          19.440000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          10.200000762939453,
+          16.75,
+          0.0040000006556510925
+        ],
+        "tris": 6144,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          12.772000312805176,
+          16.091999053955078,
+          2.4020001888275146
+        ],
+        "tris": 280,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "08 / glass",
+        "dims": [
+          14.0121431350708,
+          0.44499969482421875,
+          3.0
+        ],
+        "tris": 140,
+        "materials": [
+          "08 / glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "05 / warm oak",
+        "dims": [
+          12.335000038146973,
+          0.04500007629394531,
+          3.0999999046325684
+        ],
+        "tris": 96,
+        "materials": [
+          "05 / warm oak"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          12.899999618530273,
+          1.4100008010864258,
+          2.8234801292419434
+        ],
+        "tris": 308,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "10 / foliage",
+        "dims": [
+          13.116344451904297,
+          1.0727834701538086,
+          1.6295998096466064
+        ],
+        "tris": 336,
+        "materials": [
+          "10 / foliage"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          10.649999618530273,
+          0.024999618530273438,
+          0.04500007629394531
+        ],
+        "tris": 24,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.18999958038330078,
+          0.1900005340576172,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "hq",
+    "group": "interiors",
+    "source": "artifacts/interiors/hq.blend",
+    "mesh_objects": 12,
+    "triangles": 2464,
+    "bounds": [
+      [
+        -3.3899998664855957,
+        -3.059999942779541,
+        -0.3799999952316284
+      ],
+      [
+        3.3899998664855957,
+        3.0899999141693115,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      6.779999732971191,
+      6.1499998569488525,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          6.71999979019165,
+          6.119999885559082,
+          3.679999828338623
+        ],
+        "tris": 966,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          6.599999904632568,
+          6.0,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          6.779999732971191,
+          6.090000152587891,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          5.871999740600586,
+          5.034999847412109,
+          3.0999999046325684
+        ],
+        "tris": 480,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "05 / warm oak",
+        "dims": [
+          5.099999904632568,
+          3.299999952316284,
+          2.2100000381469727
+        ],
+        "tris": 132,
+        "materials": [
+          "05 / warm oak"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          5.574999809265137,
+          3.2799999713897705,
+          2.134999990463257
+        ],
+        "tris": 262,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "08 / glass",
+        "dims": [
+          1.252500057220459,
+          2.125,
+          3.0
+        ],
+        "tris": 188,
+        "materials": [
+          "08 / glass"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.5700000524520874,
+          0.012000083923339844,
+          0.309999942779541
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          0.1199999451637268,
+          0.11999988555908203,
+          0.007999897003173828
+        ],
+        "tris": 44,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "10 / foliage",
+        "dims": [
+          0.9163446426391602,
+          1.0727829933166504,
+          1.6295998096466064
+        ],
+        "tris": 168,
+        "materials": [
+          "10 / foliage"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          6.050000190734863,
+          0.02500009536743164,
+          0.04500007629394531
+        ],
+        "tris": 24,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.19000005722045898,
+          0.19000005722045898,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "dc-north",
+    "group": "interiors",
+    "source": "artifacts/interiors/dc-north.blend",
+    "mesh_objects": 9,
+    "triangles": 8414,
+    "bounds": [
+      [
+        -6.840000152587891,
+        -9.734999656677246,
+        -0.3799999952316284
+      ],
+      [
+        6.840000152587891,
+        9.765000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      13.680000305175781,
+      19.5,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          13.619999885559082,
+          19.469999313354492,
+          3.679999828338623
+        ],
+        "tris": 1136,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          13.5,
+          19.350000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          13.680000305175781,
+          19.440000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          12.763999938964844,
+          18.450000762939453,
+          2.6450002193450928
+        ],
+        "tris": 6160,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          12.961999893188477,
+          19.149999618530273,
+          2.9700000286102295
+        ],
+        "tris": 628,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.6499999761581421,
+          0.024999618530273438,
+          0.3299999237060547
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          10.649999618530273,
+          1.777500033378601,
+          0.024999618530273438
+        ],
+        "tris": 108,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          2.1934001445770264,
+          0.1400001049041748,
+          0.0
+        ],
+        "tris": 182,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.18999958038330078,
+          0.1900005340576172,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  },
+  {
+    "id": "dc-south",
+    "group": "interiors",
+    "source": "artifacts/interiors/dc-south.blend",
+    "mesh_objects": 9,
+    "triangles": 8418,
+    "bounds": [
+      [
+        -6.840000152587891,
+        -9.734999656677246,
+        -0.3799999952316284
+      ],
+      [
+        6.840000152587891,
+        9.765000343322754,
+        3.299999952316284
+      ]
+    ],
+    "dimensions": [
+      13.680000305175781,
+      19.5,
+      3.6799999475479126
+    ],
+    "meshes": [
+      {
+        "name": "03 / charcoal steel",
+        "dims": [
+          13.619999885559082,
+          19.469999313354492,
+          3.679999828338623
+        ],
+        "tris": 1136,
+        "materials": [
+          "03 / charcoal steel"
+        ],
+        "joint": null
+      },
+      {
+        "name": "01 / mineral floor",
+        "dims": [
+          13.5,
+          19.350000381469727,
+          0.05999999865889549
+        ],
+        "tris": 12,
+        "materials": [
+          "01 / mineral floor"
+        ],
+        "joint": null
+      },
+      {
+        "name": "02 / painted plaster",
+        "dims": [
+          13.680000305175781,
+          19.440000534057617,
+          3.299999952316284
+        ],
+        "tris": 132,
+        "materials": [
+          "02 / painted plaster"
+        ],
+        "joint": null
+      },
+      {
+        "name": "11 / safety paint",
+        "dims": [
+          12.763999938964844,
+          18.450000762939453,
+          2.6450002193450928
+        ],
+        "tris": 6160,
+        "materials": [
+          "11 / safety paint"
+        ],
+        "joint": null
+      },
+      {
+        "name": "04 / brushed alloy",
+        "dims": [
+          12.961999893188477,
+          19.149999618530273,
+          2.9700000286102295
+        ],
+        "tris": 628,
+        "materials": [
+          "04 / brushed alloy"
+        ],
+        "joint": null
+      },
+      {
+        "name": "12 / screen",
+        "dims": [
+          0.6499999761581421,
+          0.024999618530273438,
+          0.3299999237060547
+        ],
+        "tris": 12,
+        "materials": [
+          "12 / screen"
+        ],
+        "joint": null
+      },
+      {
+        "name": "07 / illumination",
+        "dims": [
+          10.649999618530273,
+          1.777500033378601,
+          0.024999618530273438
+        ],
+        "tris": 108,
+        "materials": [
+          "07 / illumination"
+        ],
+        "joint": null
+      },
+      {
+        "name": "06 / ivory",
+        "dims": [
+          2.156400203704834,
+          0.1400001049041748,
+          0.0
+        ],
+        "tris": 186,
+        "materials": [
+          "06 / ivory"
+        ],
+        "joint": null
+      },
+      {
+        "name": "09 / vermilion",
+        "dims": [
+          0.18999958038330078,
+          0.1900005340576172,
+          0.48000001907348633
+        ],
+        "tris": 44,
+        "materials": [
+          "09 / vermilion"
+        ],
+        "joint": null
+      }
+    ],
+    "armatures": [],
+    "actions": []
+  }
+]
