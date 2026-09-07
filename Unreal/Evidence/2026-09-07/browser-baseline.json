@@ -1,0 +1,26 @@
+{
+  "kind": "summary extracted from actual GitHub Actions job logs, not a replacement for the raw logs",
+  "source_commit": "cda0b460257e656c57b31c8ccebfb79097023d4a",
+  "workflow_commit": "7ba500695be46eb10acfec00458188f7cedd8506",
+  "run_id": 34137561414,
+  "job_id": 101791946056,
+  "log_url": "https://github.com/adaybekovt-boop/Make-your-ai-UE5-/actions/runs/34137561414/job/101791946056",
+  "runner_os": "Ubuntu 24.04.4",
+  "node": "22.23.2",
+  "npm": "10.9.8",
+  "commands": [
+    {"command": "npm ci", "exit_code": 0},
+    {"command": "npm test", "exit_code": 0, "tests_passed": 388, "tests_total": 388, "files_passed": 29, "files_total": 29},
+    {"command": "npm run typecheck", "exit_code": 0},
+    {"command": "npm run build", "exit_code": 0}
+  ],
+  "initial_git_status_short": "",
+  "final_git_status_short": "?? artifacts/portfolio/",
+  "warning": "DRACOLoader chunk 615.55 kB exceeds the 500 kB warning threshold",
+  "humanPlaytest": false,
+  "ue_compile_verified": false,
+  "ue_automation_verified": false,
+  "ue_editor_scene_verified": false,
+  "ue_visual_render_verified": false,
+  "reference_gate": "UE5 reference gate: NOT VERIFIED"
+}
