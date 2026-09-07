@@ -1,0 +1,59 @@
+name: UE5 preparation checks - NOT engine verification
+
+on:
+  push:
+    branches: [agent/ue5-core-vertical-slice]
+    paths:
+      - .github/workflows/ue5-preparation.yml
+      - Unreal/Tools/**
+      - Unreal/MakeYourAI/**
+
+permissions:
+  contents: read
+
+jobs:
+  preparation-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout the actual branch commit and reference source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init checkout
+          cd checkout
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set Unreal/MakeYourAI Unreal/Tools Unreal/Assets/interiors/garage Unreal/Assets/characters/person-1 Unreal/CityV4
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git status --short
+      - name: Run preparation-tool unit tests (not Unreal Automation)
+        working-directory: checkout
+        shell: bash
+        run: |
+          python3 --version
+          python3 -m unittest discover -s Unreal/Tools/tests -v
+      - name: Verify actual FBX bytes and original Git blob hashes (not import)
+        working-directory: checkout
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location('ue5', 'Unreal/Tools/ue5.py')
+          ue5 = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(ue5)
+          results = {name: ue5.inspect_asset(Path(name), sha) for name, sha in ue5.ASSETS.items()}
+          print(json.dumps(results, indent=2))
+          assert len(results) == 4
+          assert all(r.get('matches_source') and r.get('fbx_header_only') and not r.get('lfs_pointer') for r in results.values())
+          descriptor = json.loads(Path('Unreal/MakeYourAI/MakeYourAI.uproject').read_text())
+          assert descriptor['Modules'] == [{'Name': 'MakeYourAI', 'Type': 'Runtime', 'LoadingPhase': 'Default'}]
+          print('ASSET_HEADER_AND_BLOB_CHECKS_PASS; descriptor parsed; no Unreal import performed')
+          print(ue5.GATE)
+          PY
+          git status --short
+          echo 'Unreal compile / Automation / Editor scene / visual render: NOT VERIFIED' >> "$GITHUB_STEP_SUMMARY"

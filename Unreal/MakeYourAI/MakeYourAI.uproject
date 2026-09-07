@@ -1,0 +1,13 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "",
+  "Category": "Games",
+  "Description": "Make Your AI migration preparation; reference gate NOT VERIFIED.",
+  "Modules": [
+    {
+      "Name": "MakeYourAI",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
