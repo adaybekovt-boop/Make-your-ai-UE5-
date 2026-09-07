@@ -1,0 +1,22 @@
+{
+  "utc": "2026-09-07T15:25:05.323180+00:00",
+  "action": "build",
+  "host": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "reference_gate": "UE5 reference gate: NOT VERIFIED",
+  "process_exit_code": null,
+  "status": "blocked",
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/mnt/data/ue5-work",
+    "log": "/mnt/data/ue5-work/Unreal/Evidence/2026-09-07/build-attempt/git.log",
+    "process_exit_code": 128,
+    "status": "executed",
+    "wrapper_exit_code": 128
+  },
+  "blocker": "UE_ROOT / --engine-root is not set; no installed UE5 version can be selected.",
+  "wrapper_exit_code": 2
+}
