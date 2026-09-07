@@ -76,5 +76,6 @@ jobs:
           path: |
             checkout/Unreal/Tests/.out/*.log
             checkout/Unreal/Tests/.out/fixtures.json
-          if-no-files-found: warn
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 7
