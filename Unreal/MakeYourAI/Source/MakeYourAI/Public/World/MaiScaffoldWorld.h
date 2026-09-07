@@ -15,7 +15,6 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     bool Enter(const FString& LocationId);
     FVector FindLandmark(const FString& Id) const;
-    // Separate staging space, not underground below an opaque city floor.
     FVector InteriorOrigin() const { return FVector(100000, 100000, 0); }
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Scene") bool bImportedCity = false;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Scene") TMap<FString, FVector> MarkerPositions;
@@ -24,8 +23,10 @@ public:
 private:
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHierarchicalInstancedStaticMeshComponent> RepeatedProps;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHierarchicalInstancedStaticMeshComponent> InstalledRacks;
-    UPROPERTY(Transient) TArray<TObjectPtr<AMaiLocationActor>> Cells;
-    UPROPERTY(Transient) TArray<TObjectPtr<AActor>> InteriorActors;
+    // UPROPERTY keeps these actor arrays visible to GC. Raw element pointers also
+    // match the explicit pointer iteration used by the scoped interior cleanup.
+    UPROPERTY(Transient) TArray<AMaiLocationActor*> Cells;
+    UPROPERTY(Transient) TArray<AActor*> InteriorActors;
     FString InteriorId;
     FString LastRackSignature;
     void BuildGraybox();
