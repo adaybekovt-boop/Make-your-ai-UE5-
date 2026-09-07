@@ -2,12 +2,10 @@
   "FileVersion": 3,
   "EngineAssociation": "",
   "Category": "Games",
-  "Description": "Make Your AI migration preparation; reference gate NOT VERIFIED.",
-  "Modules": [
-    {
-      "Name": "MakeYourAI",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    }
+  "Description": "Make Your AI SOURCE_SCAFFOLD; engine compilation and visual verification remain NOT VERIFIED.",
+  "Modules": [{"Name": "MakeYourAI", "Type": "Runtime", "LoadingPhase": "Default"}],
+  "Plugins": [
+    {"Name": "PythonScriptPlugin", "Enabled": true, "TargetAllowList": ["Editor"]},
+    {"Name": "EditorScriptingUtilities", "Enabled": true, "TargetAllowList": ["Editor"]}
   ]
 }

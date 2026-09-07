@@ -1,12 +1,17 @@
 #include "Core/MaiGameInstance.h"
+#include "Misc/PackageName.h"
 
 UMaiCatalogAsset* UMaiGameInstance::ResolveCatalog() {
     if (Catalog) return Catalog;
-    if (!CatalogPath.IsNull()) {
-        Catalog = Cast<UMaiCatalogAsset>(CatalogPath.TryLoad());
-        if (!Catalog) UE_LOG(LogTemp, Error, TEXT("Configured MakeYourAI catalog could not be loaded: %s"), *CatalogPath.ToString());
-        return Catalog; // Explicitly requested missing assets must not silently fall back.
+    FSoftObjectPath Requested = CatalogPath;
+    if (Requested.IsNull() && FPackageName::DoesPackageExist(TEXT("/Game/Scaffold/Data/DA_ScaffoldCatalog"))) {
+        Requested = FSoftObjectPath(TEXT("/Game/Scaffold/Data/DA_ScaffoldCatalog.DA_ScaffoldCatalog"));
     }
-    Catalog = NewObject<UMaiCatalogAsset>(this); // Native defaults make graybox boot independent of imported content.
+    if (!Requested.IsNull()) {
+        Catalog = Cast<UMaiCatalogAsset>(Requested.TryLoad());
+        if (!Catalog) UE_LOG(LogTemp, Error, TEXT("Configured MakeYourAI catalog could not be loaded: %s"), *Requested.ToString());
+        return Catalog;
+    }
+    Catalog = NewObject<UMaiCatalogAsset>(this);
     return Catalog;
 }
