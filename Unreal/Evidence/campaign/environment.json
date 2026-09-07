@@ -1,0 +1,17 @@
+{
+  "observed_at_utc": "2026-09-07T18:19:52.441254+00:00",
+  "platform": "Linux-7.0.9-ajay-7.0.9-nocgroupwb-memcg-lru+-x86_64-with-glibc2.36",
+  "local_directory_is_git_clone": false,
+  "UE_ROOT_set": false,
+  "commands": {
+    "g++": {"command": ["g++", "--version"], "exit_code": 0, "output": "g++ (Debian 14.2.0-19) 14.2.0"},
+    "clang++": {"error": "[Errno 2] No such file or directory: 'clang++'"},
+    "node": {"command": ["node", "--version"], "exit_code": 0, "output": "v22.16.0"},
+    "npm": {"command": ["npm", "--version"], "exit_code": 0, "output": "11.4.2"}
+  },
+  "tools": {"UnrealEditor": null, "UnrealEditor-Cmd": null, "UnrealBuildTool": null, "nvidia-smi": null, "blender": null},
+  "dev_dri_exists": false,
+  "DISPLAY_set": false,
+  "wayland_set": false,
+  "engine_verification": "NOT VERIFIED"
+}

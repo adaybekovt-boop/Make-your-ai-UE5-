@@ -22,7 +22,8 @@ bool AMaiGarageInterior::Build() {
     Block(TEXT("WalkableFloor"),FVector(0,0,-10),FVector(14,14,.2));
     Block(TEXT("WestWall"),FVector(-710,0,150),FVector(.2,14,3));Block(TEXT("EastWall"),FVector(710,0,150),FVector(.2,14,3));
     Block(TEXT("NorthWall"),FVector(0,710,150),FVector(14,.2,3));Block(TEXT("SouthWall"),FVector(0,-710,150),FVector(14,.2,3));
-    for(const auto& P:mai::InteriorProfiles().front().points) {
+    const auto Profiles=mai::InteriorProfiles();
+    for(const auto& P:Profiles.front().points) {
         auto* A=GetWorld()->SpawnActor<AMaiInteriorPoint>(GetActorLocation()+FVector(P.xCm,P.yCm,50),FRotator::ZeroRotator);
         if(!A) return false;A->Configure(UTF8_TO_TCHAR(P.id.c_str()),UTF8_TO_TCHAR(P.action.c_str()));Spawned.Add(A);
     }

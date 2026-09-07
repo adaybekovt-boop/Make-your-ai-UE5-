@@ -1,42 +1,28 @@
-# UE5 reference gate — SOURCE_SCAFFOLD
+# UE5 reference gate — после связанного каркаса кампании
 
 **UE5 reference gate: NOT VERIFIED**
 
-Новый запрос разрешает создавать gameplay/UI-исходники до гейта. Это не означает прохождение самого гейта.
+Источник проверок кампании: `c9c3e0e472a07c3adb2ec41416455747cc102eb9`; объединённый source CI: `b1fe36bb67ffc1fb08e0ab8cf6d66586c559b19e`. Reference gate по обновлённому заданию не мешает писать исходники, но не считается пройденным.
 
-| Требование | Фактическое состояние |
+| Проверка | Фактическое состояние |
 | --- | --- |
-| Установленная версия UE5 | Не найдена в проверенной среде; EngineAssociation пуст |
-| UHT / UBT / Development Editor | Не запускались |
-| L_Scaffold_City | Реальный .umap здесь не создан; есть Editor builder |
-| L_Reference_GarageCity | Не создана |
-| Garage / enclosure / CityV4 / person-1 / стойки | Исходники сохранены; новые UE-ассеты в этом прогоне не импортированы |
-| Nanite | StaticMesh-скрипт запрашивает включение; фактический UE-результат неизвестен |
-| Lumen и Virtual Shadow Maps | Запрошены конфигурацией, не подтверждены рендером |
-| World Partition | Builder запрашивает partitioned map при поддержке API; фактическое состояние неизвестно |
-| Cell size / loading range | Не применены; 12800 / 51200 см лишь предложенные настройки для будущей проверки |
-| Data Layers / HLOD | Не созданы |
-| Streaming CityV4 | Combined reference mesh сохраняет композицию, но не обеспечивает поквартальную загрузку |
-| ISM/HISM | Реализованы runtime-прокси; Editor/FPS-проверки нет |
-| Collision | Есть отдельные query proxies и импорт enclosure/UCX; реальные traces не выполнены |
-| Skeletal mesh | Подготовлен импорт исходного персонажа без Nanite; runtime-NPC пока graybox |
-| LOD0 / LOD1 / LOD2 | Точные импортированные треугольники: неизвестно / неизвестно / неизвестно |
-| Масштаб | convert_scene_unit включён, uniform scale 1; реальный размер в UE ещё надо измерить |
-| Ориентация | Кандидат X/-Y/Z; исходное -Y forward, Z-up требует проверки после импорта |
-| UE-скриншоты / FPS / ручное прохождение | Не получены |
+| UE5 version / UHT / UBT | Установка отсутствует; версия не зафиксирована, UE compile не запускался |
+| L_Reference_GarageCity / L_Scaffold_City | Существующий Editor builder сохранён; исполнение в UE не подтверждено |
+| L_Campaign_Boot / L_Campaign_Garage | Добавлен build_campaign.py; реальные .umap через Editor API этим прогоном не созданы |
+| Garage FBX / enclosure collision | Исходники сохранены; runtime walking использует явный graybox, не выдаётся за проверенный FBX |
+| Nanite architecture | Подготовка импортного pipeline, не проверка Nanite в Editor |
+| Lumen / dynamic shadows | Нет реального UE-рендера и настройки качества на целевой GPU |
+| World Partition | Нет измеренных параметров готового мира; preload/travel код не доказывает streaming cells |
+| ISM/HISM/Foliage | Исходный runtime/import scaffold сохранён; GPU/draw-call измерений нет |
+| Skeletal LOD0/LOD1/LOD2 | Импортированные количества треугольников неизвестны; целевые 5–8k / ~2k / ~500 не считаются достигнутыми |
+| Walking / floor / wall sweep | ACharacter, CharacterMovement и отдельный Automation-тест написаны; реальная UE-физика не запускалась |
+| Interaction line traces | Реальные команды и тестовый код есть, Editor execution отсутствует |
+| Loading / UMG transitions | C++ состояния, асинхронные UE API и WidgetTree-классы есть; визуальная непрерывность переходов не проверена |
+| SaveGame disk | Есть USaveGame write/read Automation test; выполнен только нативный процессный roundtrip, не UE-disk test |
+| Full clicked Garage/data/training/ending flow | Native state scenario проходит; GAMEPLAY_VERIFIED в UE не присвоен |
 
-## Подготовленные скрипты
+В исходных моделях 1 Blender unit = 1 м, в UE используется сантиметровая сцена. Не применять дополнительный ×100 без измерения реального импорта. Исходные персонажи и автомобили смотрят -Y при Z-up; требуются отдельные проверки направления, масштаба и физики. Статичный CityV4 не подвергался новой decimation ради браузерных ограничений.
 
-`extract_city_markers.py` читает оригинальный city-v4.blend без сохранения, вычисляет bounds мировой геометрии и пишет производный JSON в Saved. Нулевые object origins не считаются координатами зданий. SHA исходника проверяется до/после.
+Нельзя использовать Blender-картинки или новый portrait-source как доказательство Unreal сцены. Скриншоты UE5 этим прогоном не создавались. EngineAssociation/engine pin должен определяться установленной машиной, не названием проекта.
 
-`editor_assets.py`, `editor_scene.py`, `build_scaffold.py` создают настоящие ассеты и карту только через Editor API. Существующая карта не перезаписывается; повторное использование импортов требует совпадения исходного SHA256. Для Garage не создаётся единая коробка, перекрывающая помещение: используется отдельная оболочка/UCX.
-
-`inspect_scaffold.py` читает карту, Nanite setting, количество simple-collision shapes и число исходных skeletal LOD. Даже успешный отчёт не подтверждает визуальный результат или работу line trace в игре.
-
-`prepare_skeletal_lods.py` — Blender-скрипт производных FBX, не изменение оригинала. Цели 7500/2000/500 треугольников не являются измеренными результатами. Требуются фактический запуск, проверка весов/силуэта и подключение LOD-цепочки в UE. Статичный город не decimate-ится.
-
-## Что нужно для прохождения
-
-Зафиксировать настоящую установку UE5, собрать Development Editor, загрузить созданные .umap/.uasset, проверить Garage/персонажа в сантиметрах и ориентацию. Выполнить line traces по входу, полу и клеткам, измерить реальные LOD, настроить пространственную загрузку и проверить её, снять кадры настоящей игры со светом/тенями/UI и профиль на указанном железе. Native GCC, Python-синтаксис и npm build не подменяют эти действия.
-
-Команды — [MakeYourAI/README.md](MakeYourAI/README.md). Фактические CI-результаты — [UE5_PROGRESS.md](UE5_PROGRESS.md).
+После UHT/Development Editor: выполнить build-campaign и исходный CityV4 reference import, запустить весь актуальный список MakeYourAI Automation tests, затем проверить полноценное прохождение мышью/клавиатурой. Для closed gate нужны реальные map files, логи, trace/sweep результаты, LOD counts, параметры WP и рендеры с target GPU. Наличие .cpp, .py и зелёных браузерных тестов недостаточно.
