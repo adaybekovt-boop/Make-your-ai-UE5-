@@ -1,0 +1,21 @@
+test_asset_missing (test_ue5.PreparationTests.test_asset_missing) ... ok
+test_blocked_cli_does_not_grant_gate (test_ue5.PreparationTests.test_blocked_cli_does_not_grant_gate) ... ok
+test_boolean_version_rejected (test_ue5.PreparationTests.test_boolean_version_rejected) ... ok
+test_header_does_not_prove_import (test_ue5.PreparationTests.test_header_does_not_prove_import) ... ok
+test_lfs_pointer_not_fbx (test_ue5.PreparationTests.test_lfs_pointer_not_fbx) ... ok
+test_linux_editor_development_target (test_ue5.PreparationTests.test_linux_editor_development_target) ... ok
+test_mismatched_pin_not_overwritten (test_ue5.PreparationTests.test_mismatched_pin_not_overwritten) ... ok
+test_missing_engine_rejected (test_ue5.PreparationTests.test_missing_engine_rejected) ... ok
+test_missing_executable_is_not_a_compile (test_ue5.PreparationTests.test_missing_executable_is_not_a_compile) ... ok
+test_missing_tool_rejected (test_ue5.PreparationTests.test_missing_tool_rejected) ... ok
+test_pin_has_no_absolute_install_path (test_ue5.PreparationTests.test_pin_has_no_absolute_install_path) ... ok
+test_real_process_failure_preserved (test_ue5.PreparationTests.test_real_process_failure_preserved) ... ok
+test_unpinned_build_rejected (test_ue5.PreparationTests.test_unpinned_build_rejected) ... ok
+test_unsupported_platform_rejected (test_ue5.PreparationTests.test_unsupported_platform_rejected) ... ok
+test_windows_generation_is_not_build (test_ue5.PreparationTests.test_windows_generation_is_not_build) ... ok
+test_wrong_major_rejected (test_ue5.PreparationTests.test_wrong_major_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.029s
+
+OK

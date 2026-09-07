@@ -23,14 +23,22 @@ template<class A> void Fields(A& a,DecisionRecord& v) {a(v.action,v.detail,v.at)
 template<class A> void Fields(A& a,LoadingState& v) {a(v.phase,v.generation,v.destination,v.interior,v.operation,v.error,v.progressBps);}
 template<class A> void Fields(A& a,EndingMetrics& v) {a(v.cash,v.value,v.debt,v.profitPerHour,v.modelMicroIQ,v.reputation,v.legalBps,v.dataQualityBps,v.dependencyBps,v.employeeCareBps,v.automationBps,v.successfulReviews,v.ignoredWarnings,v.international,v.saleAccepted,v.saleDeclined,v.openChosen,v.bankrupt,v.difficulty);}
 template<class A> void Fields(A& a,EndingResult& v) {a(v.kind,v.id,v.title,v.line,v.deal,v.offerOnly,v.allowReturnToSave,v.metrics,v.decisions);}
+template<class A> void Fields(A& a,WalkState& v) {a(v.xCm,v.yCm,v.zCm,v.facingDeg);}
 template<class A> void Fields(A& a,CampaignState& v) {
     a(v.screen);
     if(a.version>=2) a(v.firstScreen,v.lastScreen); // Explicit v1 -> v2 migration point.
     else {v.firstScreen=Screen::Loading;v.lastScreen=v.screen;}
+    if(a.version>=3) a(v.resumeScreen);
+    else v.resumeScreen=v.lastScreen==Screen::Loading?Screen::MainMenu:v.lastScreen;
     a(v.loading,v.difficulty,v.companyName,v.interior,v.prologueStep,v.seed,v.reviewRng,v.legalRng,
       v.inventory,v.reviews,v.specialists,v.ai,v.training,v.decisions,v.reviewSequence,v.specialistSequence,v.trainingSequence,v.modelMicroIQ,
       v.debt,v.legalExposureBps,v.dependencyBps,v.employeeCareBps,v.ignoredWarnings,v.warnings,v.reward,
       v.overwork,v.saleAccepted,v.saleDeclined,v.openChosen,v.insolventSince,v.fixedCarry,v.lastLegalDay,v.ending);
+    if(a.version>=3) a(v.walk,v.quitRequested);
+    else {v.walk={0,0,90,0};v.quitRequested=false;}
+    if(v.difficulty=="Startup") v.difficulty="Easy";
+    else if(v.difficulty=="Standard") v.difficulty="Normal";
+    else if(v.difficulty=="Hardcore") v.difficulty="Hard";
 }
 struct Writer {
     std::ostream& stream;int version=2;
@@ -62,9 +70,9 @@ struct Reader {
 }
 std::string Campaign::Save() const {
     std::ostringstream body;body<<std::quoted(core_.Save())<<' ';
-    auto copy=state_;Writer writer{body,2};writer(copy);
+    auto copy=state_;Writer writer{body,3};writer(copy);
     const auto payload=body.str();std::ostringstream out;
-    out<<"MAI-CAMPAIGN 2 "<<base_.Fingerprint()<<' '<<rules_.Fingerprint()<<' '<<Hash(payload)<<'\n'<<payload;
+    out<<"MAI-CAMPAIGN 3 "<<base_.Fingerprint()<<' '<<rules_.Fingerprint()<<' '<<Hash(payload)<<'\n'<<payload;
     return out.str();
 }
 Result Campaign::ReadBody(const std::string& body,int version) {
@@ -85,20 +93,23 @@ Result Campaign::Load(const std::string& encoded) {
         // saves remain a different format; no unsupported conversion is claimed.
         auto r=candidate.core_.Load(encoded);if(!r.ok) return r;
         if(candidate.core_.View().ended) return Result::Error("Legacy ended save lacks an ending snapshot; explicit migration is required");
-        auto& s=candidate.state_;s.difficulty="Standard";s.companyName="Migrated company";s.prologueStep=3;
-        s.screen=Screen::CityMap;s.lastScreen=s.screen;s.loading.phase=LoadPhase::Ready;s.loading.destination=s.screen;
-        s.loading.progressBps=10000;s.lastLegalDay=(candidate.core_.View().now+8*Hour)/(24*Hour);
-        candidate.Record("migration","Native procurement schema 1 -> campaign schema 2; Standard difficulty retained");
+        auto& s=candidate.state_;s.difficulty="Normal";s.companyName="Migrated company";s.prologueStep=3;
+        s.screen=Screen::CityMap;s.lastScreen=s.screen;s.resumeScreen=s.screen;s.loading.phase=LoadPhase::Ready;s.loading.destination=s.screen;
+        s.loading.progressBps=10000;s.lastLegalDay=(candidate.core_.View().now+8*Hour)/(24*Hour);s.walk={0,0,90,0};
+        candidate.Record("migration","Native procurement schema 1 -> campaign schema 3; Normal difficulty retained");
     } else {
         const auto newline=encoded.find('\n');if(newline==std::string::npos) return Result::Error("Missing campaign save header");
         std::istringstream header(encoded.substr(0,newline));std::string magic;int version=0;std::uint32_t base=0,rules=0,checksum=0;
-        if(!(header>>magic>>version>>base>>rules>>checksum) || magic!="MAI-CAMPAIGN" || (version!=1 && version!=2)) return Result::Error("Unsupported campaign schema");
+        if(!(header>>magic>>version>>base>>rules>>checksum) || magic!="MAI-CAMPAIGN" || (version<1 || version>3)) return Result::Error("Unsupported campaign schema");
         header>>std::ws;if(!header.eof()) return Result::Error("Unexpected campaign header data");
         if(base!=base_.Fingerprint() || rules!=rules_.Fingerprint()) return Result::Error("Rules changed; a deliberate migration is required");
         const auto body=encoded.substr(newline+1);if(Hash(body)!=checksum) return Result::Error("Campaign checksum mismatch");
         auto r=candidate.ReadBody(body,version);if(!r.ok) return r;
     }
     std::string error;if(!candidate.Validate(error)) return Result::Error(error);
-    *this=std::move(candidate);return Result::Success("Campaign restored atomically; no offline time advanced");
+    const auto keepSettings=settings_;
+    *this=std::move(candidate);
+    settings_=keepSettings;
+    return Result::Success("Campaign restored atomically; no offline time advanced");
 }
 } // namespace mai

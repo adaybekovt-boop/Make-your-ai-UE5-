@@ -21,7 +21,7 @@ import extract_city_markers
 
 class ScaffoldChecks(unittest.TestCase):
     def test_editor_and_blender_scripts_have_valid_python_syntax(self):
-        for name in ('build_scaffold.py', 'editor_assets.py', 'editor_scene.py', 'inspect_scaffold.py', 'prepare_skeletal_lods.py', 'extract_city_markers.py', 'scaffold_runner.py'):
+        for name in ('build_scaffold.py', 'editor_assets.py', 'editor_scene.py', 'inspect_scaffold.py', 'prepare_skeletal_lods.py', 'extract_city_markers.py', 'scaffold_runner.py', 'editor_materials.py', 'editor_lighting.py', 'editor_world_partition.py', 'run_editor_visual.py'):
             with self.subTest(script=name):
                 ast.parse((TOOLS / name).read_text(encoding='utf-8'), filename=name)
 
@@ -48,12 +48,12 @@ class ScaffoldChecks(unittest.TestCase):
 
     def test_required_runtime_areas_contain_cpp_implementation(self):
         source = PROJECT / 'Source/MakeYourAI/Private'
-        for area in ('Core', 'Gameplay', 'Economy', 'Persistence', 'World', 'UI', 'NPC'):
+        for area in ('Core', 'Gameplay', 'Economy', 'Persistence', 'World', 'UI', 'NPC', 'Campaign'):
             self.assertTrue(list((source / area).glob('*.cpp')), area)
         self.assertTrue((PROJECT / 'Source/MakeYourAI/Public/Interaction/MaiInteractable.h').is_file())
 
     def test_editor_builder_never_writes_fake_asset_bytes(self):
-        for name in ('build_scaffold.py', 'editor_assets.py', 'editor_scene.py', 'inspect_scaffold.py'):
+        for name in ('build_scaffold.py', 'editor_assets.py', 'editor_scene.py', 'inspect_scaffold.py', 'editor_materials.py', 'editor_lighting.py', 'editor_world_partition.py', 'run_editor_visual.py'):
             tree = ast.parse((TOOLS / name).read_text())
             for node in ast.walk(tree):
                 if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):

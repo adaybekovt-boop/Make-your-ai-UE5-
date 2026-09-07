@@ -1,0 +1,46 @@
+test_extreme_tunables_and_npc_duration_are_rejected (test_domain_bounds.NativeBounds.test_extreme_tunables_and_npc_duration_are_rejected) ... ok
+test_automation_expected_list_is_nonempty_and_source_derived (test_scaffold.ScaffoldChecks.test_automation_expected_list_is_nonempty_and_source_derived) ... ok
+test_automation_failure_and_not_run_are_not_success (test_scaffold.ScaffoldChecks.test_automation_failure_and_not_run_are_not_success) ... ok
+test_complete_automation_report_is_recognized (test_scaffold.ScaffoldChecks.test_complete_automation_report_is_recognized) ... ok
+test_editor_and_blender_scripts_have_valid_python_syntax (test_scaffold.ScaffoldChecks.test_editor_and_blender_scripts_have_valid_python_syntax) ... ok
+test_editor_builder_never_writes_fake_asset_bytes (test_scaffold.ScaffoldChecks.test_editor_builder_never_writes_fake_asset_bytes) ... ok
+test_empty_automation_report_cannot_pass (test_scaffold.ScaffoldChecks.test_empty_automation_report_cannot_pass) ... ok
+test_generated_directories_remain_ignored (test_scaffold.ScaffoldChecks.test_generated_directories_remain_ignored) ... ok
+test_generated_headers_are_last_include (test_scaffold.ScaffoldChecks.test_generated_headers_are_last_include) ... ok
+test_missing_automation_test_is_not_success (test_scaffold.ScaffoldChecks.test_missing_automation_test_is_not_success) ... ok
+test_missing_engine_is_blocked_without_launch (test_scaffold.ScaffoldChecks.test_missing_engine_is_blocked_without_launch) ... ok
+test_native_game_instance_and_mode_are_registered (test_scaffold.ScaffoldChecks.test_native_game_instance_and_mode_are_registered) ... ok
+test_no_original_blend_save_in_marker_or_lod_scripts (test_scaffold.ScaffoldChecks.test_no_original_blend_save_in_marker_or_lod_scripts) ... ok
+test_real_runtime_module_and_editor_only_plugins (test_scaffold.ScaffoldChecks.test_real_runtime_module_and_editor_only_plugins) ... ok
+test_required_runtime_areas_contain_cpp_implementation (test_scaffold.ScaffoldChecks.test_required_runtime_areas_contain_cpp_implementation) ... ok
+test_source_marker_normalization (test_scaffold.ScaffoldChecks.test_source_marker_normalization) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.843s
+
+OK
+NATIVE_BOUNDS_PASS catalog_overflow_guard npc_duration_guard
+{
+  "schema": 1,
+  "action": "automation",
+  "status": "blocked",
+  "process_exit_code": null,
+  "visual_verified": false,
+  "gameplay_verified": false,
+  "null_rhi": false,
+  "reference_gate": "UE5 reference gate: NOT VERIFIED",
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/workspace",
+    "log": "/tmp/tmp0xewu4vu/receipt/git.log",
+    "process_exit_code": 0,
+    "status": "executed",
+    "wrapper_exit_code": 0
+  },
+  "blocker": "UE_ROOT is not set; Editor and Automation were not started",
+  "wrapper_exit_code": 2
+}

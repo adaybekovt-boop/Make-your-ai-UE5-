@@ -30,7 +30,7 @@ def check_automation(index: Path, expected: set[str]) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['build-scene', 'build-campaign', 'automation', 'inspect-scene'])
+    parser.add_argument('action', choices=['build-scene', 'build-campaign', 'automation', 'inspect-scene', 'materials', 'lighting', 'world-partition'])
     parser.add_argument('--engine-root', default=os.environ.get('UE_ROOT'))
     parser.add_argument('--repo-root', type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument('--output', type=Path)
@@ -65,8 +65,15 @@ def main(argv: list[str] | None = None) -> int:
         if args.action == 'automation':
             command += ['-ExecCmds=Automation RunTest MakeYourAI;Quit', '-ReportExportPath=' + str(out / 'Automation')]
         else:
-            script = {'build-scene': 'build_scaffold.py', 'build-campaign': 'build_campaign.py', 'inspect-scene': 'inspect_scaffold.py'}[args.action]
-            command.append('-ExecutePythonScript=' + str(repo / 'Unreal/Tools' / script))
+            scripts = {
+                'build-scene': 'build_scaffold.py',
+                'build-campaign': 'build_campaign.py',
+                'inspect-scene': 'inspect_scaffold.py',
+                'materials': 'run_editor_visual.py',
+                'lighting': 'run_editor_visual.py',
+                'world-partition': 'run_editor_visual.py',
+            }
+            command.append('-ExecutePythonScript=' + str(repo / 'Unreal/Tools' / scripts[args.action]))
         result['command'] = command
         environment = dict(os.environ, MAI_SCRIPT_REPORT=str(script_report))
         with (out / 'editor.log').open('w', encoding='utf-8') as log:

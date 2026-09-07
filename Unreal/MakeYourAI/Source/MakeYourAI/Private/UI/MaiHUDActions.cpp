@@ -7,7 +7,10 @@
 #include "Economy/MaiEconomySubsystem.h"
 #include "Persistence/MaiSaveSubsystem.h"
 #include "World/MaiPlayerController.h"
+#include "Campaign/MaiCampaign.h"
+#include "Core/MaiStrings.h"
 #include "Engine/GameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Misc/LexFromString.h"
 
 void UMaiHUDWidget::LocationChanged(FString Value, ESelectInfo::Type Type) {
@@ -19,8 +22,8 @@ void UMaiHUDWidget::PageChanged(FString Value, ESelectInfo::Type Type) {
 }
 void UMaiHUDWidget::SelectLocation(const FString& Id, int32 Cell) {
     if (!PagePicker) return;
-    if (Id == TEXT("auction")) { PagePicker->SetSelectedIndex(4); return; }
-    if (Id == TEXT("nuclear-power") || Id == TEXT("greenhaven")) { PagePicker->SetSelectedIndex(5); if (Id == TEXT("greenhaven")) RegionPicker->SetSelectedOption(TEXT("greenhaven")); return; }
+    if (Id == TEXT("auction")) { PagePicker->SetSelectedIndex(5); return; }
+    if (Id == TEXT("nuclear-power") || Id == TEXT("greenhaven")) { PagePicker->SetSelectedIndex(6); if (Id == TEXT("greenhaven")) RegionPicker->SetSelectedOption(TEXT("greenhaven")); return; }
     if (!Company || !Company->Domain() || Company->Domain()->Definitions().LocationIndex(TCHAR_TO_UTF8(*Id)) < 0) {
         ActionMessage = FText::FromString(TEXT("This landmark has no gameplay operation in the current vertical slice.")); Refresh(); return;
     }
@@ -67,10 +70,72 @@ void UMaiHUDWidget::HandleCommand(const FString& Command) {
         else PC->EnterLocation(SelectedLocation);
     }
     else if (Command == TEXT("npc") && PC) PC->VisitNpc();
-    else if (Command == TEXT("new")) {
+    else if (Command == TEXT("new") || Command == TEXT("menu-new")) {
         if (!bNewCompanyArmed) { bNewCompanyArmed = true; ActionMessage = FText::FromString(TEXT("Press New company again to discard the current unsaved session. Save slots are not deleted.")); }
         else { bNewCompanyArmed = false; ShowResult(Company->CampaignTransact([](mai::Campaign& G){ return G.ShowScreen(mai::Screen::MainMenu); })); RebuildGrid(); }
     }
+    else if (Command == TEXT("menu-load")) {
+        auto* Saves = GI->GetSubsystem<UMaiSaveSubsystem>();
+        if (!Saves || !Saves->HasSave(SlotInput->GetText().ToString())) ActionMessage = FText::FromString(UTF8_TO_TCHAR(mai::Loc("menu.no-save")));
+        else { ShowResult(Saves->LoadCompany(SlotInput->GetText().ToString())); RebuildGrid(); }
+    }
+    else if (Command == TEXT("menu-settings")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.ShowScreen(mai::Screen::Settings); }));
+    else if (Command == TEXT("menu-back")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.ShowScreen(mai::Screen::MainMenu); }));
+    else if (Command == TEXT("menu-quit")) {
+        ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.RequestQuit(); }));
+        if (Company->Campaign() && Company->Campaign()->WantsQuit()) UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, false);
+    }
+    else if (Command == TEXT("diff-Easy") || Command == TEXT("diff-Normal") || Command == TEXT("diff-Hard")) {
+        const FString Id = Command.Mid(5);
+        ShowResult(Company->RunCampaign([&](mai::Campaign& C) {
+            if (C.View().screen == mai::Screen::NewGame) { auto R = C.ShowDifficulty(); if (!R.ok) return R; }
+            return C.ChooseDifficulty(TCHAR_TO_UTF8(*Id));
+        }));
+    }
+    else if (Command == TEXT("prologue-next") && Company->Campaign()) {
+        const auto Step = Company->Campaign()->View().prologueStep;
+        if (Step == 0) ShowResult(Company->RunCampaign([&](mai::Campaign& C){ return C.PrologueAction(TCHAR_TO_UTF8(*CompanyNameInput->GetText().ToString())); }));
+        else if (Step == 1) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.PrologueAction("budget"); }));
+        else {
+            ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.PrologueAction("accept-task"); }));
+            Company->CompleteHostLoad(TEXT("City map after prologue"));
+        }
+    }
+    else if (Command == TEXT("load-retry")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.RetryLoad(); }));
+    else if (Command == TEXT("load-cancel")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.CancelLoad(); }));
+    else if (Command == TEXT("walk") && PC) PC->EnterLocation(TEXT("garage"));
+    else if (Command == TEXT("buy-text")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.BuyDataset("official-text-10"); }));
+    else if (Command == TEXT("buy-image")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.BuyDataset("official-image-10"); }));
+    else if (Command == TEXT("buy-mixed")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.BuyDataset("official-mixed-10"); }));
+    else if (Command == TEXT("hire")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.HireSpecialist(); }));
+    else if (Command == TEXT("ai-create")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.CreateAIReviewer(); }));
+    else if (Command == TEXT("review-manual") || Command == TEXT("review-human") || Command == TEXT("review-ai")) {
+        const mai::ReviewMethod Method = Command.EndsWith(TEXT("manual")) ? mai::ReviewMethod::Manual : Command.EndsWith(TEXT("human")) ? mai::ReviewMethod::Human : mai::ReviewMethod::AI;
+        ShowResult(Company->RunCampaign([&](mai::Campaign& C) {
+            for (const auto& B : C.View().inventory.batches) if (B.status == mai::DatasetStatus::Unreviewed) return C.StartReview(B.id, Method);
+            return mai::Result::Error("No Unreviewed batch");
+        }));
+    }
+    else if (Command == TEXT("train")) {
+        ShowResult(Company->RunCampaign([](mai::Campaign& C) {
+            for (const auto& B : C.View().inventory.batches) if (B.status == mai::DatasetStatus::Verified) return C.StartTraining(B.id);
+            return mai::Result::Error("No Verified batch");
+        }));
+    }
+    else if (Command.StartsWith(TEXT("review-")) && Company->Campaign()) {
+        std::int64_t Session = 0;
+        for (const auto& R : Company->Campaign()->View().reviews) if (R.phase == mai::ReviewPhase::Active && R.method == mai::ReviewMethod::Manual) Session = R.id;
+        if (Command == TEXT("review-cancel")) ShowResult(Company->RunCampaign([&](mai::Campaign& C){ return C.CancelReview(Session); }));
+        else if (Command == TEXT("review-skip")) ShowResult(Company->RunCampaign([&](mai::Campaign& C){ return C.SkipReview(Session); }));
+        else {
+            const int Side = Command == TEXT("review-left") ? 0 : Command == TEXT("review-right") ? 1 : 2;
+            ShowResult(Company->RunCampaign([&](mai::Campaign& C){ return C.ChooseReview(Session, Side); }));
+        }
+    }
+    else if (Command == TEXT("ending-accept")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.ChooseEnding(mai::EndingKind::Acquisition); }));
+    else if (Command == TEXT("ending-decline")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.DeclineSale(); }));
+    else if (Command == TEXT("ending-open")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.ChooseEnding(mai::EndingKind::OpenModel); }));
+    else if (Command == TEXT("ending-ack")) ShowResult(Company->RunCampaign([](mai::Campaign& C){ return C.AcknowledgeEnding(); }));
     Refresh();
 }
 

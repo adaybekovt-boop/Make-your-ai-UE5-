@@ -1,0 +1,49 @@
+PASS initial state and home statuses
+PASS browser prices and quantity rejection
+PASS buy once and no invented progression
+PASS atomic insufficient kit leaves both orders and cash unchanged
+PASS official delivery and mounting flow
+PASS bulk kit and independent channel ETAs
+PASS pause freezes all deliveries and 3x time
+PASS grey chassis defect and disposal
+PASS official stock is consumed before grey without a roll
+PASS power refusal is atomic and consumes no RNG
+PASS compatible upgrade retains server id and old chip
+PASS defective upgrade returns old chip and retains chassis
+PASS incompatible chip does not remove stock
+PASS shared failure retains rack and charges once
+PASS daily audience at hour 16, not a compute cash shortcut
+PASS fixed point substep invariance
+PASS pending delivery survives process-style reconstruction
+PASS installed servers and money survive load
+PASS corrupt and unsupported saves cannot mutate live state
+PASS board restrictions block orders but not stocked mounting
+PASS auction winner uses regular delivery without a second purchase
+PASS auction loss refunds escrow and respects rival budget
+PASS auction replay survives save with escrow and RNG
+PASS nuclear tariff applies only to real consumption, once
+PASS unconfigured extensions cannot create free purchases
+PASS Greenhaven uses shared regions, tariffs and court risk
+PASS NPC entry, phone, reaction, cooldown and re-entry
+PASS NPC and deterministic seeds survive save
+PASS boot load cannot be cancelled and reaches main menu
+PASS failed load can retry or return to menu
+PASS stale load callbacks are ignored
+PASS new game applies Easy Normal Hard and locks the profile
+PASS save and load keep difficulty and reject mid-run replacement
+PASS legacy procurement save migrates to Normal without changing UI difficulty
+PASS missing or invalid campaign rules fail closed
+PASS optional gameplay load can be cancelled back to the city
+PASS datasets enter Unreviewed inventory and cannot train
+PASS manual review both-bad skip cancel and resume
+PASS human and AI review share ReviewSession and charge once
+PASS insufficient money and time do not start review or training
+PASS verified review changes training value and legal risk survives
+PASS save restores review training walk and does not leak after new game
+PASS ending evaluator is mutually exclusive and data driven
+PASS bankruptcy grace depends on difficulty and new game clears ending
+PASS settings quit and strings stay centralized
+PASS existing procurement auction nuclear greenhaven npc still reachable
+NATIVE_DOMAIN_RESULT cases=46 assertions=1354 failures=0
+2026-09-07T18:12:30Z
+HEAD_AT_TEST=35d5a0bd5256bbd788026d711ee779c9902aad16

@@ -11,6 +11,8 @@ class UTextBlock;
 class UEditableTextBox;
 class UUniformGridPanel;
 class UWidgetSwitcher;
+class UBorder;
+class UCanvasPanel;
 class UMaiCompanySubsystem;
 class UMaiHUDWidget;
 
@@ -56,6 +58,16 @@ protected:
     UPROPERTY(Transient) TObjectPtr<UEditableTextBox> BidInput;
     UPROPERTY(Transient) TObjectPtr<UUniformGridPanel> Grid;
     UPROPERTY(Transient) TObjectPtr<UWidgetSwitcher> Pages;
+    UPROPERTY(Transient) TObjectPtr<UWidgetSwitcher> FlowPages;
+    UPROPERTY(Transient) TObjectPtr<UBorder> FlowRoot;
+    UPROPERTY(Transient) TObjectPtr<UBorder> OperationsRoot;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> FlowTitle;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> FlowBody;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> ReviewPrompt;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> ReviewLeft;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> ReviewRight;
+    UPROPERTY(Transient) TObjectPtr<UTextBlock> InventoryCampaignText;
+    UPROPERTY(Transient) TObjectPtr<UEditableTextBox> CompanyNameInput;
     UPROPERTY(Transient) TArray<TObjectPtr<UTextBlock>> CellLabels;
     FString SelectedLocation = TEXT("garage");
     int32 SelectedCell = 0;
@@ -63,7 +75,9 @@ protected:
     FTimerHandle RefreshTimer;
     bool bNewCompanyArmed = false;
     void BuildLayout();
+    void BuildFlow(UCanvasPanel* Canvas);
     void Refresh();
+    void RefreshFlow();
     void RebuildGrid();
     UTextBlock* AddText(UPanelWidget* Parent, const FString& Text, int32 FontSize = 14);
     UMaiActionButton* AddButton(UPanelWidget* Parent, const FString& Label, const FString& Command);

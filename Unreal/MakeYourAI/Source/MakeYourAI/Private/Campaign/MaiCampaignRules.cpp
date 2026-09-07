@@ -7,9 +7,9 @@ namespace mai {
 CampaignRules CampaignRules::Defaults() {
     CampaignRules r;
     r.difficulties = {
-        {"Startup", 15000,10000,5000,7000,7000,9000,8000,11000,72*Hour},
-        {"Standard",10000,10000,10000,10000,10000,10000,10000,10000,48*Hour},
-        {"Hardcore",8000,10000,15000,15000,16000,13000,12500,9000,24*Hour}};
+        {"Easy", 15000,10000,5000,7000,7000,9000,8000,11000,72*Hour},
+        {"Normal",10000,10000,10000,10000,10000,10000,10000,10000,48*Hour},
+        {"Hard",8000,10000,15000,15000,16000,13000,12500,9000,24*Hour}};
     r.offers = {
         {"official-text-10","Licensed text sample",DataType::Text,10,Dollars(1400),{9500,500,0,10000}},
         {"official-image-10","Licensed image sample",DataType::Image,10,Dollars(1400),{9500,500,0,10000}},
@@ -26,7 +26,9 @@ CampaignRules CampaignRules::Defaults() {
         {"i-relevant","Dataset task: indoor equipment","CARD: unrelated landscape, label says server.","CARD: well-lit indoor rack, accurate equipment label.",DataType::Image,1,{},{}},
         {"i-junk","Choose the clean training card","CARD: correct object; uncluttered background; licensed.","CARD: corrupted file; duplicate watermark; wrong object.",DataType::Image,0,{},{}},
         {"i-caption","Choose image-caption agreement","CARD: bicycle picture, caption: server rack.","CARD: server rack picture, caption: server rack.",DataType::Image,1,{},{}},
-        {"i-bias","Choose the more representative sample","CARD: varied rack models and lighting; labels audited.","CARD: same rack duplicated 100 times; labels guessed.",DataType::Image,0,{},{}}};
+        {"i-bias","Choose the more representative sample","CARD: varied rack models and lighting; labels audited.","CARD: same rack duplicated 100 times; labels guessed.",DataType::Image,0,{},{}},
+        {"t-both","Reject both unsafe samples","Unredacted patient record with a national id number.","Leaked employee passwords in plaintext.",DataType::Text,2,{},{}},
+        {"i-both","Reject both broken cards","CARD: empty file; no object; unusable.","CARD: corrupted header; no licensed content.",DataType::Image,2,{},{}}};
     r.endings = {
         {EndingKind::Regulator,500,"regulator","Closed by the regulator","The warning letters were not decorative. Operations are suspended.",0,0,0,10000,0,10000,0,10000,false},
         {EndingKind::Bankruptcy,400,"bankruptcy","Bankruptcy","The last server is quiet. The final invoice is not.",0,0,0,10000,0,10000,0,10000,false},
@@ -43,10 +45,10 @@ bool CampaignRules::Valid(std::string& error) const {
     if(humanAccuracyBps<1 || humanAccuracyBps>9900 || humanVolumePerHour<1 || humanVolumePerHour>1000 || aiVolumePerComputeHour<1 || aiVolumePerComputeHour>1000 || volumePerComputeHour<1 || volumePerComputeHour>100 || microIQPerVolume<1 || microIQPerVolume>1000000) return bad("Invalid review/training throughput");
     std::set<std::string> names;
     for(const auto& d:difficulties) {
-        if(!names.insert(d.id).second || (d.id!="Startup" && d.id!="Standard" && d.id!="Hardcore")) return bad("Unknown or duplicate difficulty");
+        if(!names.insert(d.id).second || (d.id!="Easy" && d.id!="Normal" && d.id!="Hard")) return bad("Unknown or duplicate difficulty");
         for(int v:{d.capitalBps,d.procurementBps,d.defectBps,d.failureBps,d.legalBps,d.hiringBps,d.competitorBps,d.trainingBps}) if(v<1000 || v>20000) return bad("Difficulty modifier out of bounds");
         if(d.insolvencyGrace<Hour || d.insolvencyGrace>168*Hour) return bad("Invalid insolvency grace");
-        if(d.id=="Standard" && (d.capitalBps!=10000 || d.procurementBps!=10000 || d.defectBps!=10000 || d.failureBps!=10000 || d.legalBps!=10000 || d.hiringBps!=10000 || d.competitorBps!=10000 || d.trainingBps!=10000)) return bad("Standard must preserve base multipliers");
+        if(d.id=="Normal" && (d.capitalBps!=10000 || d.procurementBps!=10000 || d.defectBps!=10000 || d.failureBps!=10000 || d.legalBps!=10000 || d.hiringBps!=10000 || d.competitorBps!=10000 || d.trainingBps!=10000)) return bad("Normal must preserve base catalog multipliers");
     }
     names.clear();
     for(const auto& o:offers) {
@@ -55,7 +57,7 @@ bool CampaignRules::Valid(std::string& error) const {
     }
     names.clear(); int text=0,image=0;
     for(const auto& item:items) {
-        if(item.id.empty() || !names.insert(item.id).second || item.betterSide<0 || item.betterSide>1 || item.left.empty() || item.right.empty() || item.left.size()>2048 || item.right.size()>2048 || item.prompt.size()>512) return bad("Invalid review card");
+        if(item.id.empty() || !names.insert(item.id).second || item.betterSide<0 || item.betterSide>2 || item.left.empty() || item.right.empty() || item.left.size()>2048 || item.right.size()>2048 || item.prompt.size()>512) return bad("Invalid review card");
         if(item.type==DataType::Text) ++text; else if(item.type==DataType::Image) ++image; else return bad("Cards must have a concrete type");
     }
     if(text<manualSteps || image<manualSteps) return bad("Insufficient independent review cards");
@@ -109,6 +111,6 @@ bool WithinInteractionRange(int x,int y,int z,int radius) {
     if(radius<1 || radius>1000 || x < -radius || x>radius || y < -radius || y>radius || z < -radius || z>radius) return false;
     return static_cast<std::int64_t>(x)*x+static_cast<std::int64_t>(y)*y+static_cast<std::int64_t>(z)*z<=static_cast<std::int64_t>(radius)*radius;
 }
-std::string ScreenName(Screen s) {const char* names[]={"Loading","Main Menu","New Game","Difficulty","Prologue","City Map","Gameplay","Training","Ending"};const int i=static_cast<int>(s);return i>=0 && i<9?names[i]:"Unknown";}
+std::string ScreenName(Screen s) {const char* names[]={"Loading","Main Menu","New Game","Difficulty","Prologue","City Map","Gameplay","Training","Ending","Results","Settings"};const int i=static_cast<int>(s);return i>=0 && i<11?names[i]:"Unknown";}
 std::string DatasetStatusName(DatasetStatus s) {const char* names[]={"Purchased","Unreviewed","Reviewing","Verified","Rejected","Training","Trained"};const int i=static_cast<int>(s);return i>=0 && i<7?names[i]:"Unknown";}
 } // namespace mai

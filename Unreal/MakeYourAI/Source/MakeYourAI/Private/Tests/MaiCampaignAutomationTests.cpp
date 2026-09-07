@@ -4,6 +4,7 @@
 #include "Misc/ScopeExit.h"
 #include "Campaign/MaiCampaign.h"
 #include "Campaign/MaiCampaignAsset.h"
+#include "Core/MaiStrings.h"
 #include "Persistence/MaiSaveGame.h"
 #include "World/MaiGarageInterior.h"
 #include "World/MaiWalkCharacter.h"
@@ -16,7 +17,7 @@
 namespace {
 bool Prepare(mai::Campaign& G) {
     return G.CompleteLoad(G.View().loading.generation,true).ok && G.BeginNewGame().ok && G.ShowDifficulty().ok &&
-        G.ChooseDifficulty("Standard").ok && G.PrologueAction("UE Automation company").ok && G.PrologueAction("budget").ok &&
+        G.ChooseDifficulty("Normal").ok && G.PrologueAction("UE Automation company").ok && G.PrologueAction("budget").ok &&
         G.PrologueAction("accept-task").ok && G.CompleteLoad(G.View().loading.generation,true).ok &&
         G.Core().BuyLocation("garage").ok && G.Core().OrderKit("garage",0,0,mai::Channel::Official,1,0).ok &&
         G.AdvanceReal(6*mai::Hour).ok && G.Core().MountChassis("garage",0,0).ok && G.Core().MountChip("garage",0,0).ok &&
@@ -40,17 +41,17 @@ bool FMaiCampaignSaveAutomation::RunTest(const FString& Parameters) {
         const auto* R=G.Review(1);if(!TestTrue(TEXT("Real paired decision"),G.ChooseReview(1,R->items[R->decisions.size()].betterSide).ok))return false;
     }
     TestTrue(TEXT("Start training"),G.StartTraining(1).ok);TestTrue(TEXT("Complete quality-weighted work"),G.AdvanceReal(5*mai::Hour).ok);
-    const std::string Before=G.Save();auto* Save=NewObject<UMaiSaveGame>();Save->Difficulty=TEXT("Standard");
+    const std::string Before=G.Save();auto* Save=NewObject<UMaiSaveGame>();Save->Difficulty=TEXT("Normal");
     Save->CurrentScreen=static_cast<int32>(G.View().screen);Save->FirstScreen=static_cast<int32>(G.View().firstScreen);Save->LastScreen=static_cast<int32>(G.View().lastScreen);
     Save->DomainPayload.Append(reinterpret_cast<const uint8*>(Before.data()),static_cast<int32>(Before.size()));
     const FString Slot=TEXT("MAI_Campaign_Automation_")+FGuid::NewGuid().ToString(EGuidFormats::Digits);
     ON_SCOPE_EXIT { UGameplayStatics::DeleteGameInSlot(Slot,0); };
     if(!TestTrue(TEXT("Actual USaveGame disk write"),UGameplayStatics::SaveGameToSlot(Save,Slot,0)))return false;
     auto* Disk=Cast<UMaiSaveGame>(UGameplayStatics::LoadGameFromSlot(Slot,0));if(!TestNotNull(TEXT("Disk class"),Disk))return false;
-    TestEqual(TEXT("Outer version"),Disk->FormatVersion,2);TestEqual(TEXT("Saved difficulty"),Disk->Difficulty,FString(TEXT("Standard")));
+    TestEqual(TEXT("Outer version"),Disk->FormatVersion,2);TestEqual(TEXT("Saved difficulty"),Disk->Difficulty,FString(TEXT("Normal")));
     mai::Campaign Reload;TestTrue(TEXT("Reconstructed campaign"),Reload.Load(std::string(reinterpret_cast<const char*>(Disk->DomainPayload.GetData()),Disk->DomainPayload.Num())).ok);
     TestTrue(TEXT("All state roundtrips"),Reload.Save()==Before);TestTrue(TEXT("Ending evaluation"),Reload.EvaluateEnding().ok);
-    TestTrue(TEXT("Startup is not a fabricated global victory"),Reload.View().ending.kind==mai::EndingKind::None);return true;
+    TestTrue(TEXT("Normal is not a fabricated global victory"),Reload.View().ending.kind==mai::EndingKind::None);return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignGaragePhysicsAutomation,"MakeYourAI.Campaign.GarageSweptMovementAndInteraction",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignGaragePhysicsAutomation::RunTest(const FString& Parameters) {
@@ -71,5 +72,41 @@ bool FMaiCampaignGaragePhysicsAutomation::RunTest(const FString& Parameters) {
     Character->GetCharacterMovement()->SafeMoveUpdatedComponent(FVector(0,-1200,0),FQuat::Identity,true,Hit);
     TestTrue(TEXT("Wall stops swept capsule"),Hit.bBlockingHit);TestTrue(TEXT("Character stays inside room"),Character->GetActorLocation().Y>-710);
     TestFalse(TEXT("Distant review point is not callable"),Desk->CanInteract(Character));return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignFlow, "MakeYourAI.Campaign.LoadingDifficultyAndInventory", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FMaiCampaignFlow::RunTest(const FString& Parameters) {
+    (void)Parameters;
+    mai::Campaign C;
+    TestTrue(TEXT("Boot load"), C.View().loading.phase == mai::LoadPhase::Loading);
+    TestFalse(TEXT("Boot cannot cancel"), C.CancelLoad().ok);
+    TestTrue(TEXT("Complete boot"), C.CompleteLoad(C.View().loading.generation, true).ok);
+    TestTrue(TEXT("New game"), C.BeginNewGame().ok);
+    TestTrue(TEXT("Difficulty screen"), C.ShowDifficulty().ok);
+    TestTrue(TEXT("Normal"), C.ChooseDifficulty("Normal").ok);
+    TestEqual(TEXT("Normal cash"), static_cast<int64>(C.Core().View().cash), static_cast<int64>(mai::Dollars(12000)));
+    TestFalse(TEXT("Locked"), C.ChooseDifficulty("Easy").ok);
+    TestTrue(TEXT("Name"), C.PrologueAction("Neuron").ok);
+    TestTrue(TEXT("Budget"), C.PrologueAction("budget").ok);
+    TestTrue(TEXT("Task"), C.PrologueAction("accept-task").ok);
+    TestTrue(TEXT("City load"), C.CompleteLoad(C.View().loading.generation, true).ok);
+    auto Funded = C.Core().View(); Funded.cash = mai::Dollars(100000); C.Core().Restore(Funded);
+    TestTrue(TEXT("Buy dataset"), C.BuyDataset("official-text-10").ok);
+    TestTrue(TEXT("Unreviewed"), C.Batch(1) && C.Batch(1)->status == mai::DatasetStatus::Unreviewed);
+    TestFalse(TEXT("No train yet"), C.StartTraining(1).ok);
+    TestTrue(TEXT("Elon Max fictional"), C.Rules().buyer.fictional);
+    TestTrue(TEXT("Portrait import still pending"), FString(UTF8_TO_TCHAR(mai::Loc("placeholder.elon-max"))).Contains(TEXT("PLACEHOLDER")));
+    return true;
+}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiEndingEvaluator, "MakeYourAI.Campaign.EndingEvaluator", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FMaiEndingEvaluator::RunTest(const FString& Parameters) {
+    (void)Parameters;
+    const auto Rules = mai::CampaignRules::Defaults();
+    mai::EndingMetrics None; None.difficulty = "Normal";
+    TestTrue(TEXT("No ending"), mai::EndingEvaluator::Evaluate(None, Rules.endings).kind == mai::EndingKind::None);
+    mai::EndingMetrics Bankrupt = None; Bankrupt.bankrupt = true;
+    TestTrue(TEXT("Bankruptcy"), mai::EndingEvaluator::Evaluate(Bankrupt, Rules.endings).kind == mai::EndingKind::Bankruptcy);
+    mai::EndingMetrics Regulator = None; Regulator.legalBps = 9000; Regulator.ignoredWarnings = 3;
+    TestTrue(TEXT("Regulator beats bankruptcy"), mai::EndingEvaluator::Evaluate(Regulator, Rules.endings).kind == mai::EndingKind::Regulator);
+    return true;
 }
 #endif

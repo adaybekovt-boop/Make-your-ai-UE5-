@@ -7,6 +7,7 @@ namespace {
 std::int64_t Bps(std::int64_t value,int multiplier) {return value/10000*multiplier+(value%10000)*multiplier/10000;}
 int ClampBps(int value) {return std::clamp(value,0,10000);}
 bool IsPlayable(Screen s) {return s==Screen::CityMap || s==Screen::Gameplay || s==Screen::Training;}
+bool IsMenuScreen(Screen s) {return s==Screen::MainMenu || s==Screen::Results || s==Screen::Settings || s==Screen::Ending;}
 }
 Catalog Campaign::ApplyDifficulty(Catalog base,const DifficultyProfile& p) {
     base.defectPpm=static_cast<int>(std::min<std::int64_t>(1000000,Bps(base.defectPpm,p.defectBps)));
@@ -28,13 +29,15 @@ void Campaign::Record(const std::string& action,const std::string& detail) {
 }
 Result Campaign::Reset(std::uint32_t seed) {
     std::string error;if(!base_.Valid(error) || !rules_.Valid(error)) return Result::Error(error);
+    const auto keepSettings=settings_;
     core_=Simulation(base_,seed);core_.SetPaused(true);state_=CampaignState{};
+    settings_=keepSettings;state_.quitRequested=false;
     state_.seed=seed?seed:1;state_.reviewRng=state_.seed^0xa511e9b3u;if(!state_.reviewRng) state_.reviewRng=1;
     state_.legalRng=state_.seed^0x6c8e9cf5u;if(!state_.legalRng) state_.legalRng=1;
     return BeginLoad(Screen::MainMenu);
 }
 Result Campaign::BeginNewGame() {
-    if(state_.screen!=Screen::MainMenu && state_.screen!=Screen::Ending) return Result::Error("Start a new company from the menu or ending");
+    if(state_.screen!=Screen::MainMenu && state_.screen!=Screen::Ending && state_.screen!=Screen::Results) return Result::Error("Start a new company from the menu, ending or results");
     const auto generation=state_.loading.generation;
     const auto seed=state_.seed;
     auto r=Reset(seed);if(!r.ok) return r;
@@ -75,6 +78,7 @@ Result Campaign::BeginLoad(Screen destination,const std::string& interior) {
         const auto profiles=InteriorProfiles();const auto it=std::find_if(profiles.begin(),profiles.end(),[&](const InteriorProfile& p){return p.id==interior;});
         if(it==profiles.end() || !it->walkable) return Result::Error("Interior data exists, but walking is not connected for this location yet");
     }
+    state_.resumeScreen=IsPlayable(state_.screen)?state_.screen:(state_.screen==Screen::Loading?state_.resumeScreen:Screen::MainMenu);
     const auto next=state_.loading.generation+1;
     state_.loading={LoadPhase::Loading,next,destination,interior,"Preparing required assets",{},-1};Visit(Screen::Loading);
     return Result::Success("Mandatory loading started");
@@ -88,15 +92,49 @@ Result Campaign::CompleteLoad(std::uint64_t generation,bool success,const std::s
     if(generation!=state_.loading.generation || state_.loading.phase!=LoadPhase::Loading) return Result::Error("Stale load completion ignored");
     if(!success) {state_.loading.phase=LoadPhase::Failed;state_.loading.error=error.empty()?"Required asset or scene failed to load":error.substr(0,512);return Result::Error(state_.loading.error);}
     state_.loading.phase=LoadPhase::Ready;state_.loading.progressBps=10000;state_.loading.error.clear();
-    state_.interior=state_.loading.interior;Visit(state_.loading.destination);
-    
+    if(state_.loading.destination==Screen::CityMap) state_.interior.clear();
+    else state_.interior=state_.loading.interior;
+    if(state_.loading.destination==Screen::Gameplay && state_.walk.xCm==0 && state_.walk.yCm==0 && state_.walk.zCm==0) state_.walk={0,0,90,0};
+    Visit(state_.loading.destination);
     return Result::Success("Required loading and scene construction completed");
 }
+Result Campaign::CancelLoad() {
+    if(state_.loading.phase!=LoadPhase::Loading && state_.loading.phase!=LoadPhase::Failed) return Result::Error("No load to cancel");
+    if(state_.loading.destination==Screen::MainMenu && state_.loading.phase==LoadPhase::Loading) return Result::Error("Boot load cannot be cancelled");
+    if(state_.loading.phase==LoadPhase::Failed) {
+        state_.loading={LoadPhase::Ready,state_.loading.generation,Screen::MainMenu,{},{},{},10000};
+        Visit(Screen::MainMenu);return Result::Success("Failed load dismissed; returned to main menu");
+    }
+    if(!IsPlayable(state_.resumeScreen)) return Result::Error("No safe screen to restore; cancel refused");
+    state_.loading.phase=LoadPhase::Ready;state_.loading.error.clear();
+    Visit(state_.resumeScreen);return Result::Success("Optional load cancelled; previous playable screen restored");
+}
+Result Campaign::RetryLoad() {
+    if(state_.loading.phase!=LoadPhase::Failed) return Result::Error("Retry requires a failed load");
+    const auto dest=state_.loading.destination;const auto interior=state_.loading.interior;
+    state_.loading.phase=LoadPhase::Idle;return BeginLoad(dest,interior);
+}
 Result Campaign::ShowScreen(Screen screen) {
+    if(screen==Screen::Settings && (state_.screen==Screen::MainMenu || state_.screen==Screen::Settings)) {Visit(screen);return Result::Success();}
+    if(screen==Screen::MainMenu && (state_.screen==Screen::Settings || state_.screen==Screen::Results || state_.screen==Screen::Ending || state_.screen==Screen::NewGame)) {Visit(screen);return Result::Success();}
     if(screen==Screen::MainMenu && state_.screen!=Screen::Loading) {Visit(screen);return Result::Success();}
-    if(!CanPlay() || (screen!=Screen::Training && screen!=Screen::Gameplay)) return Result::Error("Screen transition requires active gameplay");
+    if(!CanPlay() || (screen!=Screen::Training && screen!=Screen::Gameplay && screen!=Screen::CityMap)) return Result::Error("Screen transition requires active gameplay");
+    if(screen==Screen::Gameplay && state_.interior.empty()) return Result::Error("Enter a walkable interior first");
     Visit(screen);return Result::Success();
 }
+Result Campaign::LoadFromMenu(const std::string& encoded) {
+    if(state_.screen!=Screen::MainMenu && state_.screen!=Screen::Results) return Result::Error("Load Game is only available from the main menu or results");
+    return Load(encoded);
+}
+Result Campaign::RequestQuit() {
+    if(!IsMenuScreen(state_.screen) && state_.screen!=Screen::Loading) return Result::Error("Quit is available from menu screens");
+    state_.quitRequested=true;Record("quit","Host should exit; company state is unchanged");return Result::Success("Quit requested");
+}
+Result Campaign::SetTextScale(int textScaleBps) {
+    if(textScaleBps<5000 || textScaleBps>20000) return Result::Error("Text scale must be 50%-200%");
+    settings_.textScaleBps=textScaleBps;return Result::Success();
+}
+Result Campaign::SetReducedMotion(bool enabled) {settings_.reducedMotion=enabled;return Result::Success();}
 Result Campaign::Spend(Money amount,bool capital) {
     if(amount<0 || amount>MoneyLimit || core_.View().cash<amount) return Result::Error("Insufficient funds");
     auto s=core_.View();if((capital?s.capex:s.expenses)>MoneyLimit-amount) return Result::Error("Accounting limit");
@@ -148,7 +186,7 @@ Result Campaign::StartReview(std::int64_t batchId,ReviewMethod method) {
             const auto type=batch->type==DataType::Mixed?(step%2?DataType::Image:DataType::Text):batch->type;
             std::vector<DatasetItem> candidates;for(const auto& item:rules_.items) if(item.type==type && !used.count(item.id)) candidates.push_back(item);
             const auto index=Simulation::Roll(state_.reviewRng)%candidates.size();auto item=candidates[index];used.insert(item.id);
-            if(Simulation::Roll(state_.reviewRng)<500000) {std::swap(item.left,item.right);std::swap(item.leftAsset,item.rightAsset);item.betterSide=1-item.betterSide;}
+            if(item.betterSide<2 && Simulation::Roll(state_.reviewRng)<500000) {std::swap(item.left,item.right);std::swap(item.leftAsset,item.rightAsset);item.betterSide=1-item.betterSide;}
             review.items.push_back(std::move(item));
         }
     }
@@ -169,7 +207,7 @@ void Campaign::FinishReview(ReviewSession& r,int score) {
     Record("review-result",std::to_string(b->id)+" "+DatasetStatusName(b->status)+" quality="+std::to_string(score));
 }
 Result Campaign::ChooseReview(std::int64_t id,int side) {
-    if(!CanPlay() || side<0 || side>1) return Result::Error("Invalid review choice");
+    if(!CanPlay() || side<0 || side>2) return Result::Error("Invalid review choice");
     ReviewSession* r=nullptr;for(auto& v:state_.reviews) if(v.id==id) r=&v;
     if(!r || r->method!=ReviewMethod::Manual || r->phase!=ReviewPhase::Active || r->decisions.size()>=r->items.size()) return Result::Error("Manual review session is not active");
     const auto& item=r->items[r->decisions.size()];const bool correct=side==item.betterSide;
@@ -255,4 +293,58 @@ Result Campaign::ChooseEnding(EndingKind choice) {
     Record(choice==EndingKind::Acquisition?"accept-acquisition":"open-model","Explicit player decision");return EvaluateEnding();
 }
 Result Campaign::DeclineSale() {if(!CanPlay()) return Result::Error("Company inactive");state_.saleDeclined=true;Record("decline-acquisition","Remain independent");return EvaluateEnding();}
+Result Campaign::AcknowledgeEnding() {
+    if(state_.screen!=Screen::Ending || state_.ending.kind==EndingKind::None || state_.ending.offerOnly) return Result::Error("No committed ending to acknowledge");
+    Visit(Screen::Results);return Result::Success("Results recorded; start a new company to avoid leaking this session");
+}
+Result Campaign::SkipReview(std::int64_t id) {
+    ReviewSession* r=nullptr;for(auto& v:state_.reviews) if(v.id==id) r=&v;
+    if(!r || r->phase!=ReviewPhase::Active || r->method!=ReviewMethod::Manual || r->decisions.size()>=r->items.size()) return Result::Error("No active manual sample to skip");
+    const int wrong=r->items[r->decisions.size()].betterSide==0?1:0;
+    return ChooseReview(id,wrong);
+}
+Result Campaign::CancelReview(std::int64_t id) {
+    if(!CanPlay()) return Result::Error("Company inactive");
+    auto it=std::find_if(state_.reviews.begin(),state_.reviews.end(),[&](const ReviewSession& r){return r.id==id;});
+    if(it==state_.reviews.end() || it->phase==ReviewPhase::Complete) return Result::Error("Review session is not cancellable");
+    if(it->method!=ReviewMethod::Manual) return Result::Error("Human and AI reviews cannot be cancelled after payment; wait for completion");
+    auto* batch=MutableBatch(it->batchId);if(!batch) return Result::Error("Missing batch for cancelled review");
+    batch->status=DatasetStatus::Unreviewed;batch->method=ReviewMethod::None;batch->reviewId=0;batch->reviewTime=0;
+    state_.reviews.erase(it);Record("cancel-manual-review",std::to_string(id));
+    return Result::Success("Manual review cancelled; the batch returned to Unreviewed and no fee was charged");
+}
+Result Campaign::EnterWalk(const std::string& interior) {return BeginLoad(Screen::Gameplay,interior.empty()?"garage":interior);}
+Result Campaign::ReturnToCity() {
+    if(!CanPlay() || state_.interior.empty()) return Result::Error("Already on the city map");
+    return BeginLoad(Screen::CityMap);
+}
+Result Campaign::SetWalkPosition(int xCm,int yCm,int zCm,int facingDeg) {
+    if(!CanPlay() || state_.screen!=Screen::Gameplay || state_.interior.empty()) return Result::Error("Walk position is only valid inside a walkable interior");
+    if(xCm<-800 || xCm>800 || yCm<-800 || yCm>800 || zCm<0 || zCm>250 || facingDeg<-180 || facingDeg>180) return Result::Error("Walk position outside the Garage volume");
+    state_.walk={xCm,yCm,zCm,facingDeg};return Result::Success();
+}
+std::optional<InteriorPoint> Campaign::NearbyPoint(int rangeCm) const {
+    if(state_.interior.empty() || rangeCm<1) return std::nullopt;
+    const auto profiles=InteriorProfiles();
+    const auto it=std::find_if(profiles.begin(),profiles.end(),[&](const InteriorProfile& p){return p.id==state_.interior;});
+    if(it==profiles.end()) return std::nullopt;
+    std::optional<InteriorPoint> best;std::int64_t bestD=-1;
+    for(const auto& p:it->points) {
+        const int dx=state_.walk.xCm-p.xCm,dy=state_.walk.yCm-p.yCm,dz=state_.walk.zCm-90;
+        if(!WithinInteractionRange(dx,dy,dz,rangeCm)) continue;
+        const auto d=static_cast<std::int64_t>(dx)*dx+static_cast<std::int64_t>(dy)*dy+static_cast<std::int64_t>(dz)*dz;
+        if(!best || d<bestD) {best=p;bestD=d;}
+    }
+    return best;
+}
+Result Campaign::InteractNearby(int rangeCm) {
+    if(!CanPlay() || state_.screen!=Screen::Gameplay) return Result::Error("Interaction requires Garage walk mode");
+    const auto point=NearbyPoint(rangeCm);if(!point) return Result::Error("Nothing in interaction range");
+    if(point->action=="city") return ReturnToCity();
+    if(point->action=="talk") return TalkToGarageNpc();
+    if(point->action=="review") {Visit(Screen::Training);return Result::Success("Review desk");}
+    if(point->action=="warehouse") return Result::Success("Warehouse terminal");
+    if(point->action=="location") return Result::Success("Location terminal");
+    return Result::Error("Unknown interaction");
+}
 } // namespace mai

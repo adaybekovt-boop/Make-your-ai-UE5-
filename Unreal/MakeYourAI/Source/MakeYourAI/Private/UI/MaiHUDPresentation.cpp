@@ -1,8 +1,11 @@
 #include "UI/MaiHUDWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
+#include "Components/Border.h"
 #include "Gameplay/MaiCompanySubsystem.h"
 #include "Gameplay/MaiProcurementSubsystem.h"
+#include "Persistence/MaiSaveSubsystem.h"
+#include "Core/MaiStrings.h"
 #include "Engine/GameInstance.h"
 #include "Misc/LexFromString.h"
 
@@ -48,4 +51,61 @@ void UMaiHUDWidget::Refresh() {
     FString Notices = ActionMessage.IsEmpty() ? Company->LastMessage.ToString() : ActionMessage.ToString();
     const auto Count = S.notices.size(); for (std::size_t N = Count > 3 ? Count - 3 : 0; N < Count; ++N) Notices += TEXT("\n\n") + Text(S.notices[N]);
     NotificationText->SetText(FText::FromString(Notices));
+    if (InventoryCampaignText && Company->Campaign()) {
+        FString Datasets;
+        for (const auto& B : Company->Campaign()->View().inventory.batches) {
+            Datasets += FString::Printf(TEXT("#%lld %s / %s / %s\n"), static_cast<long long>(B.id), *Text(B.offerId), *Text(mai::DatasetStatusName(B.status)), *Money(B.cost));
+        }
+        InventoryCampaignText->SetText(FText::FromString(Datasets.IsEmpty() ? TEXT("No dataset batches") : Datasets));
+    }
+    RefreshFlow();
+}
+void UMaiHUDWidget::RefreshFlow() {
+    if (!FlowRoot || !OperationsRoot || !Company || !Company->Campaign()) return;
+    const auto& Play = *Company->Campaign();
+    const auto Screen = Play.View().screen;
+    const bool bOps = Screen == mai::Screen::CityMap || Screen == mai::Screen::Gameplay || Screen == mai::Screen::Training;
+    OperationsRoot->SetVisibility(bOps ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+    FlowRoot->SetVisibility(bOps && Screen != mai::Screen::Training ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+    if (bOps && Screen != mai::Screen::Training && Screen != mai::Screen::Gameplay) return;
+    FString Title = UTF8_TO_TCHAR(mai::ScreenName(Screen).c_str());
+    FString Body;
+    if (Screen == mai::Screen::Loading) {
+        const auto& L = Play.View().loading;
+        Body = FString::Printf(TEXT("%s\n%s\n%s"), UTF8_TO_TCHAR(mai::Loc("load.status")), *Text(L.operation), L.progressBps < 0 ? TEXT("Progress: indeterminate") : *FString::Printf(TEXT("Progress: %.0f%%"), L.progressBps / 100.0));
+        if (L.phase == mai::LoadPhase::Failed) Body += TEXT("\n") + Text(L.error);
+    } else if (Screen == mai::Screen::MainMenu) {
+        auto* Saves = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiSaveSubsystem>() : nullptr;
+        Body = FString::Printf(TEXT("%s\n%s"), UTF8_TO_TCHAR(mai::Loc("app.subtitle")), Saves && SlotInput && Saves->HasSave(SlotInput->GetText().ToString()) ? TEXT("A save exists in the typed slot.") : UTF8_TO_TCHAR(mai::Loc("menu.no-save")));
+    } else if (Screen == mai::Screen::NewGame || Screen == mai::Screen::Difficulty) {
+        Body = FString::Printf(TEXT("%s\n%s\n%s"), UTF8_TO_TCHAR(mai::Loc("difficulty.easy.blurb")), UTF8_TO_TCHAR(mai::Loc("difficulty.normal.blurb")), UTF8_TO_TCHAR(mai::Loc("difficulty.hard.blurb")));
+    } else if (Screen == mai::Screen::Prologue) {
+        const char* Key = Play.View().prologueStep == 0 ? "prologue.name-prompt" : Play.View().prologueStep == 1 ? "prologue.budget-prompt" : "prologue.task-prompt";
+        Body = UTF8_TO_TCHAR(mai::Loc(Key));
+    } else if (Screen == mai::Screen::Training || Screen == mai::Screen::Gameplay) {
+        const mai::ReviewSession* Active = nullptr;
+        for (const auto& R : Play.View().reviews) if (R.phase == mai::ReviewPhase::Active && R.method == mai::ReviewMethod::Manual) Active = &R;
+        if (Active && Active->decisions.size() < Active->items.size()) {
+            const auto& Item = Active->items[Active->decisions.size()];
+            Title = UTF8_TO_TCHAR(mai::Loc("screen.training"));
+            if (ReviewPrompt) ReviewPrompt->SetText(FText::FromString(UTF8_TO_TCHAR(Item.prompt.c_str())));
+            if (ReviewLeft) ReviewLeft->SetText(FText::FromString(UTF8_TO_TCHAR(Item.left.c_str())));
+            if (ReviewRight) ReviewRight->SetText(FText::FromString(UTF8_TO_TCHAR(Item.right.c_str())));
+            Body = FString::Printf(TEXT("Manual review %d / %d"), static_cast<int>(Active->decisions.size() + 1), static_cast<int>(Active->items.size()));
+        } else {
+            const auto Near = Play.NearbyPoint(150);
+            Body = Near ? FString::Printf(TEXT("%s\n%s"), UTF8_TO_TCHAR(mai::Loc("walk.hint")), *Text(Near->action)) : UTF8_TO_TCHAR(mai::Loc("walk.hint"));
+        }
+    } else if (Screen == mai::Screen::Ending || Screen == mai::Screen::Results) {
+        const auto& E = Play.View().ending;
+        Body = FString::Printf(TEXT("%s\n%s\n%s\n%s"), *Text(E.title), *Text(E.line),
+            E.kind == mai::EndingKind::Acquisition ? UTF8_TO_TCHAR(mai::Loc("ending.elon-max.letter")) : TEXT(""),
+            UTF8_TO_TCHAR(mai::Loc("character.elon-max.notice")));
+        if (E.offerOnly) Body += TEXT("\n") + FString(UTF8_TO_TCHAR(mai::Loc("ending.offer")));
+    } else if (Screen == mai::Screen::Settings) {
+        Body = FString::Printf(TEXT("%s: %d%%\n%s: %s"), UTF8_TO_TCHAR(mai::Loc("settings.text-scale")), Play.Settings().textScaleBps / 100,
+            UTF8_TO_TCHAR(mai::Loc("settings.reduced-motion")), Play.Settings().reducedMotion ? TEXT("on") : TEXT("off"));
+    }
+    if (FlowTitle) FlowTitle->SetText(FText::FromString(Title));
+    if (FlowBody) FlowBody->SetText(FText::FromString(Body));
 }

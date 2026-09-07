@@ -68,7 +68,7 @@ void UMaiFlowWidget::Build(){
             Text(Content,FString::Printf(TEXT("%s / capital %s / factory risk %.1f%% / hiring %.0f%% / legal pressure %.0f%% / grace %lld h"),*S(D.id),*M(mai::Dollars(12000)*D.capitalBps/10000),.08*D.defectBps/100.,D.hiringBps/100.,D.legalBps/100.,static_cast<long long>(D.insolvencyGrace/mai::Hour)),16);
             Button(Content,S(D.id),TEXT("difficulty:")+S(D.id));
         }
-        Text(Content,TEXT("Standard retains the existing equipment prices and delivery rules. New difficulty/review/endgame tuning is provisional."),12);
+        Text(Content,TEXT("Normal retains the existing equipment prices and delivery rules. New difficulty/review/endgame tuning is provisional."),12);
     }else if(V.screen==mai::Screen::Prologue){
         Text(Content,TEXT("Your first company"),24);
         if(V.prologueStep==0){CompanyName=WidgetTree->ConstructWidget<UEditableTextBox>();CompanyName->SetText(FText::FromString(TEXT("Neuron Labs")));Content->AddChild(CompanyName);Button(Content,TEXT("Register the company name"),TEXT("prologue-name"));}

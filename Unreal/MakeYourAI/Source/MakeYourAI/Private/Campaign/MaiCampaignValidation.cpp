@@ -9,14 +9,16 @@ bool Campaign::Validate(std::string& error) const {
     const auto& s=state_;const auto now=core_.View().now;
     auto enumIn=[](auto v,int max){return static_cast<int>(v)>=0 && static_cast<int>(v)<=max;};
     auto quality=[](const DatasetQuality& q){return q.scoreBps>=0 && q.scoreBps<=10000 && q.noiseBps>=0 && q.noiseBps<=10000 && q.legalBps>=0 && q.legalBps<=10000 && q.acceptedBps>=0 && q.acceptedBps<=10000;};
-    if(!enumIn(s.screen,8) || !enumIn(s.firstScreen,8) || !enumIn(s.lastScreen,8) || s.lastScreen!=s.screen || !enumIn(s.loading.phase,3) || !enumIn(s.loading.destination,8)) return bad("Invalid screen or loading state");
+    if(!enumIn(s.screen,10) || !enumIn(s.firstScreen,10) || !enumIn(s.lastScreen,10) || !enumIn(s.resumeScreen,10) || s.lastScreen!=s.screen || !enumIn(s.loading.phase,3) || !enumIn(s.loading.destination,10)) return bad("Invalid screen or loading state");
     if(s.loading.progressBps < -1 || s.loading.progressBps>10000 || s.loading.operation.size()>512 || s.loading.error.size()>512 || s.loading.interior.size()>128 || s.loading.generation>1000000000) return bad("Invalid loading record");
     if((s.loading.phase==LoadPhase::Loading || s.loading.phase==LoadPhase::Failed) && s.screen!=Screen::Loading) return bad("Pending loading must own the screen");
     if(s.screen==Screen::Loading && s.loading.phase!=LoadPhase::Loading && s.loading.phase!=LoadPhase::Failed) return bad("Loading screen has no pending operation");
     if(s.prologueStep<0 || s.prologueStep>3 || s.companyName.size()>80 || s.difficulty.size()>32 || s.interior.size()>128 || !s.seed || !s.reviewRng || !s.legalRng) return bad("Invalid campaign identity");
     if(!s.difficulty.empty() && !Difficulty()) return bad("Unknown saved difficulty");
     if(s.difficulty.empty() && (s.prologueStep!=0 || s.inventory.sequence!=0 || s.modelMicroIQ!=0)) return bad("Gameplay data before difficulty selection");
-    if((s.screen==Screen::CityMap || s.screen==Screen::Gameplay || s.screen==Screen::Training || s.screen==Screen::Ending) && (!Difficulty() || s.prologueStep!=3)) return bad("Gameplay before prologue completion");
+    if((s.screen==Screen::CityMap || s.screen==Screen::Gameplay || s.screen==Screen::Training || s.screen==Screen::Ending || s.screen==Screen::Results) && (!Difficulty() || s.prologueStep!=3)) return bad("Gameplay before prologue completion");
+    if(s.walk.xCm<-800 || s.walk.xCm>800 || s.walk.yCm<-800 || s.walk.yCm>800 || s.walk.zCm<0 || s.walk.zCm>250 || s.walk.facingDeg<-180 || s.walk.facingDeg>180) return bad("Invalid walk pose");
+    if(s.screen==Screen::Gameplay && s.interior.empty()) return bad("Gameplay walk screen requires an owned interior");
     if(!s.interior.empty() && core_.LocationStatus(s.interior)!=Status::Owned) return bad("Saved interior is not owned");
     if(s.screen==Screen::Ending && (!core_.View().ended || s.ending.kind==EndingKind::None || s.ending.offerOnly)) return bad("Ending screen without a committed ending");
     if(core_.View().ended && s.ending.kind==EndingKind::None) return bad("Ended company without ending information");
@@ -46,8 +48,9 @@ bool Campaign::Validate(std::string& error) const {
             std::set<std::string> itemIds;
             for(std::size_t i=0;i<r.items.size();++i) {
                 const auto& item=r.items[i];bool known=false;for(const auto& def:rules_.items) if(def.id==item.id && def.type==item.type) known=true;
-                if(!known || !itemIds.insert(item.id).second || item.betterSide<0 || item.betterSide>1 || item.left.size()>2048 || item.right.size()>2048 || item.prompt.size()>512 || (b->type!=DataType::Mixed && item.type!=b->type)) return bad("Invalid manual card");
-                if(i<r.decisions.size()) {const auto& d=r.decisions[i];if(d.itemId!=item.id || d.side<0 || d.side>1 || d.correct!=(d.side==item.betterSide) || d.at<r.startedAt || d.at>now || (i>0 && d.at<r.decisions[i-1].at)) return bad("Invalid manual review decision");}
+                if(!known || !itemIds.insert(item.id).second || item.betterSide<0 || item.betterSide>2 || item.left.size()>2048 || item.right.size()>2048 || item.prompt.size()>512 || (b->type!=DataType::Mixed && item.type!=b->type)) return bad("Invalid manual card");
+                if(item.betterSide<0 || item.betterSide>2) return bad("Invalid manual card better-side");
+                if(i<r.decisions.size()) {const auto& d=r.decisions[i];if(d.itemId!=item.id || d.side<0 || d.side>2 || d.correct!=(d.side==item.betterSide) || d.at<r.startedAt || d.at>now || (i>0 && d.at<r.decisions[i-1].at)) return bad("Invalid manual review decision");}
             }
         } else if(!r.items.empty() || !r.decisions.empty()) return bad("Automated review contains manual decisions");
         if(r.method==ReviewMethod::AI && (!s.ai.created || (r.phase==ReviewPhase::Active && ++activeAI>1))) return bad("Invalid AI review queue");

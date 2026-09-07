@@ -5,7 +5,7 @@
 // Portable production domain, used directly by UE. New review/difficulty/ending
 // tuning is deliberately separate from the unchanged browser-derived catalog.
 namespace mai {
-enum class Screen : int { Loading, MainMenu, NewGame, Difficulty, Prologue, CityMap, Gameplay, Training, Ending };
+enum class Screen : int { Loading, MainMenu, NewGame, Difficulty, Prologue, CityMap, Gameplay, Training, Ending, Results, Settings };
 enum class LoadPhase : int { Idle, Loading, Ready, Failed };
 enum class DataType : int { Text, Image, Mixed };
 enum class DatasetStatus : int { Purchased, Unreviewed, Reviewing, Verified, Rejected, Training, Trained };
@@ -13,9 +13,12 @@ enum class ReviewMethod : int { None, Manual, Human, AI };
 enum class ReviewPhase : int { Queued, Active, Complete };
 enum class JobPhase : int { Running, Paused, Complete };
 enum class EndingKind : int { None, Acquisition, Independent, OpenModel, Bankruptcy, Regulator };
+enum class ReviewChoice : int { Left = 0, Right = 1, BothBad = 2 };
 
+struct SessionSettings { int textScaleBps = 10000; bool reducedMotion = false; };
+struct WalkState { int xCm = 0, yCm = 0, zCm = 90, facingDeg = 0; };
 struct DifficultyProfile {
-    std::string id = "Standard";
+    std::string id = "Normal";
     int capitalBps = 10000, procurementBps = 10000, defectBps = 10000, failureBps = 10000;
     int legalBps = 10000, hiringBps = 10000, competitorBps = 10000, trainingBps = 10000;
     Tick insolvencyGrace = 48 * Hour;
@@ -139,7 +142,7 @@ public:
     static EndingResult Evaluate(const EndingMetrics& metrics, const std::vector<EndingProfile>& profiles);
 };
 struct CampaignState {
-    Screen screen = Screen::Loading, firstScreen = Screen::Loading, lastScreen = Screen::Loading;
+    Screen screen = Screen::Loading, firstScreen = Screen::Loading, lastScreen = Screen::Loading, resumeScreen = Screen::MainMenu;
     LoadingState loading;
     std::string difficulty, companyName, interior;
     int prologueStep = 0;
@@ -154,8 +157,9 @@ struct CampaignState {
     Money debt = 0;
     int legalExposureBps = 0, dependencyBps = 0, employeeCareBps = 10000;
     int ignoredWarnings = 0, warnings = 0, reward = 0;
-    bool overwork = false, saleAccepted = false, saleDeclined = false, openChosen = false;
+    bool overwork = false, saleAccepted = false, saleDeclined = false, openChosen = false, quitRequested = false;
     Tick insolventSince = -1, fixedCarry = 0, lastLegalDay = 0;
+    WalkState walk;
     EndingResult ending;
 };
 struct InteriorPoint { std::string id, action; int xCm = 0, yCm = 0; };
@@ -187,10 +191,18 @@ public:
     Result BeginLoad(Screen destination, const std::string& interior = {});
     Result ReportLoading(std::uint64_t generation, int progressBps, const std::string& operation);
     Result CompleteLoad(std::uint64_t generation, bool success, const std::string& error = {});
+    Result CancelLoad();
+    Result RetryLoad();
     Result ShowScreen(Screen screen);
+    Result LoadFromMenu(const std::string& encoded);
+    Result RequestQuit();
+    Result SetTextScale(int textScaleBps);
+    Result SetReducedMotion(bool enabled);
     Result BuyDataset(const std::string& offer);
     Result StartReview(std::int64_t batch, ReviewMethod method);
     Result ChooseReview(std::int64_t session, int side);
+    Result SkipReview(std::int64_t session);
+    Result CancelReview(std::int64_t session);
     Result HireSpecialist();
     Result CreateAIReviewer();
     Result ImproveAIReviewer();
@@ -201,15 +213,23 @@ public:
     Result ChooseEnding(EndingKind choice);
     Result DeclineSale();
     Result EvaluateEnding();
+    Result AcknowledgeEnding();
     Result Remediate();
     Result IgnoreWarning();
     Result Borrow(Money amount);
     Result Repay(Money amount);
     Result TalkToGarageNpc();
+    Result EnterWalk(const std::string& interior);
+    Result ReturnToCity();
+    Result SetWalkPosition(int xCm, int yCm, int zCm, int facingDeg);
+    Result InteractNearby(int rangeCm = 150);
+    std::optional<InteriorPoint> NearbyPoint(int rangeCm = 150) const;
     EndingMetrics Metrics() const;
     std::int64_t AvailableTrainingCompute() const;
     const DatasetBatch* Batch(std::int64_t id) const;
     const ReviewSession* Review(std::int64_t id) const;
+    const SessionSettings& Settings() const { return settings_; }
+    bool WantsQuit() const { return state_.quitRequested; }
     std::string Save() const;
     Result Load(const std::string& encoded);
     bool Validate(std::string& error) const;
@@ -218,6 +238,7 @@ private:
     CampaignRules rules_;
     Simulation core_;
     CampaignState state_;
+    SessionSettings settings_;
     static Catalog ApplyDifficulty(Catalog base, const DifficultyProfile& profile);
     void Visit(Screen screen);
     void Record(const std::string& action, const std::string& detail);

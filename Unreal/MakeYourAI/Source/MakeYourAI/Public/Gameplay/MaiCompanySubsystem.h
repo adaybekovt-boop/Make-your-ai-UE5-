@@ -4,6 +4,7 @@
 #include "Gameplay/MaiViewTypes.h"
 #include "Gameplay/MaiCatalogAsset.h"
 #include "Campaign/MaiCampaignAsset.h"
+#include "Campaign/MaiCampaign.h"
 #include "MaiCompanySubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMaiCompanyChanged);
@@ -25,9 +26,13 @@ public:
     UFUNCTION(BlueprintPure, Category="MakeYourAI") UMaiCatalogAsset* GetCatalog() const { return Catalog; }
     const mai::Simulation* Domain() const { return Game ? &Game->Core() : nullptr; }
     const mai::Campaign* CampaignDomain() const { return Game.Get(); }
+    mai::Campaign* Campaign() { return Game.Get(); }
+    const mai::Campaign* Campaign() const { return Game.Get(); }
     UMaiCampaignAsset* CampaignDefinitions() const { return CampaignAsset; }
     FMaiActionResult CampaignTransact(TFunctionRef<mai::Result(mai::Campaign&)> Action);
+    FMaiActionResult RunCampaign(TFunctionRef<mai::Result(mai::Campaign&)> Action) { return CampaignTransact(Action); }
     FMaiActionResult Transact(TFunctionRef<mai::Result(mai::Simulation&)> Action);
+    FMaiActionResult CompleteHostLoad(const FString& Operation, bool bSuccess = true, const FString& Error = {});
     FMaiActionResult Advance(int64 RealMicroseconds);
     FMaiActionResult LoadPayload(const TArray<uint8>& Bytes);
     TArray<uint8> SavePayload() const;
@@ -38,4 +43,5 @@ private:
     UPROPERTY(Transient) TObjectPtr<UMaiCampaignAsset> CampaignAsset;
     TUniquePtr<mai::Campaign> Game;
     uint64 CompanyGeneration = 0;
+    void Notify(const mai::Result& Result);
 };

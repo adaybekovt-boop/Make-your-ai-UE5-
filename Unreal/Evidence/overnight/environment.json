@@ -1,0 +1,14 @@
+{
+  "recorded_at_utc": "2026-09-07T18:11:23Z",
+  "start_commit": "35d5a0bd5256bbd788026d711ee779c9902aad16",
+  "expected_prompt_start": "4d66cab0317aa416b76228dfef44db7573a1d348",
+  "main": "cda0b460257e656c57b31c8ccebfb79097023d4a",
+  "branch": "agent/ue5-core-vertical-slice",
+  "ue_root": null,
+  "unreal_editor": null,
+  "engine_association": "",
+  "blender": null,
+  "gpu": null,
+  "gxx": "present",
+  "python3": "present"
+}

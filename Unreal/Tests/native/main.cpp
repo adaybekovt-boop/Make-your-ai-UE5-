@@ -1,13 +1,11 @@
 #include "Core/MaiDomain.h"
+#include "test_harness.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace mai;
 namespace {
-int assertions=0,failures=0,cases=0;
-#define CHECK(x) do {++assertions;if(!(x)){++failures;std::cerr<<__FILE__<<":"<<__LINE__<<" CHECK failed: " #x "\n";}} while(false)
-#define OK(x) do {const auto result=(x);++assertions;if(!result.ok){++failures;std::cerr<<__LINE__<<" " #x ": "<<result.message<<"\n";}} while(false)
 void Fund(Simulation& sim,Money amount=Dollars(1000000)) {auto s=sim.View();s.cash=amount;OK(sim.Restore(s));}
 void Install(Simulation& sim,const std::string& id="garage",int rack=0,int chip=0) {
     OK(sim.BuyLocation(id));OK(sim.OrderKit(id,rack,chip,Channel::Official,1,0));OK(sim.AdvanceReal(12*Hour));OK(sim.MountChassis(id,0,rack));OK(sim.MountChip(id,0,chip));
@@ -64,6 +62,7 @@ int main(int argc,char** argv) {
     test("Greenhaven uses shared regions, tariffs and court risk",[]{Simulation s(Experimental());Fund(s);CHECK(s.LocationStatus("greenhaven-site")==Status::Locked);OK(s.UnlockRegion("greenhaven"));CHECK(s.LocationStatus("greenhaven-site")==Status::Available);OK(s.SwitchRegion("greenhaven"));Install(s,"greenhaven-site");CHECK(s.Economy().electricity==28800000);auto st=s.View();st.dirtyHistory=true;OK(s.Restore(st));CHECK(s.CourtRiskPpm()==50000);OK(s.UnlockRegion("overseas"));OK(s.BuyLocation("overseas-west"));CHECK(s.CourtRiskPpm()==75000);Simulation b(Experimental());OK(b.Load(s.Save()));CHECK(b.View().activeRegion=="greenhaven");});
     test("NPC entry, phone, reaction, cooldown and re-entry",[]{NpcState n;CHECK(!UpdateProximity(n,false,0,10,40));CHECK(UpdateProximity(n,true,0,10,40));CHECK(n.mode==NpcMode::PhoneCall);CHECK(!UpdateProximity(n,true,10,10,40));CHECK(n.mode==NpcMode::React);CHECK(!UpdateProximity(n,true,20,10,40));CHECK(n.mode==NpcMode::Idle);CHECK(!UpdateProximity(n,false,30,10,40));CHECK(!UpdateProximity(n,true,31,10,40));CHECK(!UpdateProximity(n,false,41,10,40));CHECK(UpdateProximity(n,true,42,10,40));CHECK(n.eventCount==2);});
     test("NPC and deterministic seeds survive save",[]{Simulation a;CHECK(a.Proximity(true,10,40));Simulation b;OK(b.Load(a.Save()));CHECK(a.Save()==b.Save());CHECK(!b.Proximity(true,10,40));CHECK(b.View().npc.eventCount==1);});
+    RunCampaignTests();
     std::cout<<"NATIVE_DOMAIN_RESULT cases="<<cases<<" assertions="<<assertions<<" failures="<<failures<<"\n";
     return failures==0?0:1;
 }
