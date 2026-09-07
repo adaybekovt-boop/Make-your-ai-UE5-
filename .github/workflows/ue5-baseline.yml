@@ -1,0 +1,66 @@
+name: UE5 migration - original browser baseline
+
+on:
+  push:
+    branches: [agent/ue5-core-vertical-slice]
+    paths: [.github/workflows/ue5-baseline.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  original-browser-baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      BASELINE_SHA: cda0b460257e656c57b31c8ccebfb79097023d4a
+    steps:
+      - name: Use Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Checkout immutable pre-migration source (no Unreal binaries)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init baseline
+          cd baseline
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=1 --filter=blob:none origin "$BASELINE_SHA"
+          git sparse-checkout init --no-cone
+          printf '/*\n!/Unreal/\n' | git sparse-checkout set --no-cone --stdin
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$BASELINE_SHA"
+          git status --short
+          git log -1 --format=fuller
+          git ls-tree -r -l HEAD -- Unreal/Assets/interiors/garage/garage.fbx Unreal/Assets/interiors/garage/garage-enclosure.fbx Unreal/Assets/characters/person-1/person-1.fbx Unreal/CityV4/city-v4.fbx
+      - name: Run all original browser checks and record exit codes
+        working-directory: baseline
+        shell: bash
+        run: |
+          set +e
+          node --version
+          npm --version
+          uname -a
+          npm ci
+          install_code=$?
+          npm test
+          test_code=$?
+          npm run typecheck
+          typecheck_code=$?
+          npm run build
+          build_code=$?
+          printf '\nBASELINE_SHA=%s\nnpm_ci_exit=%s\nnpm_test_exit=%s\nnpm_typecheck_exit=%s\nnpm_build_exit=%s\n' "$BASELINE_SHA" "$install_code" "$test_code" "$typecheck_code" "$build_code"
+          {
+            echo "## Original browser baseline: $BASELINE_SHA"
+            echo "| Command | Exit code |"
+            echo "| --- | ---: |"
+            echo "| npm ci | $install_code |"
+            echo "| npm test | $test_code |"
+            echo "| npm run typecheck | $typecheck_code |"
+            echo "| npm run build | $build_code |"
+            echo ""
+            echo "Unreal binaries excluded from checkout. Tree metadata is NOT an import or collision test. No UE5 build, automation, scene or render is verified by this workflow."
+          } >> "$GITHUB_STEP_SUMMARY"
+          git status --short
+          test "$install_code" -eq 0 && test "$test_code" -eq 0 && test "$typecheck_code" -eq 0 && test "$build_code" -eq 0
