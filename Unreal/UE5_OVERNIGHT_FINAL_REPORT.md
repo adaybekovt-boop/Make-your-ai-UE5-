@@ -11,7 +11,8 @@
 | Prompt expected start | `4d66cab0317aa416b76228dfef44db7573a1d348` |
 | Actual start of this session | `35d5a0bd5256bbd788026d711ee779c9902aad16` (`feat(ue5): add deterministic campaign, review methods, training and five endings`) |
 | `main` (unchanged) | `cda0b460257e656c57b31c8ccebfb79097023d4a` |
-| Final commit of this session | see `git log -1 --format=%H` on this branch after the report commit |
+| Implementation commit (tested tree) | `a3a7f3bb87a52e48f187c36b0b17afec76ba2886` |
+| Report pin commit | this follow-up on the same branch |
 
 The extra campaign commit already on the branch was **kept**. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
 

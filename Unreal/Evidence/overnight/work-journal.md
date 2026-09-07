@@ -30,3 +30,4 @@ Native tests after campaign + flow work: 46 cases, 1354 assertions, 0 failures (
 UE5 remained unavailable. A user-supplied photograph of a living person was not imported; Elon Max stays a fictional caricature plus a geometric development placeholder PNG.
 
 Final report: `Unreal/UE5_OVERNIGHT_FINAL_REPORT.md`.
+Final commit: `a3a7f3bb87a52e48f187c36b0b17afec76ba2886`.
