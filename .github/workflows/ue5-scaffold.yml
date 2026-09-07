@@ -43,6 +43,12 @@ jobs:
           Unreal/Tests/.out/mai-tests | tee Unreal/Tests/.out/native.log
           Unreal/Tests/.out/mai-tests --fixtures > Unreal/Tests/.out/fixtures.json
           python3 -m json.tool Unreal/Tests/.out/fixtures.json >/dev/null
+      - name: Compile campaign and verify a real native process restart (not Unreal)
+        working-directory: checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash Unreal/Tests/run_campaign.sh | tee Unreal/Tests/.out/campaign-run.log
       - name: Unchanged browser tests, types and production build
         working-directory: checkout
         shell: bash
@@ -62,3 +68,13 @@ jobs:
           if test -f Unreal/Tests/test_scaffold.py; then python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v; fi
           printf 'SOURCE_SCAFFOLD. Native C++ domain tested; UE compilation, Unreal Automation, Editor, visual and gameplay verification: NOT VERIFIED.\n' >> "$GITHUB_STEP_SUMMARY"
           git status --short
+      - name: Retain native test evidence, not a UE build
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ue5-native-campaign-evidence
+          path: |
+            checkout/Unreal/Tests/.out/*.log
+            checkout/Unreal/Tests/.out/fixtures.json
+          if-no-files-found: warn
+          retention-days: 7
