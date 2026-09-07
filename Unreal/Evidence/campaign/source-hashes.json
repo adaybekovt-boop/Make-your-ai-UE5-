@@ -40,7 +40,7 @@
     "Unreal/MakeYourAI/Source/MakeYourAI/Public/World/MaiWalkCharacter.h": "2381a9d14d9c15221909ff05dc69c1e57f24c540",
     "Unreal/Tests/native/campaign_main.cpp": "2a5273640e1078a3bc1f70d48db6d2fb4b49a5f3",
     "Unreal/Tests/run_campaign.sh": "a02bedf6309e75a38aa29a16a0420a054d5668ac",
-    "Unreal/Tests/test_campaign.py": "bf0881c1d7bfedc69e5d4ba9f0a2816cd3305443",
+    "Unreal/Tests/test_campaign.py": "7f290e5cacf5abf84f55e721bdc583ee9758ad59",
     "Unreal/Tools/build_campaign.py": "d3f1ff76048407c7c86d1294f82133c04cf74a7b",
     "Unreal/Tools/scaffold_runner.py": "23ec014456d5950c8468edafd0110bfae7181370"
   }

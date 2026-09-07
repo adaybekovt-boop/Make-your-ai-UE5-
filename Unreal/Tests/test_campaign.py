@@ -1,9 +1,9 @@
 """Source/runner checks only; successful tests here do NOT verify UE compilation or physics."""
 import ast
-import hashlib
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -20,8 +20,15 @@ class CampaignSourceTests(unittest.TestCase):
         manifest = json.loads((ROOT / 'Unreal/Evidence/campaign/source-hashes.json').read_text())
         self.assertGreaterEqual(len(manifest['git_blob_sha1']), 35)
         for name, expected in manifest['git_blob_sha1'].items():
-            content = (ROOT / name).read_bytes()
-            actual = hashlib.sha1(b'blob ' + str(len(content)).encode() + b'\0' + content).hexdigest()
+            # Ask Git for the clean-filtered blob hash so Windows CRLF checkouts
+            # are compared with the same canonical bytes that CI hashes on Linux.
+            actual = subprocess.run(
+                ['git', 'hash-object', '--', name],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
             self.assertEqual(actual, expected, name)
 
     def test_editor_bootstrap_is_syntax_valid_and_uses_real_editor_saves(self):

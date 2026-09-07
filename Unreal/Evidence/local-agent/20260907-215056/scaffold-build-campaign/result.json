@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "action": "build-campaign",
+  "status": "blocked",
+  "process_exit_code": null,
+  "visual_verified": false,
+  "gameplay_verified": false,
+  "null_rhi": false,
+  "reference_gate": "UE5 reference gate: NOT VERIFIED",
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\tamer\\Desktop\\make-your-ai-UE5",
+    "log": "C:\\Users\\tamer\\Desktop\\make-your-ai-UE5\\Unreal\\Evidence\\local-agent\\20260907-215056\\scaffold-build-campaign\\git.log",
+    "process_exit_code": 0,
+    "status": "executed",
+    "wrapper_exit_code": 0
+  },
+  "blocker": "UE_ROOT is not set; Editor and Automation were not started",
+  "wrapper_exit_code": 2
+}

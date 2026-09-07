@@ -1,0 +1,78 @@
+{
+  "utc": "2026-09-07T19:01:51.266795+00:00",
+  "action": "audit",
+  "host": "Windows-11-10.0.26200-SP0",
+  "reference_gate": "UE5 reference gate: NOT VERIFIED",
+  "process_exit_code": null,
+  "status": "blocked",
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\tamer\\Desktop\\make-your-ai-UE5",
+    "log": "C:\\Users\\tamer\\Desktop\\make-your-ai-UE5\\Unreal\\Evidence\\local-agent\\20260907-215056\\ue5-audit\\git.log",
+    "process_exit_code": 0,
+    "status": "executed",
+    "wrapper_exit_code": 0
+  },
+  "assets": {
+    "Unreal/Assets/interiors/garage/garage.fbx": {
+      "exists": true,
+      "bytes": 3979452,
+      "sha256": "f2eed40a924cf1cd0f268c82b6ab337dc187cbcfe4151ff124c014d5f841bc51",
+      "git_blob_sha1": "3f291e6dd3755de290bc06d0aaa05ac0da51000a",
+      "expected_git_blob_sha1": "3f291e6dd3755de290bc06d0aaa05ac0da51000a",
+      "matches_source": true,
+      "lfs_pointer": false,
+      "fbx_header_only": true,
+      "import_verified": false,
+      "skeletal_verified": false
+    },
+    "Unreal/Assets/interiors/garage/garage-enclosure.fbx": {
+      "exists": true,
+      "bytes": 2151916,
+      "sha256": "a6335f4ad9bc98597770243b005f8c1c729d214772e93476be0721a65c773413",
+      "git_blob_sha1": "41fa99fd34791ae204b4cb414209d38db321f3dc",
+      "expected_git_blob_sha1": "41fa99fd34791ae204b4cb414209d38db321f3dc",
+      "matches_source": true,
+      "lfs_pointer": false,
+      "fbx_header_only": true,
+      "import_verified": false,
+      "skeletal_verified": false
+    },
+    "Unreal/CityV4/city-v4.fbx": {
+      "exists": true,
+      "bytes": 57088860,
+      "sha256": "ebea2633562cf35ed1719e13e0001ec6305431054edb08a749889f5137ce5dea",
+      "git_blob_sha1": "67105e990ad02eae231c9ab97d2630f8e6731c8c",
+      "expected_git_blob_sha1": "67105e990ad02eae231c9ab97d2630f8e6731c8c",
+      "matches_source": true,
+      "lfs_pointer": false,
+      "fbx_header_only": true,
+      "import_verified": false,
+      "skeletal_verified": false
+    },
+    "Unreal/Assets/characters/person-1/person-1.fbx": {
+      "exists": true,
+      "bytes": 5302972,
+      "sha256": "b78ec7125bb09b5da088d2b98d8e39e5a4fa4bde2d232196aba5ccd88244f40c",
+      "git_blob_sha1": "3e333924ecf6e59b9032d05c498834d3a2b8cfdf",
+      "expected_git_blob_sha1": "3e333924ecf6e59b9032d05c498834d3a2b8cfdf",
+      "matches_source": true,
+      "lfs_pointer": false,
+      "fbx_header_only": true,
+      "import_verified": false,
+      "skeletal_verified": false
+    }
+  },
+  "display_environment": {
+    "DISPLAY": null,
+    "WAYLAND_DISPLAY": null
+  },
+  "gpu_device_nodes": [],
+  "gpu_render_verified": false,
+  "blocker": "UE_ROOT / --engine-root is not set; no installed UE5 version can be selected.",
+  "wrapper_exit_code": 2
+}
