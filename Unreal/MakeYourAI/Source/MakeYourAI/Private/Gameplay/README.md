@@ -1,3 +1,3 @@
-# Gameplay boundary — not implemented
+# Gameplay
 
-After the reference gate: location ownership, orders, inventory, mounting and upgrades belong in C++ domain operations, not a Level Blueprint. Match src/systems/procurement.ts and its tests. Available/Locked presentation must not invent a sequential unlock rule: the current base-location purchase function checks ownership, funds and board restrictions.
+Company, procurement, region and catalog-asset implementations wrap the tested portable domain. UI commands call these actual operations. UHT/UBT/Editor integration remains NOT VERIFIED; full browser systems are not all migrated.

@@ -1,14 +1,12 @@
-# Make Your AI — C++ project preparation
+# Make Your AI — запуск SOURCE_SCAFFOLD
 
-**UE5 reference gate: NOT VERIFIED. This is not a playable vertical slice.**
+UE-компиляция, Editor, графика и прохождение NOT VERIFIED. Проверенные native/браузерные результаты — в [UE5_PROGRESS.md](../UE5_PROGRESS.md). Ниже инструкции для машины с настоящим UE5, а не журнал успешно выполненных здесь UE-команд.
 
-The repository now has a C++ project descriptor, Game/Editor targets and one runtime module. No fake gameplay classes, .umap or .uasset placeholders are supplied. Core, Gameplay, Economy, Persistence and UI responsibilities are separated under Source; only the required primary module is implemented. No extra plugin is needed yet.
+## Движок и первая сборка
 
-## Engine selection and build
+Используйте Windows или Linux с установленным UE5 и совместимым C++ toolchain. Задайте `UE_ROOT` каталогом, содержащим Engine. Версия не выбрана наугад: EngineAssociation пуст до фиксации реальной установки. Build-wrapper пока не поддерживает macOS.
 
-No UE5 installation was available in the editing environment, so EngineAssociation is intentionally empty. Do not insert an assumed release. Python 3.10+ is used only for preparation tooling; it is not a runtime game dependency.
-
-On a machine with a real UE5 installation, set UE_ROOT to its root directory (the directory containing Engine), then run from the repository root:
+Из корня репозитория в `agent/ue5-core-vertical-slice`:
 
 ```sh
 python Unreal/Tools/ue5.py audit
@@ -17,34 +15,60 @@ python Unreal/Tools/ue5.py generate
 python Unreal/Tools/ue5.py build
 ```
 
-`--engine-root` can be supplied explicitly to every command instead of UE_ROOT. `pin-engine` reads the actual Engine/Build/Build.version, checks Editor/Editor-Cmd/UBT/build-script file presence, stores the exact metadata plus its SHA-256 in UE5Engine.lock.json, and sets the portable major.minor EngineAssociation. Review and commit the resulting pin and descriptor together. It does not store an installation path or machine-specific engine GUID. A changed pin is rejected rather than silently overwritten. Source-built engines should still be opened through their explicit Editor path, not an assumed launcher association.
+Pin создаётся по настоящему Engine/Build/Build.version без абсолютного пути установки. Проверьте и закоммитьте этот pin. Для каждой команды проверяйте exit code и свежий отчёт в Saved/Verification. Генерация project files не равна компиляции.
 
-The target files use BuildSettingsVersion.Latest **from the pinned installation**. Until an actual pin and successful build exist this is a preparation target, not a reproducibly compiled release. The lock records build metadata, not cryptographic integrity of an entire custom engine/toolchain.
+После успешной сборки откройте MakeYourAI.uproject тем же Editor и запустите Play. По умолчанию используется существующая `/Engine/Maps/Entry`; native GameMode создаёт graybox. Он не является CityV4. Временный UMG рассчитан на desktop; используйте окно от 1280 px, затем отдельно проверьте масштабирование интерфейса.
 
-Generation invokes UBT's ProjectFiles mode through the installed build wrapper. Build requests MakeYourAIEditor, Development, on Linux or Win64. Linux and Windows command construction has unit coverage; neither platform has a real UE integration build in this run. macOS commands are intentionally rejected until configured and tested.
+## Garage
 
-Each command writes a new Saved/Verification/<run-id>/result.json and command logs. An explicit --output must name a new directory. Exit 2 means a blocked preparation step; 127 means the command could not start; 124 means a wrapper timeout. process_exit_code is null when the underlying process was not executed. A successful wrapper, pin, header check or test of Python code never grants the reference gate. Inspect the actual UBT log before recording compile verified.
+Выберите garage, купите локацию, выберите клетку, откройте Procurement & installation. Укажите шасси, чип, канал, количество. Order complete kit списывает цену целиком. Warehouse & orders показывает ETA. Pause останавливает компанию. После доставки выполните Install chassis, затем Install / upgrade chip. Save / load сохраняет текущий слот; после закрытия приложения загрузите тот же слот.
 
-## Editor launch after a successful build
+Управление камерой: WASD, колесо мыши, выбор маркера/клетки левой кнопкой. Количество клеток не отменяет питание: Garage имеет девять клеток, но 3 кВт хватает не на девять Terra T1. До доставки монтаж невозможен; отказ по мощности не расходует склад или RNG.
 
-Run the selected installation's Engine/Binaries/Linux/UnrealEditor (Linux) or Engine/Binaries/Win64/UnrealEditor.exe (Windows), passing the path to Unreal/MakeYourAI/MakeYourAI.uproject and -log. Paths are resolved on that machine, not hard-coded in this project. Confirm the module loads and retain the real Editor log. No default project map is configured because a real map has not been authored yet.
+## Реальная сцена CityV4
 
-Only then create L_Reference_GarageCity and follow [the gate report](../UE5_GATE_REPORT.md): real FBX import, collision traces, a real skeletal LOD chain, Nanite, Lumen, World Partition and instancing. Do not advance to gameplay until the evidence is reviewed.
-
-## Checks available without UE
+Сначала извлеките границы исходных объектов через Blender, не изменяя исходник:
 
 ```sh
-python -m unittest discover -s Unreal/Tools/tests -v
+blender --background --python Unreal/Tools/extract_city_markers.py -- --repo-root .
 ```
 
-These are **preparation-tool tests, not Unreal Automation tests**. The preparation workflow also reads the four original FBX files and compares binary headers and Git blob hashes. This proves source availability/integrity only, not importability, rig behavior, collisions or rendering.
+Производный JSON находится в MakeYourAI/Saved/ScaffoldSource/city-markers.json. Используется реальная мировая геометрия, а не baked object origins.
 
-Generated folders are ignored. Never commit Binaries, Intermediate, Saved, DerivedDataCache or .vs. Curated evidence belongs outside those folders under Unreal/Evidence, with its source commit and test scope recorded.
+После свежей Development Editor сборки:
 
-## Primary references consulted
+```sh
+python Unreal/Tools/scaffold_runner.py build-scene
+python Unreal/Tools/scaffold_runner.py inspect-scene
+```
 
-- [Epic: modules](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-modules)
-- [Epic: project generation / UBT ProjectFiles](https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-generate-unreal-engine-project-files-for-your-ide)
-- [Epic: target rules](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-build-tool-target-reference)
+Editor создаст `/Game/Scaffold/Imported`, `/Game/Scaffold/Data/DA_ScaffoldCatalog`, материал и `/Game/Scaffold/Maps/L_Scaffold_City`. Существующая карта не перезаписывается. Повторный импорт разрешён только как использование уже записанного ассета с совпадающим исходным SHA256; чужие/изменённые ассеты не заменяются молча. Исходные FBX/Blend/GLB не изменяются.
 
-These documents guided the prepared structure; they do not constitute evidence that this project compiled.
+Откройте реально созданную карту и запустите Play. DefaultMap не направлен на отсутствующий файл заранее. После проверки выберите карту стартовой вручную. Один combined CityV4 сохраняет композицию, но не обеспечивает пространственную разбивку для streaming; требуется отдельная подготовка чанков/World Partition.
+
+Editor Python API пока не выполнялся в этой среде. Совместимость свойств с вашей UE-версией, единицы, ориентация, UCX, освещение и расстановка требуют проверки. Отсутствие свежего успешного Editor-отчёта считается ошибкой wrapper даже при exit code 0 самого процесса.
+
+## Производные skeletal LOD
+
+```sh
+blender --background --python Unreal/Tools/prepare_skeletal_lods.py -- --repo-root .
+```
+
+Скрипт читает исходный person-1.fbx и пишет производные FBX только в Saved/ScaffoldSource/person-1-lods. Цели 7500/2000/500, реальные числа появляются в lod-report.json после исполнения. Существующий каталог результата защищён от перезаписи. Проверяйте веса/силуэт и подключайте уровни через Skeletal LOD import в UE. Это не готовая импортированная цепочка и не изменение статичного города.
+
+## Настройка расширений
+
+Auction, АЭС и Greenhaven имеют работающую доменную реализацию, но новые цены/тарифы не утверждены. В реальном DA_ScaffoldCatalog настройте BALANCE_TUNABLE поля и явно включите configured-флаги. Тестовые значения не являются балансом игры. Изменение каталога меняет его отпечаток: старый save потребует миграции или новой компании. Сохранения IndexedDB не импортируются.
+
+## Unreal Automation
+
+Сначала пересоберите текущий commit: старые DLL могут исполнять старый код.
+
+```sh
+python Unreal/Tools/ue5.py build
+python Unreal/Tools/scaffold_runner.py automation --null-rhi
+```
+
+Проверка принимает только свежий index.json, содержащий все восемь MakeYourAI suites с состоянием Success. Нулевое число тестов не считается успехом. NullRHI не подтверждает графику; для визуального и игрового гейта нужен отдельный запуск настоящего RHI и ручной сценарий.
+
+Native, TypeScript и Python команды находятся в `.github/workflows/ue5-scaffold.yml`. Они уже выполнялись, но не заменяют UHT/UBT/UMG-проверку. Cook/package, обнаружение ассетов в packaged game, collision traces, анимация, streaming и FPS остаются открытыми.

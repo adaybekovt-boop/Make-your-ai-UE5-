@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "scope": "Local editing container observation; not the GitHub Actions build environment",
+  "platform": "Linux-6.18.35-ajay-6.18.35-nocgroupwb-memcg-lru+-x86_64-with-glibc2.36",
+  "editing_directory_is_git_clone": false,
+  "ue_root_set": false,
+  "display_set": true,
+  "wayland_display_set": false,
+  "dev_dri_exists": false,
+  "commands": {
+    "g++": {"path": "/usr/bin/g++", "exit_code": 0, "version": "g++ (Debian 12.2.0-14) 12.2.0"},
+    "clang++": {"path": "/usr/bin/clang++", "exit_code": 0, "version": "Debian clang version 14.0.6"},
+    "node": {"path": "/usr/bin/node", "exit_code": 0, "version": "v22.16.0"},
+    "npm": {"path": "/usr/bin/npm", "exit_code": 0, "version": "10.9.2"},
+    "UnrealEditor": {"path": null, "executed": false},
+    "UnrealEditor-Cmd": {"path": null, "executed": false},
+    "UnrealBuildTool": {"path": null, "executed": false},
+    "blender": {"path": null, "executed": false},
+    "nvidia-smi": {"path": null, "executed": false}
+  },
+  "installed_engine_candidates": [],
+  "gpu_editor_session_verified": false,
+  "ue_compilation": "NOT VERIFIED",
+  "editor_verification": "NOT VERIFIED",
+  "visual_verification": "NOT VERIFIED",
+  "note": "DISPLAY alone does not establish usable GPU or an Unreal Editor session. Compiler presence is not an Unreal toolchain certification."
+}

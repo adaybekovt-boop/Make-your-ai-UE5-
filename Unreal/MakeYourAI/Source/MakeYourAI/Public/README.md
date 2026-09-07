@@ -1,3 +1,3 @@
 # Public interfaces
 
-No gameplay interface is implemented before the reference gate. Keep future public headers under matching Core, Gameplay, Economy, Persistence and UI folders, with implementation in Private. Add only the dependencies actually used by these interfaces.
+Core, Gameplay, Economy, Persistence, World, Interaction, UI and NPC contain actual public C++ interfaces and reflected UE types. The portable domain is shared with native tests; UE adapters and reflected classes still require UHT/UBT verification.

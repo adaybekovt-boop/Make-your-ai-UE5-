@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "SOURCE_SCAFFOLD",
+  "repository": "adaybekovt-boop/Make-your-ai-UE5-",
+  "branch": "agent/ue5-core-vertical-slice",
+  "start_commit": "312f21068c6459c878651e0b1d48538c325628b9",
+  "tested_implementation_commit": "fb2ad5f2d3577050c8518d875ae9cca4c0ff7718",
+  "subsequent_workflow_only_commit": "a34dab4b91c5981e216e1e4bd9cc84f8d6973441",
+  "main_verified_before_report": "cda0b460257e656c57b31c8ccebfb79097023d4a",
+  "report_commit_scope": "Documentation and evidence only; runtime, tests and tools unchanged from tested implementation.",
+  "ci": {
+    "run_id": 34145341913,
+    "job_id": 101816056166,
+    "url": "https://github.com/adaybekovt-boop/Make-your-ai-UE5-/actions/runs/34145341913/job/101816056166",
+    "environment": {"os": "Ubuntu 24.04.4", "gcc": "13.3.0", "node": "22.23.2", "npm": "10.9.8"},
+    "exit_code_basis": "Successful commands in the completed job under set -euo pipefail, verified by full job logs.",
+    "checks": [
+      {"category": "native_cpp_compile", "exit_code": 0, "standard": "C++17", "sanitizers": ["address", "undefined"], "scope": "Actual portable domain, no Unreal adapters or engine stubs"},
+      {"command": "Unreal/Tests/.out/mai-tests", "exit_code": 0, "cases": 28, "assertions": 848, "failures": 0},
+      {"command": "Unreal/Tests/.out/mai-tests --fixtures", "exit_code": 0, "json_parse_exit_code": 0},
+      {"command": "npm ci", "exit_code": 0},
+      {"command": "npm test", "exit_code": 0, "passed": 388, "files_passed": 29},
+      {"command": "npm run typecheck", "exit_code": 0},
+      {"command": "npm run build", "exit_code": 0, "warning": "Existing 615.55 kB DRACOLoader chunk warning retained"},
+      {"command": "python3 -m unittest discover -s Unreal/Tools/tests -v", "exit_code": 0, "passed": 16, "category": "preparation_tools"},
+      {"command": "npx vitest run --config Unreal/Tests/vitest.config.ts", "exit_code": 0, "passed": 347, "category": "actual_native_vs_typescript_parity", "coverage": "336 quotes, 9 existing site definitions, fixture coverage check and actual Garage accounting flow"},
+      {"command": "python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v", "exit_code": 0, "passed": 16, "category": "15 source/tool checks plus one compiled native UBSan bounds test"}
+    ],
+    "negative_engine_test": {"context": "unit test of blocked wrapper path", "wrapper_exit_code": 2, "process_exit_code": null, "editor_launched": false, "reason": "UE_ROOT is not set"},
+    "untracked_test_output_not_committed": "artifacts/portfolio/"
+  },
+  "ue_verification": {
+    "COMPILE_VERIFIED": false,
+    "EDITOR_VERIFIED": false,
+    "VISUAL_VERIFIED": false,
+    "GAMEPLAY_VERIFIED": false,
+    "automation_suites_written": 8,
+    "automation_suites_executed": 0,
+    "automation_status": "NOT VERIFIED",
+    "uproject_engine_association": "",
+    "new_maps_created": 0,
+    "new_unreal_assets_imported": 0,
+    "new_unreal_screenshots": 0,
+    "skeletal_lod_triangles": [null, null, null],
+    "reference_gate": "UE5 reference gate: NOT VERIFIED"
+  },
+  "limitations": [
+    "No UE5 installation, UHT, UBT or Editor execution was available in the editing environment.",
+    "Native tests do not verify UMG, USaveGame disk integration, imported collisions or actual gameplay.",
+    "Auction, nuclear and Greenhaven production balances remain explicitly unconfigured/BALANCE_TUNABLE.",
+    "Combined city reference is not fine-grained World Partition streaming.",
+    "Training, multi-model portfolio and the complete browser simulation are not fully ported.",
+    "No real-time human 1x playtest, packaged build or GPU performance measurement was performed."
+  ]
+}

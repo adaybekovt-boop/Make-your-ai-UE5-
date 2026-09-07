@@ -1,16 +1,11 @@
-# Make your AI — Unreal migration
+# Make Your AI — Unreal migration
 
-This repository preserves the current web game and adds the Blender/FBX asset core prepared for the Unreal Engine migration.
+The browser game and its original Blender/FBX/GLB sources remain intact. Binary assets use ordinary Git; no LFS migration has been performed.
 
-## Added content
+The branch `agent/ue5-core-vertical-slice` now contains an expanded C++ project at `Unreal/MakeYourAI/MakeYourAI.uproject`, an executable portable simulation domain, UE subsystem adapters, native UMG, graybox world/interaction/NPC code, real Editor/Blender preparation tools and tests.
 
-- `Unreal/Assets/` — upgraded vehicles, characters, server racks, location interiors, procedural material maps, previews, manifests, and Blender build scripts.
-- `Unreal/CityV4/` — expanded city with the auction house, remote nuclear power station, and Greenhaven suburb. Includes Blender source, FBX export, day/night renders, close-ups, validation reports, and reproducible scripts.
+Status: **SOURCE_SCAFFOLD**. UE Development Editor compilation, UHT/UBT, Editor verification, visual verification and gameplay verification remain **NOT VERIFIED**. Native C++ compilation is separately verified and must not be represented as an Unreal build. No real .umap/.uasset or UE screenshot was produced in the editing environment.
 
-The migration starts with a C++ project, an engine version selected from an actual installation, a reference Garage/map fragment, and verified Nanite/collision/skeletal LODs before gameplay migration. A project descriptor alone is not a completed migration. See `Unreal/UE5_STATUS.md`, `Unreal/UE5_GATE_REPORT.md` and `Unreal/UE5_PROGRESS.md` for the observed status as those reports are added.
+Current reports: [progress and verified commands](Unreal/UE5_PROGRESS.md), [architecture and scope](Unreal/UE5_SCAFFOLD.md), [environment](Unreal/UE5_STATUS.md), [reference gate](Unreal/UE5_GATE_REPORT.md), [launch instructions](Unreal/MakeYourAI/README.md).
 
-## Binary storage correction — 2026-09-07
-
-Binary assets are stored in ordinary Git, not Git LFS. `.gitattributes` declares binary file types and does not configure an LFS filter. The original instruction to run `git lfs install` was incorrect for this repository. No LFS migration, pointer replacement or history rewrite is authorized by this change.
-
-Source audited: `cda0b460257e656c57b31c8ccebfb79097023d4a`. The browser source and Blender authoring files remain unchanged.
+Existing sources: `Unreal/Assets/` contains the original standalone asset library; `Unreal/CityV4/` contains the original authored city and reports. They are not replaced with a new graybox city. The Editor builder imports these sources only when executed on a machine with a real, pinned UE installation.

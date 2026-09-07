@@ -1,5 +1,5 @@
-# Content is not imported yet
+# Content
 
-No .uasset or .umap has been authored or verified in this run. Do not replace them with text placeholders.
+No fake .umap/.uasset files are stored here. `Unreal/Tools/build_scaffold.py`, executed in a compiled Unreal Editor project, creates real assets under `/Game/Scaffold` and the map `L_Scaffold_City`.
 
-After the Development Editor build and minimal Editor launch succeed, import the repository's Garage, enclosure, a selected CityV4 fragment and person-1 into a real L_Reference_GarageCity level. Preserve the authoring files. Follow [UE5_GATE_REPORT.md](../../UE5_GATE_REPORT.md) for acceptance evidence.
+Current delivery is SOURCE_SCAFFOLD; this editing run did not import assets or produce a map. Runtime can construct a clearly separate graybox from native code. See ../../UE5_GATE_REPORT.md and ../README.md.

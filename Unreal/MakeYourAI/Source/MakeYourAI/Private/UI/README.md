@@ -1,3 +1,3 @@
-# UI boundary — not implemented
+# UI
 
-Blueprint/UMG presents state and issues C++ commands after the reference gate. No UI, order flow or playable Garage is present yet. Do not duplicate pricing, purchasing, time or save rules in widgets.
+Native UMG layout, presentation and command handlers are implemented in MaiHUDLayout.cpp, MaiHUDPresentation.cpp and MaiHUDActions.cpp. Business actions call company/procurement/persistence/region/economy subsystems. Temporary desktop styling is not visually or interactively verified in Unreal.
