@@ -13,7 +13,7 @@ namespace {
 int cases=0,checks=0,failures=0;
 void check(bool value,const char* expression,int line) {++checks;if(!value) throw std::runtime_error(std::string(expression)+" at line "+std::to_string(line));}
 #define CHECK(v) check((v),#v,__LINE__)
-#define OK(v) do {auto r=(v); ++checks; if(!r.ok) throw std::runtime_error(std::string(#v)+": "+r.message);} while(false)
+#define OK(v) do {auto maiTestResult=(v); ++checks; if(!maiTestResult.ok) throw std::runtime_error(std::string(#v)+": "+maiTestResult.message);} while(false)
 void Test(const char* name,const std::function<void()>& run) {++cases;try {run();std::cout<<"PASS "<<name<<'\n';}catch(const std::exception& e){++failures;std::cerr<<"FAIL "<<name<<": "<<e.what()<<'\n';}}
 void Ready(Campaign& c,const std::string& difficulty="Normal") {
     OK(c.CompleteLoad(c.View().loading.generation,true));OK(c.BeginNewGame());OK(c.ShowDifficulty());OK(c.ChooseDifficulty(difficulty));
