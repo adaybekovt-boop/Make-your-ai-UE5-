@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <set>
+#include <limits>
 
 namespace mai {
 Catalog Catalog::Defaults() {
@@ -44,13 +45,16 @@ bool Catalog::Valid(std::string& error) const {
     if (locations.empty() || locations.size()>32 || regions.empty() || regions.size()>16) return bad("Invalid catalog size");
     if (electricityPerKwh<0 || electricityPerKwh>Dollars(1000) || defectPpm<0 || defectPpm>1000000 || failurePpm<0 || failurePpm>1000000) return bad("Invalid rates");
     std::set<std::string> ids;
+    std::int64_t maxComputeMilli=0, maxComputeBps=0;
     for (const auto& d : chips) {
         if (d.id.empty() || !ids.insert(d.id).second || !price(d.price) || !price(d.maintenance) || d.watts<=0 || d.watts>100000 || d.computeMilli<=0 || d.computeMilli>1000000) return bad("Invalid chip definition");
         for(int h:d.deliveryHours) if(h<1 || h>48) return bad("Invalid chip delivery");
+        maxComputeMilli=std::max(maxComputeMilli,static_cast<std::int64_t>(d.computeMilli));
     }
     for (const auto& d : chassis) {
         if(d.id.empty() || !ids.insert(d.id).second || !price(d.price) || d.maxChip<0 || d.maxChip>3 || d.failureBps<0 || d.failureBps>10000 || d.computeBps<1 || d.computeBps>20000) return bad("Invalid chassis definition");
         for(int h:d.deliveryHours) if(h<1 || h>48) return bad("Invalid rack delivery");
+        maxComputeBps=std::max(maxComputeBps,static_cast<std::int64_t>(d.computeBps));
     }
     for(const auto& d:regions) if(d.id.empty() || !ids.insert(d.id).second || !price(d.unlockPrice) || d.tariffBps<1 || d.tariffBps>30000 || d.courtBps<0 || d.courtBps>30000) return bad("Invalid region definition");
     if(RegionIndex("home")<0 || !regions[static_cast<std::size_t>(RegionIndex("home"))].configured) return bad("Home region missing");
@@ -58,6 +62,11 @@ bool Catalog::Valid(std::string& error) const {
         if(d.id.empty() || !ids.insert(d.id).second || RegionIndex(d.region)<0 || !price(d.price) || !price(d.rent)) return bad("Invalid location definition");
         if(d.rows<0 || d.cols<0 || d.rows>10 || d.cols>10 || d.rows*d.cols>100 || d.powerWatts<0 || d.powerWatts>1000000) return bad("Invalid location grid");
         if(d.configured && (d.rows==0 || d.cols==0 || d.powerWatts==0)) return bad("Configured location needs grid and power");
+        // Bound the cross-product in fixed-point overload throttling. Validate
+        // combinations, not merely each tunable independently. Source values are unchanged.
+        const std::int64_t maximumComputeMicro=maxComputeMilli*1500*maxComputeBps/10000*d.rows*d.cols;
+        const std::int64_t maximumSupplyMilliWatts=static_cast<std::int64_t>(d.powerWatts)*1000;
+        if(maximumSupplyMilliWatts>0 && maximumComputeMicro>std::numeric_limits<std::int64_t>::max()/maximumSupplyMilliWatts) return bad("Catalog exceeds fixed-point compute/power arithmetic budget");
     }
     const auto& x=extensions;
     if(!price(x.nuclearPrice) || x.nuclearTariffBps<1 || x.nuclearTariffBps>10000) return bad("Invalid nuclear tariff");
@@ -87,7 +96,7 @@ std::string FormatMoney(Money money) {
     return out.str();
 }
 bool UpdateProximity(NpcState& n, bool inside, Tick now, Tick duration, Tick cooldown) {
-    if(duration<=0 || cooldown<2*duration || now<0) return false;
+    if(duration<=0 || duration>TimeLimit/2 || cooldown<0 || cooldown>TimeLimit || now<0 || now>TimeLimit || cooldown<2*duration || now>TimeLimit-cooldown || n.eventCount<0 || n.eventCount>=1000000000) return false;
     if(n.mode==NpcMode::PhoneCall && now>=n.stageEnds) {n.mode=NpcMode::React; n.stageEnds+=duration;}
     if(n.mode==NpcMode::React && now>=n.stageEnds) n.mode=NpcMode::Idle;
     const bool trigger=inside && !n.wasInside && n.mode==NpcMode::Idle && now>=n.cooldownEnds;

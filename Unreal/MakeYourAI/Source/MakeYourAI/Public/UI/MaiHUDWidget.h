@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
