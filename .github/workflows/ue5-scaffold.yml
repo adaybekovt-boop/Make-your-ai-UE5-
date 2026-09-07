@@ -1,0 +1,64 @@
+name: UE5 scaffold - native domain and browser, NOT engine verification
+on:
+  push:
+    branches: [agent/ue5-core-vertical-slice]
+    paths: ['Unreal/MakeYourAI/**', 'Unreal/Tests/**', 'Unreal/Tools/**', '.github/workflows/ue5-scaffold.yml']
+permissions:
+  contents: read
+jobs:
+  native-and-browser-no-ue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Node for unchanged browser project
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Checkout exact branch commit without original Unreal binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init checkout
+          cd checkout
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --no-cone
+          printf '/*\n!/Unreal/Assets/\n!/Unreal/CityV4/\n' | git sparse-checkout set --no-cone --stdin
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git status --short
+      - name: Compile and execute actual portable C++ domain with sanitizers
+        working-directory: checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p Unreal/Tests/.out
+          g++ --version
+          g++ -std=c++17 -Wall -Wextra -Werror -Wno-misleading-indentation -pedantic -g -fsanitize=address,undefined -fno-omit-frame-pointer \
+            -I Unreal/MakeYourAI/Source/MakeYourAI/Public \
+            Unreal/MakeYourAI/Source/MakeYourAI/Private/Core/MaiCatalog.cpp \
+            Unreal/MakeYourAI/Source/MakeYourAI/Private/Core/MaiSimulation.cpp \
+            Unreal/MakeYourAI/Source/MakeYourAI/Private/Core/MaiCodec.cpp \
+            Unreal/Tests/native/main.cpp -o Unreal/Tests/.out/mai-tests
+          Unreal/Tests/.out/mai-tests | tee Unreal/Tests/.out/native.log
+          Unreal/Tests/.out/mai-tests --fixtures > Unreal/Tests/.out/fixtures.json
+          python3 -m json.tool Unreal/Tests/.out/fixtures.json >/dev/null
+      - name: Unchanged browser tests, types and production build
+        working-directory: checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm test
+          npm run typecheck
+          npm run build
+      - name: Preparation tests and optional cross-language/source checks
+        working-directory: checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s Unreal/Tools/tests -v
+          if test -f Unreal/Tests/vitest.config.ts; then npx vitest run --config Unreal/Tests/vitest.config.ts; fi
+          if test -f Unreal/Tests/test_scaffold.py; then python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v; fi
+          printf 'SOURCE_SCAFFOLD. Native C++ domain tested; UE compilation, Unreal Automation, Editor, visual and gameplay verification: NOT VERIFIED.\n' >> "$GITHUB_STEP_SUMMARY"
+          git status --short
