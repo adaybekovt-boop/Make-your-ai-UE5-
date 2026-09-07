@@ -1,0 +1,39 @@
+name: UE5 source snapshot - no engine verification
+on:
+  push:
+    branches: [agent/ue5-core-vertical-slice]
+    paths: ['.github/workflows/ue5-source-snapshot.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Export tracked source without authoring binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init source
+          cd source
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --no-cone
+          printf '/*\n!/Unreal/Assets/\n!/Unreal/CityV4/\n!/public/\n!/artifacts/\n/Unreal/Assets/*.md\n' | git sparse-checkout set --no-cone --stdin
+          git checkout --detach FETCH_HEAD
+          git rev-parse HEAD > SOURCE_COMMIT.txt
+          python3 - <<'PY'
+          import pathlib, subprocess, zipfile
+          with zipfile.ZipFile('../ue5-source.zip', 'w', zipfile.ZIP_DEFLATED) as z:
+              for name in subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0'):
+                  p = pathlib.Path(name)
+                  if name and p.is_file() and p.suffix.lower() in {'.h','.cpp','.cs','.ini','.json','.py','.md','.txt','.ts','.tsx','.yml','.uproject'}:
+                      z.write(p, name)
+              z.write('SOURCE_COMMIT.txt')
+          PY
+      - name: Retain source only, not a compiled game
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ue5-source-snapshot
+          path: ue5-source.zip
+          retention-days: 3
