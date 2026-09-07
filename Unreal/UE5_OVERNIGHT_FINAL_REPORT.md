@@ -1,178 +1,74 @@
-# Make Your AI UE5 — overnight final report
+# Make Your AI UE5 — final local-agent report
 
-**Date:** 2026-09-07  
-**Branch:** `agent/ue5-core-vertical-slice`  
-**Honesty rule:** PASS / FAIL / BLOCKED only. No fabricated Editor, Nanite, Lumen, screenshot, or playthrough.
+Date: 2026-09-07  
+Workspace: `C:\Users\tamer\Desktop\make-your-ai-UE5`  
+Branch: `agent/ue5-core-vertical-slice`  
+Initial local-agent HEAD: `bee874103994bd33c90f29ce2f79dfc2d6de5c11`  
+Windows continuation start: `eb07846759d5416a7530c3e5876d37d7d3a41177`  
+Verified implementation commit: `a3434f1`  
+Remote: `https://github.com/adaybekovt-boop/Make-your-ai-UE5-`
 
-## 1. Commits
+Only PASS, FAIL, BLOCKED, and NOT_VERIFIED are used for gates below. Portable C++ is not reported as an Unreal build.
 
-| Role | SHA |
-| --- | --- |
-| Prompt expected start | `4d66cab0317aa416b76228dfef44db7573a1d348` |
-| Actual start of this session | `35d5a0bd5256bbd788026d711ee779c9902aad16` (`feat(ue5): add deterministic campaign, review methods, training and five endings`) |
-| `main` (unchanged) | `cda0b460257e656c57b31c8ccebfb79097023d4a` |
-| Remote overlap kept under this rebase | `f8d48a5`, `ca785c2`, `c9c3e0e`, `23c44e3` |
-| Rebased implementation | `953ef46` portable campaign slice + UMG/walk |
-| Elon Max remade source | `11d3e72` |
-| Source-hash refresh | `b1fe36b` |
+## Delivered changes
 
-The extra campaign commit already on the branch was **kept**. Remote campaign/CI commits were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
+- Source-hash verification now uses canonical Git blob hashes, so Windows CRLF checkout conversion cannot create a false mismatch.
+- The native campaign test harness no longer shadows caller variables and compiles under MSVC with `/W4 /WX`.
+- No browser source, `package.json`, lockfile, Blend, FBX, or GLB was changed.
+- No work was performed on `main`; no merge, reset, force-push, or asset fabrication was used.
 
-## 2. Major changes
+## Verification
 
-| Area | Purpose |
-| --- | --- |
-| `Campaign/*` | Loading cancel/retry, Easy/Normal/Hard, Results/Settings, walk pose, both-bad/skip/cancel review, menu load, quit, save schema 3 |
-| `MaiStrings.h` | Central user-visible English copy |
-| `Tests/native/campaign_tests.cpp` | Portable campaign tests (compiled into `mai-tests`) |
-| `UMaiCompanySubsystem` | Owns `mai::Campaign`, not a bare `Simulation` |
-| Native UMG | Flow overlay: Loading / Menu / Difficulty / Prologue / Review / Ending / Results / Settings; dataset page |
-| `AMaiWalkPawn` | Temporary walkable pawn + interaction; honest proxy |
-| Editor Python | `editor_materials.py`, `editor_lighting.py`, `editor_world_partition.py`, `run_editor_visual.py` |
-| CI workflow | Compiles campaign sources with the portable domain |
-
-Browser `src/`, `package.json` / lockfile, original Blend/FBX/GLB and `main` were not modified.
-
-## 3. Game systems that actually work (portable C++)
-
-These run in the native `mai-tests` binary with ASan/UBSan. They are **not** Unreal play.
-
-- Company clock, money, Garage buy / order / deliver / mount
-- Auction, nuclear, Greenhaven, NPC proximity (unchanged domain)
-- Campaign flow: Loading → Main Menu → Difficulty → Prologue → City Map
-- Easy / Normal / Hard profiles; Normal keeps base catalog multipliers and $12,000
-- Dataset inventory Unreviewed → Manual / Human / AI `ReviewSession` → Verified/Rejected → Training
-- Manual 4-step cards, both-bad, skip, cancel, save mid-review
-- EndingEvaluator: Regulator, Bankruptcy, Elon Max offer, Independent, Open Model
-- Save/load campaign schema 3; legacy `MAI-SAVE` migrates to Normal
-- Walk pose + interaction points (domain). Runtime pawn exists in source only
-
-## 4. Loading / Difficulty / Ending / Elon Max / Garage walk / Dataset review
-
-| Feature | Source | Native test | UE5 |
-| --- | --- | --- | --- |
-| Loading Screen | PASS | PASS | BLOCKED |
-| Cancel only safe loads | PASS | PASS | BLOCKED |
-| Main Menu New/Load/Settings/Quit | PASS | PASS | BLOCKED |
-| Easy / Normal / Hard | PASS | PASS | BLOCKED |
-| Difficulty locked mid-run | PASS | PASS | BLOCKED |
-| Save/load keeps difficulty | PASS | PASS | BLOCKED |
-| Missing profile / bad rules | PASS | PASS | BLOCKED |
-| EndingEvaluator 5 endings | PASS | PASS | BLOCKED |
-| Elon Max fictional buyer + letter | PASS | PASS | BLOCKED |
-| Elon Max remade likeness (source JPEG) | PASS (source file) | path recorded | BLOCKED (no Editor import) |
-| Elon Max UE texture import | **not imported** (no fake `.uasset`) | n/a | BLOCKED |
-| Garage walk domain | PASS | PASS | BLOCKED |
-| Garage walk pawn / collisions | source only | n/a | BLOCKED |
-| Dataset Unreviewed inventory | PASS | PASS | BLOCKED |
-| Human / AI / manual review | PASS | PASS | BLOCKED |
-| Review affects training + legal | PASS | PASS | BLOCKED |
-
-Elon Max is the fictional founder of Maximal Teapots and the writer of the acquisition ending letter. The author supplied a **remade likeness** (not a documentary photograph of a living public figure). That still is stored as source art only:
-
-- `Unreal/MakeYourAI/Content/Source/Portraits/elon_max_remade.jpg`
-- evidence copy: `Unreal/Evidence/overnight/elon_max_remade_source.jpg`
-
-No `.uasset` / `UTexture2D` was fabricated. `UMaiCampaignAsset::ElonMaxPortrait` stays unset until a real Editor import to `/Game/Scaffold/Portraits/T_ElonMax_Fictional`. Geometric card `elon_max_dev_placeholder.png` remains a development fallback, not a UE render.
-
-## 5. Location placement
-
-Logical graybox / marker intent (not an imported CityV4 map):
-
-| Location | Intent |
-| --- | --- |
-| Garage, Workshop | Sparse start edge |
-| Technopark, Server Hall | Business / tech cluster |
-| Campus | Premium cluster |
-| Towers / HQ | Between cluster and residential |
-| Auction | Business/trade node, separate approach |
-| Nuclear Power Station | Distant industrial / coastal |
-| Greenhaven | Low-density outer island / suburb |
-
-World Partition cell **proposed** 12800 cm, loading range **proposed** 51200 cm. **Runtime values: not measured.** Combined CityV4 remains a single reference mesh, not streaming chunks.
-
-## 6. Tests
-
-Recorded 2026-09-07T18:22:25Z against `b1fe36b` plus this report/evidence commit. Logs: `Unreal/Evidence/overnight/*.txt`.
-
-| Command | Exit | Result |
-| --- | ---: | --- |
-| `g++ -std=c++17 -fsanitize=address,undefined ... mai-tests` | 0 | Compiled portable domain + campaign |
-| `Unreal/Tests/.out/mai-tests` | 0 | 46 cases, 1355 assertions, 0 failures |
-| `bash Unreal/Tests/run_campaign.sh` | 0 | 43 cases, 1549 assertions, 0 failures; `CROSS_PROCESS_RESTART_PASS` |
-| `python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v` | 0 | 23/23 including missing-engine BLOCKED (wrapper 2) and source-hash check |
-| `python3 -m unittest discover -s Unreal/Tools/tests -v` | 0 | 16/16 |
-| `python Unreal/Tools/ue5.py audit` | not run as success | UE_ROOT unset |
-| `python Unreal/Tools/ue5.py build` | BLOCKED | No engine |
-| Unreal Automation (10 suites in source) | BLOCKED | Editor not started |
-| `npm test` / browser | not re-run this session | `src/` and lockfile unchanged |
-
-## 7. UE5 / Editor / visual / gameplay status
-
-| Gate | Status | Evidence |
+| Check | Status | Result |
 | --- | --- | --- |
-| SOURCE_COMPLETE | **PASS** (portable + UMG/C++ source) | this report, `mai-tests` |
-| UMG_COMPLETE | **SOURCE only** | `MaiHUDLayout.cpp` / `MaiHUDActions.cpp` / `MaiHUDPresentation.cpp` |
-| UE5_COMPILE_VERIFIED | **BLOCKED** | no UHT/UBT; EngineAssociation empty |
-| EDITOR_VERIFIED | **BLOCKED** | UnrealEditor not found; UE_ROOT unset |
-| VISUAL_VERIFIED | **BLOCKED** / VISUAL_REVIEW_BLOCKED | no GPU Editor, no day/night PNG from this revision’s Editor |
-| GAMEPLAY_VERIFIED | **BLOCKED** in UE; native playthrough helpers PASS | `campaign_tests.cpp` |
-| SAVE_RELOAD_VERIFIED | **PASS** portable campaign; **BLOCKED** USaveGame disk | native load tests; Automation not run |
-| OPTIMIZATION_VERIFIED | **BLOCKED** | no `stat unit` / GPU / streaming counters |
+| Native campaign compile, MSVC C++17 `/W4 /WX` | PASS | Visual Studio Build Tools 2022 17.14.37, MSVC 14.44.35207 |
+| Native campaign suite | PASS | 43 cases, 1549 assertions, 0 failures |
+| Cross-process export/resume | PASS | byte-equivalent save after restart |
+| `py -3 -m unittest discover -s Unreal/Tests -p test_*.py -v` | PASS | 22 passed, 1 skipped GCC-sanitizer-only boundary harness |
+| `py -3 -m unittest discover -s Unreal/Tools/tests -v` | PASS | 16 passed |
+| Source/hash verification | PASS | canonical hashes match the edited sources |
+| `npm test` | PASS | 29 files, 388 tests |
+| `npm run typecheck` | PASS | exit 0 |
+| `npm run build` | PASS | exit 0; Vite reports a non-fatal large-chunk warning |
+| `Unreal/Tools/ue5.py audit` | BLOCKED | wrapper exit 2: `UE_ROOT` is unset and no engine was found |
+| Development Editor build | BLOCKED | UnrealEditor/UBT/UHT unavailable |
+| Unreal Automation | BLOCKED | 13 tests exist in source; 0 executed without Editor |
 
-## 8. UE5 version
+The initial `run_campaign.sh` attempt had exit 127 because Git Bash had no `g++`. The equivalent native executable was then compiled and executed successfully with the installed MSVC toolchain. The Python boundary test remains skipped because that specific harness requires GCC sanitizers; its campaign coverage ran in the full MSVC suite.
 
-**Not available.** `EngineAssociation` is empty. No `Engine/Build/Build.version`. Command that failed to even start: any `UnrealEditor-Cmd` invocation — executable missing, no process exit code from the engine.
+## Game-flow status
 
-## 9–13. Actors, ISM/HISM, Nanite, LOD, performance
+| Area | Source/native | Unreal runtime |
+| --- | --- | --- |
+| Loading → Main Menu → Difficulty → Prologue → City Map | PASS | BLOCKED |
+| Garage procurement, delivery, mounting, walk interactions | PASS | BLOCKED |
+| Dataset inventory; Manual/Human/AI review; Training | PASS | BLOCKED |
+| Save/restart/load and corrupted-save rejection | PASS | BLOCKED |
+| Auction, Nuclear Power Station, Greenhaven, NPC proximity | PASS | BLOCKED |
+| Five endings and clean New Game after ending | PASS | BLOCKED |
+| Elon Max fictional-character constraints | PASS | BLOCKED for real `UTexture2D` import |
 
-| Metric | Value |
-| --- | --- |
-| Objects / actors / components in a real map | **not measured** |
-| Repeated props | runtime HISM in `AMaiScaffoldWorld` (graybox cubes). Editor ISM/Foliage: **not applied** |
-| Nanite | requested by import script; **not verified** |
-| World Partition / HLOD | scripts request; **not verified** |
-| Collisions | query proxies + planned UCX; **no line traces** |
-| Skeletal LOD0 / LOD1 / LOD2 triangles | unknown / unknown / unknown |
-| Baseline / after frame time, memory, draw calls | **not measured** |
+## Unreal, assets, visuals, and performance
 
-## 14. Day / night / close-up PNG
+| Gate | Status | Fact |
+| --- | --- | --- |
+| Exact UE5 version | BLOCKED | no installation or `Build.version` found |
+| Editor opened / `.uproject` loaded | BLOCKED | no `UnrealEditor.exe` |
+| Development Editor compile | BLOCKED | no UHT/UBT |
+| Imported `.uasset` / `.umap` | NOT_VERIFIED | no Editor import performed; no fake assets created |
+| CityV4 / Garage real-map import | BLOCKED | Editor unavailable |
+| Materials / shaders / Lumen / VSM | BLOCKED | scripts exist, execution requires Editor |
+| World Partition / HLOD / Nanite | BLOCKED | scripts/config requests only, no runtime verification |
+| ISM/HISM/Foliage / collision / skeletal LOD triangles | NOT_VERIFIED | no real map/runtime metrics |
+| Day/night/Garage/business/port PNGs | BLOCKED | no Editor render; VISUAL_REVIEW_BLOCKED |
+| Baseline/after frame time, GPU, memory, streaming, draw calls | NOT_VERIFIED | no executable Unreal runtime |
+| Full real playthrough | BLOCKED | no Editor or cooked build |
 
-**None from Unreal Editor.** No dated UE render exists for this revision.
+## Remaining blockers
 
-The only PNG written this session is the **development caricature placeholder**, not a scene render:
+1. Install or provide an actual UE5 installation and set `UE_ROOT`.
+2. Run audit, pin-engine, project generation, Development Editor build, and all 13 Automation tests.
+3. Import CityV4, Garage, and the fictional portrait through the real Editor and save real assets.
+4. Perform the complete positive and negative playthrough, capture day/night evidence, and measure optimization baseline/after counters.
 
-- `Unreal/Evidence/overnight/elon_max_dev_placeholder.png`
-- `Unreal/Evidence/overnight/elon_max_remade_source.jpg` (author remade likeness; not an Editor render)
-
-Do not treat either as VISUAL_VERIFIED.
-
-## 15. Shader / material warnings
-
-No shader compile ran. Editor material script creates parameter-driven master material *requests* only when Editor is present. Status: **NOT_VERIFIED**.
-
-## 16. Blockers for the next machine with UE5
-
-1. Install UE5, set `UE_ROOT`, run `python Unreal/Tools/ue5.py audit && pin-engine && generate && build`.
-2. Development Editor; run 10 MakeYourAI Automation suites.
-3. `extract_city_markers.py` in Blender, then `scaffold_runner.py build-scene` / `materials` / `lighting` / `world-partition`.
-4. Play: New Game → difficulty → prologue → buy Garage → walk → dataset review → train → save/load → one ending.
-5. Capture dated day/night/Garage PNGs from **that** Editor.
-6. In Editor, import `Content/Source/Portraits/elon_max_remade.jpg` to `/Game/Scaffold/Portraits/T_ElonMax_Fictional` and assign `UMaiCampaignAsset::ElonMaxPortrait`. Do not invent a `.uasset` by hand.
-7. Measure `stat unit/gpu/memory/streaming` before and after streaming/HLOD work.
-
-## 17. `main` confirmation
-
-`main` remains `cda0b460257e656c57b31c8ccebfb79097023d4a`. This session only committed to `agent/ue5-core-vertical-slice`.
-
----
-
-## Verdict
-
-**What you can play right now:** nothing in Unreal. There is no Editor and no cooked game in this environment.
-
-**What is verified at source level:** the portable C++ vertical slice — boot load, difficulty, prologue, datasets, three review methods, training coupling, endings including fictional Elon Max, save/load, and the existing Garage procurement domain. Native `mai-tests`: **46 / 1355 / 0**. Remote campaign suite: **43 / 1549 / 0** plus cross-process save identity.
-
-**What still cannot be verified without a UE5 machine:** UHT/UBT, UMG on screen, walk collisions, CityV4 import, Nanite/Lumen/VSM/World Partition, day/night renders, Automation, and a real playthrough.
-
-**SOURCE_COMPLETE. UE5_COMPILE_VERIFIED / EDITOR_VERIFIED / VISUAL_VERIFIED / GAMEPLAY_VERIFIED: BLOCKED.**
+Detailed command evidence is under `Unreal/Evidence/local-agent/20260907-215056/`. The exact publication commit is the commit containing this report and is returned by `git rev-parse HEAD` after the final report commit.
