@@ -16,6 +16,6 @@ test_windows_generation_is_not_build (test_ue5.PreparationTests.test_windows_gen
 test_wrong_major_rejected (test_ue5.PreparationTests.test_wrong_major_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 16 tests in 0.029s
+Ran 16 tests in 0.028s
 
 OK

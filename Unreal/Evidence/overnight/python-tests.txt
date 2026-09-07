@@ -1,3 +1,10 @@
+test_automation_inventory_includes_engine_save_and_real_movement (test_campaign.CampaignSourceTests.test_automation_inventory_includes_engine_save_and_real_movement) ... ok
+test_editor_bootstrap_is_syntax_valid_and_uses_real_editor_saves (test_campaign.CampaignSourceTests.test_editor_bootstrap_is_syntax_valid_and_uses_real_editor_saves) ... ok
+test_loading_and_company_share_persistent_owner (test_campaign.CampaignSourceTests.test_loading_and_company_share_persistent_owner) ... ok
+test_missing_engine_build_campaign_fails_closed (test_campaign.CampaignSourceTests.test_missing_engine_build_campaign_fails_closed) ... ok
+test_published_sources_match_locally_tested_bytes (test_campaign.CampaignSourceTests.test_published_sources_match_locally_tested_bytes) ... ok
+test_umg_controls_use_domain_actions_not_visual_only_values (test_campaign.CampaignSourceTests.test_umg_controls_use_domain_actions_not_visual_only_values) ... ok
+test_walk_input_and_interaction_are_actual_engine_components (test_campaign.CampaignSourceTests.test_walk_input_and_interaction_are_actual_engine_components) ... ok
 test_extreme_tunables_and_npc_duration_are_rejected (test_domain_bounds.NativeBounds.test_extreme_tunables_and_npc_duration_are_rejected) ... ok
 test_automation_expected_list_is_nonempty_and_source_derived (test_scaffold.ScaffoldChecks.test_automation_expected_list_is_nonempty_and_source_derived) ... ok
 test_automation_failure_and_not_run_are_not_success (test_scaffold.ScaffoldChecks.test_automation_failure_and_not_run_are_not_success) ... ok
@@ -16,9 +23,33 @@ test_required_runtime_areas_contain_cpp_implementation (test_scaffold.ScaffoldCh
 test_source_marker_normalization (test_scaffold.ScaffoldChecks.test_source_marker_normalization) ... ok
 
 ----------------------------------------------------------------------
-Ran 16 tests in 0.843s
+Ran 23 tests in 0.854s
 
 OK
+{
+  "schema": 1,
+  "action": "build-campaign",
+  "status": "blocked",
+  "process_exit_code": null,
+  "visual_verified": false,
+  "gameplay_verified": false,
+  "null_rhi": false,
+  "reference_gate": "UE5 reference gate: NOT VERIFIED",
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/workspace",
+    "log": "/tmp/tmpghb7txt5/evidence/git.log",
+    "process_exit_code": 0,
+    "status": "executed",
+    "wrapper_exit_code": 0
+  },
+  "blocker": "UE_ROOT is not set; Editor and Automation were not started",
+  "wrapper_exit_code": 2
+}
 NATIVE_BOUNDS_PASS catalog_overflow_guard npc_duration_guard
 {
   "schema": 1,
@@ -36,7 +67,7 @@ NATIVE_BOUNDS_PASS catalog_overflow_guard npc_duration_guard
       "HEAD"
     ],
     "cwd": "/workspace",
-    "log": "/tmp/tmp0xewu4vu/receipt/git.log",
+    "log": "/tmp/tmp__1jqaji/receipt/git.log",
     "process_exit_code": 0,
     "status": "executed",
     "wrapper_exit_code": 0

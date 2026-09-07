@@ -11,11 +11,12 @@
 | Prompt expected start | `4d66cab0317aa416b76228dfef44db7573a1d348` |
 | Actual start of this session | `35d5a0bd5256bbd788026d711ee779c9902aad16` (`feat(ue5): add deterministic campaign, review methods, training and five endings`) |
 | `main` (unchanged) | `cda0b460257e656c57b31c8ccebfb79097023d4a` |
-| Remote overlap kept under this rebase | `f8d48a5` (43 campaign CI tests), `ca785c2` (loading / Flow UMG / Garage walk), `c9c3e0e` (Editor bootstrap / source hashes) |
-| Rebased implementation | `a71d176` portable campaign slice + UMG/walk |
-| Elon Max remade source | `04ba7d5` |
+| Remote overlap kept under this rebase | `f8d48a5`, `ca785c2`, `c9c3e0e`, `23c44e3` |
+| Rebased implementation | `953ef46` portable campaign slice + UMG/walk |
+| Elon Max remade source | `11d3e72` |
+| Source-hash refresh | `b1fe36b` |
 
-The extra campaign commit already on the branch was **kept**. Remote commits `f8d48a5` / `ca785c2` / `c9c3e0e` were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
+The extra campaign commit already on the branch was **kept**. Remote campaign/CI commits were **rebased onto**, not discarded. No `git reset --hard`, no force-push, no rewrite of Blend/FBX/GLB, no edits on `main`.
 
 ## 2. Major changes
 
@@ -92,13 +93,14 @@ World Partition cell **proposed** 12800 cm, loading range **proposed** 51200 cm.
 
 ## 6. Tests
 
-Recorded 2026-09-07T18:11:23Z against the working tree of this session. Logs: `Unreal/Evidence/overnight/*.txt`.
+Recorded 2026-09-07T18:22:25Z against `b1fe36b` plus this report/evidence commit. Logs: `Unreal/Evidence/overnight/*.txt`.
 
 | Command | Exit | Result |
 | --- | ---: | --- |
 | `g++ -std=c++17 -fsanitize=address,undefined ... mai-tests` | 0 | Compiled portable domain + campaign |
-| `Unreal/Tests/.out/mai-tests` | 0 | 46 cases, 1354 assertions, 0 failures |
-| `python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v` | 0 | 16/16 including missing-engine BLOCKED check (wrapper 2) |
+| `Unreal/Tests/.out/mai-tests` | 0 | 46 cases, 1355 assertions, 0 failures |
+| `bash Unreal/Tests/run_campaign.sh` | 0 | 43 cases, 1549 assertions, 0 failures; `CROSS_PROCESS_RESTART_PASS` |
+| `python3 -m unittest discover -s Unreal/Tests -p 'test_*.py' -v` | 0 | 23/23 including missing-engine BLOCKED (wrapper 2) and source-hash check |
 | `python3 -m unittest discover -s Unreal/Tools/tests -v` | 0 | 16/16 |
 | `python Unreal/Tools/ue5.py audit` | not run as success | UE_ROOT unset |
 | `python Unreal/Tools/ue5.py build` | BLOCKED | No engine |
@@ -169,7 +171,7 @@ No shader compile ran. Editor material script creates parameter-driven master ma
 
 **What you can play right now:** nothing in Unreal. There is no Editor and no cooked game in this environment.
 
-**What is verified at source level:** the portable C++ vertical slice — boot load, difficulty, prologue, datasets, three review methods, training coupling, endings including fictional Elon Max, save/load, and the existing Garage procurement domain. Native tests: **46 / 1354 / 0**.
+**What is verified at source level:** the portable C++ vertical slice — boot load, difficulty, prologue, datasets, three review methods, training coupling, endings including fictional Elon Max, save/load, and the existing Garage procurement domain. Native `mai-tests`: **46 / 1355 / 0**. Remote campaign suite: **43 / 1549 / 0** plus cross-process save identity.
 
 **What still cannot be verified without a UE5 machine:** UHT/UBT, UMG on screen, walk collisions, CityV4 import, Nanite/Lumen/VSM/World Partition, day/night renders, Automation, and a real playthrough.
 

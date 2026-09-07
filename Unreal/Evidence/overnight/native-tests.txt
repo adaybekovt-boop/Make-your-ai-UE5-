@@ -44,6 +44,4 @@ PASS ending evaluator is mutually exclusive and data driven
 PASS bankruptcy grace depends on difficulty and new game clears ending
 PASS settings quit and strings stay centralized
 PASS existing procurement auction nuclear greenhaven npc still reachable
-NATIVE_DOMAIN_RESULT cases=46 assertions=1354 failures=0
-2026-09-07T18:12:30Z
-HEAD_AT_TEST=35d5a0bd5256bbd788026d711ee779c9902aad16
+NATIVE_DOMAIN_RESULT cases=46 assertions=1355 failures=0

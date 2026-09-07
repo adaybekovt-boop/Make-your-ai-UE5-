@@ -1,0 +1,46 @@
+PASS loading gates menus and rejects stale / failed callbacks
+PASS new game difficulty and action-based prologue
+PASS all difficulty modifiers and Normal source parity
+PASS difficulty survives reconstruction without re-applying capital
+PASS invalid profile and skipped prologue rejected
+PASS purchased dataset enters unreviewed inventory with exact prorated price
+PASS bad / unaffordable dataset purchase is atomic
+PASS Garage official kit, pause, warehouse and actual install
+PASS manual review needs Garage and cannot train before verification
+PASS manual text branch four stages and result reward
+PASS manual image branch uses explicit cards, not nonexistent photos
+PASS mixed branch alternates text and image
+PASS manual 3-5 stage profiles are enforced
+PASS poor manual choices reject batch and cannot mint rewards again
+PASS mid-review restart retains exact sampled cards and decisions
+PASS human review is paid, queued, capacity-limited and imperfect
+PASS AI reviewer requires compute and creates systematic bias
+PASS AI review stalls without working servers
+PASS AI completion cannot double-spend server compute in the same quantum
+PASS micro repayments cannot erase competitor dependence
+PASS loading preserves a player's pause even at time zero
+PASS regulator thresholds are driven by profiles
+PASS dataset quality changes expected training gain
+PASS training job pause and global pause preserve progress
+PASS training stalls after hardware failure without losing reviewed batch
+VERTICAL_NORMAL cash=2776266667 IQmicro=582179 manualDecisions=4
+PASS complete Normal vertical through save reload and ending evaluation
+PASS fixed step invariance including reviews and persistence
+PASS schema corruption is atomic and unsupported versions are rejected
+PASS legacy native save migration preserves orders and cash
+PASS campaign v1 migrates first and last viewed screens
+PASS pending loader state survives save without becoming ready
+PASS acquisition offer requires explicit acceptance
+PASS independent global success
+PASS open model is an explicit decision with data and investor limits
+PASS bankruptcy overrides sale and disallows return to final save
+PASS regulator overrides bankruptcy and every positive ending
+PASS all five ending conditions produce one deterministic result
+PASS actual ending flow uses test-only thresholds, not production shortcuts
+PASS Elon Max remains a fictional character with an honest portrait slot
+PASS Garage interaction points and distance boundaries
+PASS hard hire cost and shared court modifier are preserved on reload
+PASS debt is not revenue and repayment cannot mint cash
+PASS new company loading does not advance operating time
+NATIVE_CAMPAIGN_RESULT cases=43 assertions=1549 failures=0
+CROSS_PROCESS_RESTART_PASS: saved campaign continues identically in a new native process
