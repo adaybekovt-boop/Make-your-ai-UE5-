@@ -20,7 +20,7 @@ jobs:
           git init source
           cd source
           git remote add origin "https://github.com/${SOURCE_REPO}.git"
-          git -c protocol.version=2 fetch --depth=2 --filter=blob:none origin "${SOURCE_SHA}:refs/remotes/origin/agent/full-integration-ue5" 'refs/heads/main:refs/remotes/origin/main'
+          git -c protocol.version=2 fetch --depth=64 --filter=blob:none origin "${SOURCE_SHA}:refs/remotes/origin/agent/full-integration-ue5" 'refs/heads/main:refs/remotes/origin/main'
           git sparse-checkout init --no-cone
           printf '/*\n!/Unreal/Assets/\n!/Unreal/CityV4/\n!/public/\n!/artifacts/\n!/Unreal/Evidence/\n!/Unreal/MakeYourAI/Content/\n/Unreal/Assets/*.md\n' | git sparse-checkout set --no-cone --stdin
           git checkout -b agent/full-integration-ue5 refs/remotes/origin/agent/full-integration-ue5
@@ -28,16 +28,16 @@ jobs:
           git rev-parse HEAD > ../SOURCE_COMMIT.txt
           git status --porcelain=v1 > ../SOURCE_STATUS.txt
           git merge-base HEAD refs/remotes/origin/main > ../SOURCE_MERGE_BASE.txt
-          git ls-tree -r -l HEAD > ../TRACKED_INVENTORY.txt
+          git ls-tree -r HEAD > ../TRACKED_INVENTORY.txt
           git ls-files '*AGENTS.md' > ../INSTRUCTION_PATHS.txt
           git diff --name-status refs/remotes/origin/main...HEAD > ../SOURCE_CHANGED_FILES.txt
           python3 - <<'PY'
           import pathlib, zipfile
-          root = pathlib.Path('.')
-          with zipfile.ZipFile('../ue5-source-checkout.zip', 'w', zipfile.ZIP_DEFLATED) as z:
+          root = pathlib.Path.cwd()
+          with zipfile.ZipFile(root.parent / 'ue5-source-checkout.zip', 'w', zipfile.ZIP_DEFLATED) as z:
               for p in sorted(root.rglob('*')):
                   if p.is_file() and not p.is_symlink():
-                      z.write(p, 'source/' + p.as_posix())
+                      z.write(p, 'source/' + p.relative_to(root).as_posix())
               for name in ('SOURCE_COMMIT.txt', 'SOURCE_STATUS.txt', 'SOURCE_MERGE_BASE.txt', 'TRACKED_INVENTORY.txt', 'INSTRUCTION_PATHS.txt', 'SOURCE_CHANGED_FILES.txt'):
                   z.write(root.parent / name, name)
           PY
