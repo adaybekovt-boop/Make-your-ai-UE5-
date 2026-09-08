@@ -1,50 +1,120 @@
-name: UE5 full integration source audit - not engine verification
+name: UE5 full integration - source tests, NOT engine verification
 on:
   push:
     branches: [agent/full-integration-ue5]
-    paths: ['.github/workflows/ue5-full-integration.yml']
+    paths: ['Unreal/MakeYourAI/Source/**', 'Unreal/Rules/**', 'Unreal/Tests/**', 'Unreal/Tools/**', '.github/workflows/ue5-full-integration.yml']
 permissions:
   contents: read
 jobs:
   source-audit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
-      - name: Export exact branch source and checkout evidence
+      - name: Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Exact sparse checkout - no authored binaries modified
         shell: bash
-        env:
-          SOURCE_SHA: ${{ github.sha }}
-          SOURCE_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           git init source
           cd source
-          git remote add origin "https://github.com/${SOURCE_REPO}.git"
-          git -c protocol.version=2 fetch --depth=64 --filter=blob:none origin "${SOURCE_SHA}:refs/remotes/origin/agent/full-integration-ue5" 'refs/heads/main:refs/remotes/origin/main'
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --depth=64 --filter=blob:none origin "${GITHUB_SHA}:refs/remotes/origin/agent/full-integration-ue5" 'refs/heads/main:refs/remotes/origin/main'
           git sparse-checkout init --no-cone
-          printf '/*\n!/Unreal/Assets/\n!/Unreal/CityV4/\n!/public/\n!/artifacts/\n!/Unreal/Evidence/\n!/Unreal/MakeYourAI/Content/\n/Unreal/Assets/*.md\n' | git sparse-checkout set --no-cone --stdin
+          printf '/*\n!/Unreal/Assets/\n!/Unreal/CityV4/\n!/public/\n!/artifacts/\n!/Unreal/Evidence/\n!/Unreal/MakeYourAI/Content/\n/Unreal/Assets/*.md\n/Unreal/Evidence/campaign/source-hashes.json\n/Unreal/Evidence/full-integration/\n' | git sparse-checkout set --no-cone --stdin
           git checkout -b agent/full-integration-ue5 refs/remotes/origin/agent/full-integration-ue5
-          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
-          git rev-parse HEAD > ../SOURCE_COMMIT.txt
-          git status --porcelain=v1 > ../SOURCE_STATUS.txt
-          git merge-base HEAD refs/remotes/origin/main > ../SOURCE_MERGE_BASE.txt
-          git ls-tree -r HEAD > ../TRACKED_INVENTORY.txt
-          git ls-files '*AGENTS.md' > ../INSTRUCTION_PATHS.txt
-          git diff --name-status refs/remotes/origin/main...HEAD > ../SOURCE_CHANGED_FILES.txt
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p ../test-evidence
+          git rev-parse HEAD > ../test-evidence/SOURCE_COMMIT.txt
+          git status --porcelain=v1 > ../test-evidence/SOURCE_STATUS.txt
+          git merge-base HEAD refs/remotes/origin/main > ../test-evidence/SOURCE_MERGE_BASE.txt
+          git ls-tree -r HEAD > ../test-evidence/TRACKED_INVENTORY.txt
+          git ls-files '*AGENTS.md' > ../test-evidence/INSTRUCTION_PATHS.txt
+          git diff --name-status refs/remotes/origin/main...HEAD > ../test-evidence/SOURCE_CHANGED_FILES.txt
+      - name: Locked test dependencies
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts 2>&1 | tee ../test-evidence/npm-ci.log
+          pin=$(python3 -c 'import json; print(json.load(open("Unreal/Dependencies/quickjs.lock.json"))["commit"])')
+          git init Unreal/ThirdParty/QuickJS/source
+          git -C Unreal/ThirdParty/QuickJS/source remote add origin https://github.com/quickjs-ng/quickjs.git
+          git -C Unreal/ThirdParty/QuickJS/source fetch --depth=1 origin "$pin"
+          git -C Unreal/ThirdParty/QuickJS/source checkout --detach FETCH_HEAD
+          test "$(git -C Unreal/ThirdParty/QuickJS/source rev-parse HEAD)" = "$pin"
+          cmake -S Unreal/ThirdParty/QuickJS/source -B Unreal/ThirdParty/QuickJS/build/Linux -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON 2>&1 | tee ../test-evidence/quickjs-configure.log
+          cmake --build Unreal/ThirdParty/QuickJS/build/Linux --target qjs -j2 2>&1 | tee ../test-evidence/quickjs-build.log
+      - name: Independent test suites with honest status collection
+        working-directory: source
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, subprocess, time
+          root = pathlib.Path.cwd()
+          out = root.parent / 'test-evidence'
+          os.environ['MAI_QUICKJS_SOURCE'] = str(root / 'Unreal/ThirdParty/QuickJS/source')
+          os.environ['MAI_QUICKJS_LIBRARY'] = str(root / 'Unreal/ThirdParty/QuickJS/build/Linux/libqjs.a')
+          suites = [
+              ('campaign', ['bash', 'Unreal/Tests/run_campaign.sh']),
+              ('durable', ['bash', 'Unreal/Tests/run_durable.sh']),
+              ('native-rules', ['bash', 'Unreal/Tests/run_native_rules.sh']),
+              ('python-tools', ['python3', '-m', 'unittest', 'discover', '-s', 'Unreal/Tools/tests', '-v']),
+              ('python-source', ['python3', '-m', 'unittest', 'discover', '-s', 'Unreal/Tests', '-p', 'test_*.py', '-v']),
+              ('browser-regression', ['npm', 'test']),
+              ('browser-types', ['npm', 'run', 'typecheck']),
+              ('browser-build', ['npm', 'run', 'build']),
+              ('cross-language', ['node_modules/.bin/vitest', 'run', '--config', 'Unreal/Tests/vitest.config.ts']),
+          ]
+          results = {'commit': os.environ['GITHUB_SHA'], 'scope': 'source tests only', 'humanPlaytest': False, 'ueBuild': 'BLOCKED', 'shipping': 'BLOCKED', 'tests': [], 'sourceSHA256': {}}
+          for name, command in suites:
+              started = time.monotonic()
+              with (out / (name + '.log')).open('w') as log:
+                  try:
+                      code = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=420).returncode
+                      status = 'PASS' if code == 0 else 'FAIL'
+                  except (OSError, subprocess.TimeoutExpired) as error:
+                      log.write(str(error)); code = None; status = 'BLOCKED' if isinstance(error, OSError) else 'FAIL'
+              results['tests'].append({'name': name, 'command': command, 'status': status, 'exitCode': code, 'seconds': round(time.monotonic()-started, 3)})
+              print(name, status, code, flush=True)
+              (out / 'results.json').write_text(json.dumps(results, indent=2)+'\n')
+          for folder in ('Unreal/MakeYourAI/Source', 'Unreal/Rules', 'Unreal/Tests', 'src'):
+              for p in (root / folder).rglob('*'):
+                  if p.is_file() and not any(x in p.parts for x in ('.out', '__pycache__')):
+                      results['sourceSHA256'][p.relative_to(root).as_posix()] = hashlib.sha256(p.read_bytes()).hexdigest()
+          (out / 'results.json').write_text(json.dumps(results, indent=2)+'\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Source checks at '+os.environ['GITHUB_SHA']+'\n\nUE compilation, Editor, Shipping, GPU and human playthrough: BLOCKED.\n\n')
+              for t in results['tests']: summary.write(t['name']+': '+t['status']+'\n\n')
+          raise SystemExit(1 if any(t['status'] != 'PASS' for t in results['tests']) else 0)
+          PY
+      - name: Export reusable local test dependencies and exact source
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if test -d source/node_modules && test -f source/Unreal/ThirdParty/QuickJS/build/Linux/libqjs.a; then
+            tar -C source -czf ue5-test-dependencies.tar.gz node_modules Unreal/ThirdParty/QuickJS/source Unreal/ThirdParty/QuickJS/build/Linux/libqjs.a
+          fi
           python3 - <<'PY'
           import pathlib, zipfile
-          root = pathlib.Path.cwd()
-          with zipfile.ZipFile(root.parent / 'ue5-source-checkout.zip', 'w', zipfile.ZIP_DEFLATED) as z:
+          root = pathlib.Path('source').resolve()
+          with zipfile.ZipFile('ue5-source-checkout.zip', 'w', zipfile.ZIP_DEFLATED) as z:
               for p in sorted(root.rglob('*')):
-                  if p.is_file() and not p.is_symlink():
-                      z.write(p, 'source/' + p.relative_to(root).as_posix())
-              for name in ('SOURCE_COMMIT.txt', 'SOURCE_STATUS.txt', 'SOURCE_MERGE_BASE.txt', 'TRACKED_INVENTORY.txt', 'INSTRUCTION_PATHS.txt', 'SOURCE_CHANGED_FILES.txt'):
-                  z.write(root.parent / name, name)
+                  relative = p.relative_to(root)
+                  if p.is_file() and not p.is_symlink() and not any(part in relative.parts for part in ('node_modules', 'ThirdParty', '.out', 'dist', '__pycache__')):
+                      z.write(p, 'source/' + relative.as_posix())
           PY
-      - name: Retain sparse source checkout, not a compiled game
+      - name: Retain source evidence, not a compiled game
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ue5-full-integration-source
-          path: ue5-source-checkout.zip
+          path: |
+            ue5-source-checkout.zip
+            ue5-test-dependencies.tar.gz
+            test-evidence/
           retention-days: 3
           if-no-files-found: error
