@@ -37,8 +37,13 @@ class ScaffoldChecks(unittest.TestCase):
         self.assertIn('QuickJS', runtime_rules)
         editor_target = (PROJECT / 'Source/MakeYourAIEditor.Target.cs').read_text()
         self.assertIn('MakeYourAIEditor', editor_target)
-        for plugin in descriptor['Plugins']:
-            self.assertEqual(plugin['TargetAllowList'], ['Editor'])
+        plugins = {plugin['Name']: plugin for plugin in descriptor['Plugins']}
+        self.assertEqual(len(plugins), len(descriptor['Plugins']), 'Duplicate plugin descriptors')
+        self.assertEqual(set(plugins), {'AndroidFileServer', 'PythonScriptPlugin', 'EditorScriptingUtilities'})
+        self.assertIs(plugins['AndroidFileServer']['Enabled'], False)
+        for name in ('PythonScriptPlugin', 'EditorScriptingUtilities'):
+            self.assertIs(plugins[name]['Enabled'], True)
+            self.assertEqual(plugins[name]['TargetAllowList'], ['Editor'])
 
     def test_native_game_instance_and_mode_are_registered(self):
         ini = (PROJECT / 'Config/DefaultEngine.ini').read_text()

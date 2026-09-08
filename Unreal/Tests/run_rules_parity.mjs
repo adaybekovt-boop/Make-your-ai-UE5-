@@ -22,7 +22,30 @@ function near(a,b,where='company'){
   if(a&&b&&typeof a==='object'&&typeof b==='object'){assert.deepEqual(Object.keys(a).sort(),Object.keys(b).sort(),where);for(const k of Object.keys(a))near(a[k],b[k],where+'.'+k);return}
   assert.deepEqual(a,b,where)
 }
-function native(){const process=spawn(host,[path.join(root,'Unreal/MakeYourAI/Content/Rules/mai-rules.js')],{stdio:['pipe','pipe','inherit']});const lines=createInterface({input:process.stdout});let waiting=[];lines.on('line',s=>{const item=waiting.shift();if(!item)throw new Error('Unexpected native response');item.resolve(JSON.parse(s))});process.on('exit',code=>{for(const item of waiting)item.reject(new Error('Native VM exited '+code));waiting=[]});return {call:r=>new Promise((resolve,reject)=>{waiting.push({resolve,reject});process.stdin.write(JSON.stringify(r)+'\n')}),close:()=>{lines.close();process.stdin.end()},process}}
+function native(){
+  const child=spawn(host,[path.join(root,'Unreal/MakeYourAI/Content/Rules/mai-rules.js')],{stdio:['pipe','pipe','inherit']})
+  const lines=createInterface({input:child.stdout})
+  let waiting=[],failure=null,closing=false
+  const fail=error=>{failure=error;for(const item of waiting){clearTimeout(item.timer);item.reject(error)}waiting=[]}
+  const exited=new Promise(resolve=>{child.once('close',(code,signal)=>{if(code!==0)fail(new Error(`Native VM exited ${code}, signal=${signal}`));else if(waiting.length)fail(new Error('Native VM exited before responding'));resolve()})})
+  child.on('error',fail)
+  child.stdin.on('error',fail)
+  lines.on('line',s=>{
+    const item=waiting.shift()
+    if(!item){fail(new Error('Unexpected native response'));child.kill();return}
+    clearTimeout(item.timer)
+    try{item.resolve(JSON.parse(s))}catch(error){item.reject(error);fail(error);child.kill()}
+  })
+  return {
+    call:r=>new Promise((resolve,reject)=>{
+      if(failure||closing){reject(failure??new Error('Native VM is closing'));return}
+      const item={resolve,reject,timer:setTimeout(()=>{fail(new Error('Native VM response timed out'));child.kill()},10000)}
+      waiting.push(item);child.stdin.write(JSON.stringify(r)+'\n')
+    }),
+    close:async()=>{closing=true;child.stdin.end();await exited;lines.close();if(failure)throw failure},
+    process:child,
+  }
+}
 const cmd=(action,...args)=>({method:'command',action,args})
 async function differential(strategy){
   const context=vm.createContext({console,structuredClone});new vm.Script(code.outputFiles[0].text).runInContext(context);await context.Oracle.boot();const n=native()
@@ -58,7 +81,7 @@ async function differential(strategy){
     await second.call(cmd('ui:modal',dialog));const v=await second.call({method:'view'});assert.equal(v.ok,true,JSON.stringify(v));const ids=new Set();const visit=x=>{if(!x)return;assert(!ids.has(x.id),'Duplicate dialog identity '+x.id);ids.add(x.id);for(const child of x.children??[])visit(child)};visit(v.value.toolbar);visit(v.value.content);visit(v.value.modal)
   }
   const viewAfter=(await second.call({method:'state'})).value;near(viewBefore.company,viewAfter.company);assert.equal(viewBefore.rng,viewAfter.rng)
-  n.close();second.close();scenarios+=11
+  await n.close();await second.close();scenarios+=11
 }
 await differential('flagship');await differential('portfolio')
 const result={scope:'portable native VM versus pinned original browser store; NOT Unreal build or UI playthrough',strategies:2,scenarios,traceSteps,assertions,failures:0}

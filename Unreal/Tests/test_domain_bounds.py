@@ -1,14 +1,14 @@
 """Compile and execute extra native arithmetic boundary checks, without Unreal stubs."""
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import unittest
+import os
+from native_runner import compile_command
 
 REPO = Path(__file__).resolve().parents[2]
 
 
-@unittest.skipUnless(shutil.which('g++'), 'Native g++ is required for boundary checks')
 class NativeBounds(unittest.TestCase):
     def test_extreme_tunables_and_npc_duration_are_rejected(self):
         code = r'''
@@ -38,12 +38,11 @@ int main() {
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)
             cpp = folder / 'bounds.cpp'
-            binary = folder / 'bounds'
+            binary = folder / ('bounds.exe' if os.name == 'nt' else 'bounds')
             cpp.write_text(code)
-            command = ['g++', '-std=c++17', '-fsanitize=undefined', '-fno-sanitize-recover=all',
-                       '-I', str(REPO / 'Unreal/MakeYourAI/Source/MakeYourAI/Public'),
-                       str(REPO / 'Unreal/MakeYourAI/Source/MakeYourAI/Private/Core/MaiCatalog.cpp'),
-                       str(cpp), '-o', str(binary)]
+            command = compile_command([
+                REPO / 'Unreal/MakeYourAI/Source/MakeYourAI/Private/Core/MaiCatalog.cpp', cpp
+            ], binary)
             compiled = subprocess.run(command, capture_output=True, text=True, timeout=60)
             self.assertEqual(compiled.returncode, 0, compiled.stderr)
             ran = subprocess.run([str(binary)], capture_output=True, text=True, timeout=10)
