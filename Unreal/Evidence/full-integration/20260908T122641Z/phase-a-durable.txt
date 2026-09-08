@@ -1,0 +1,4 @@
+DURABLE_FILE_PASS: 27 assertions; real filesystem, validation, recovery and backup preservation
+DURABLE_PROCESS_PASS export assertions=2
+DURABLE_PROCESS_PASS resume assertions=1
+DURABLE_PROCESS_PASS recover assertions=1
