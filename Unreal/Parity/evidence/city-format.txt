@@ -1,0 +1,14 @@
+test_color_and_topology_round_trip (test_cityv4_parity.CityV4FormatTests.test_color_and_topology_round_trip) ... ok
+test_duplicate_identity_and_geometry_path_escape_fail (test_cityv4_parity.CityV4FormatTests.test_duplicate_identity_and_geometry_path_escape_fail) ... ok
+test_gameplay_target_is_not_merged_with_scenery (test_cityv4_parity.CityV4FormatTests.test_gameplay_target_is_not_merged_with_scenery) ... ok
+test_missing_instance_and_unknown_material_fail (test_cityv4_parity.CityV4FormatTests.test_missing_instance_and_unknown_material_fail) ... ok
+test_nonfinite_color_fails (test_cityv4_parity.CityV4FormatTests.test_nonfinite_color_fails) ... ok
+test_owned_derivative_rerun_never_overwrites_different_bytes (test_cityv4_parity.CityV4FormatTests.test_owned_derivative_rerun_never_overwrites_different_bytes) ... ok
+test_shear_not_silently_dropped (test_cityv4_parity.CityV4FormatTests.test_shear_not_silently_dropped) ... ok
+test_spatial_batches_preserve_instances_materials_camera (test_cityv4_parity.CityV4FormatTests.test_spatial_batches_preserve_instances_materials_camera) ... ok
+test_truncation_and_invalid_index_fail (test_cityv4_parity.CityV4FormatTests.test_truncation_and_invalid_index_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.014s
+
+OK

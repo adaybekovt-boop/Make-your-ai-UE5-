@@ -77,6 +77,27 @@ void Campaign::Step(Tick elapsed) {
     else state_.insolventSince=-1;
     EvaluateEnding();
 }
+Result Campaign::SynchronizeBrowser(const State& projection,std::int64_t learnedMicroIQ,Tick elapsed,bool acquired) {
+    if(!Difficulty() || state_.prologueStep!=3 || elapsed<0 || elapsed>Hour || learnedMicroIQ<0 || learnedMicroIQ>1000000000000LL)
+        return Result::Error("Invalid browser campaign projection");
+    for(const auto& job:state_.training) if(job.phase!=JobPhase::Complete)
+        return Result::Error("Cannot mix legacy and canonical training jobs");
+    const auto beforeCore=core_;const auto beforeState=state_;
+    auto incoming=projection;incoming.ended=core_.View().ended; // ending snapshot and flag commit together
+    auto result=core_.Restore(incoming);if(!result.ok)return result;
+    state_.modelMicroIQ=learnedMicroIQ;
+    if(acquired && !incoming.ended) {
+        const EndingProfile* profile=nullptr;for(const auto& e:rules_.endings)if(e.kind==EndingKind::Acquisition)profile=&e;
+        if(!profile){core_=beforeCore;state_=beforeState;return Result::Error("Missing acquisition narrative");}
+        state_.saleAccepted=true;state_.ending.kind=EndingKind::Acquisition;state_.ending.id=profile->id;
+        state_.ending.title=profile->title;state_.ending.line=profile->line;state_.ending.offerOnly=false;
+        state_.ending.allowReturnToSave=profile->allowReturnToSave;state_.ending.metrics=Metrics();
+        Record("browser-acquisition","Canonical acquisition payout already posted; no duplicate payment");state_.ending.decisions=state_.decisions;
+        incoming.ended=true;incoming.paused=true;core_.Restore(incoming);Visit(Screen::Ending);
+    } else if(!incoming.ended && elapsed>0) Step(elapsed);
+    std::string why;if(!Validate(why)){core_=beforeCore;state_=beforeState;return Result::Error(why);}
+    return Result::Success();
+}
 Result Campaign::AdvanceReal(Tick microseconds) {
     if(microseconds<0 || microseconds>168*Hour) return Result::Error("Invalid campaign time delta");
     if(!CanPlay() || core_.View().paused || microseconds==0) return Result::Success();

@@ -10,6 +10,9 @@
 #include "HAL/PlatformTime.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/PackageName.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "Serialization/JsonSerializer.h"
 #include "Subsystems/SubsystemCollection.h"
 
 void UMaiLoadingSubsystem::Initialize(FSubsystemCollectionBase& C) {
@@ -17,6 +20,8 @@ void UMaiLoadingSubsystem::Initialize(FSubsystemCollectionBase& C) {
     if(GEngine) TravelFailureHandle=GEngine->OnTravelFailure().AddUObject(this,&UMaiLoadingSubsystem::TravelFailed);
 }
 void UMaiLoadingSubsystem::Invalidate() {
+    if (PendingStream && PendingStream != GarageStream) { PendingStream->SetShouldBeVisible(false); PendingStream->SetShouldBeLoaded(false); PendingStream->SetIsRequestingUnloadAndRemoval(true); }
+    if (PendingStream && Company && Company->CampaignDomain() && Company->CampaignDomain()->View().loading.phase != mai::LoadPhase::Ready) { PendingStream->SetShouldBeVisible(false); PendingStream->SetShouldBeLoaded(false); PendingStream->SetIsRequestingUnloadAndRemoval(true); if (PendingStream==GarageStream) GarageStream=nullptr; }
     ++Serial; ActiveGeneration=0; bAssetsReady=false; bMapRequested=false; bTravelNeeded=false; bTravelIssued=false; PendingStream=nullptr; TravelPackage.Empty();
     if (Assets) { Assets->CancelHandle(); Assets.Reset(); }
 }
@@ -36,11 +41,16 @@ void UMaiLoadingSubsystem::Fail(const FString& Error) {
 void UMaiLoadingSubsystem::Start() {
     Invalidate(); if (!Company || !Company->CampaignDomain()) return;
     ActiveGeneration=Company->CampaignDomain()->View().loading.generation; CompanyGeneration=Company->Generation(); StartedAt=FPlatformTime::Seconds();
-    Required={FSoftObjectPath(TEXT("/Engine/BasicShapes/Cube.Cube")),FSoftObjectPath(TEXT("/Engine/BasicShapes/Capsule.Capsule")),FSoftObjectPath(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"))};
+    Required={FSoftObjectPath(TEXT("/Engine/BasicShapes/Cube.Cube")),FSoftObjectPath(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"))};
     const auto& L=Company->CampaignDomain()->View().loading;
-    TravelPackage=TEXT("/Game/Scaffold/Maps/L_Scaffold_City");
-    bTravelNeeded=L.interior.empty() && L.destination!=mai::Screen::MainMenu && !UGameplayStatics::GetCurrentLevelName(GetGameInstance(),true).Contains(TEXT("L_Scaffold_City")) && FPackageName::DoesPackageExist(TravelPackage);
-    if(bTravelNeeded) Required.Add(FSoftObjectPath(TravelPackage+TEXT(".L_Scaffold_City")));
+    if(L.interior.empty() && L.destination!=mai::Screen::MainMenu) {
+        FString Descriptor;TSharedPtr<FJsonObject> Content;
+        if(!FFileHelper::LoadFileToString(Descriptor,*(FPaths::ProjectContentDir()/TEXT("Rules/city-content.json"))) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Descriptor),Content) || !Content->TryGetStringField(TEXT("cityMap"),TravelPackage) || !FPackageName::DoesPackageExist(TravelPackage)) {
+            Fail(TEXT("Карта CityV4 отсутствует. Создайте контент через Windows runner перед запуском."));return;
+        }
+        bTravelNeeded=UGameplayStatics::GetCurrentLevelName(GetGameInstance(),true)!=FPackageName::GetShortName(TravelPackage);
+        if(bTravelNeeded) Required.Add(FSoftObjectPath(TravelPackage+TEXT(".")+FPackageName::GetShortName(TravelPackage)));
+    }
     const uint64 RequestSerial=Serial; TWeakObjectPtr<UMaiLoadingSubsystem> WeakThis(this);
     Assets=UAssetManager::GetStreamableManager().RequestAsyncLoad(Required,FStreamableDelegate::CreateLambda([WeakThis,RequestSerial](){
         if (WeakThis.IsValid() && WeakThis->Serial==RequestSerial) WeakThis->bAssetsReady=true;
@@ -55,7 +65,7 @@ void UMaiLoadingSubsystem::Retry() {
 void UMaiLoadingSubsystem::Tick(float DeltaTime) {
     (void)DeltaTime; if (!Company || !Company->CampaignDomain()) return;
     const auto L=Company->CampaignDomain()->View().loading;
-    if (L.phase!=mai::LoadPhase::Loading) return;
+    if (L.phase!=mai::LoadPhase::Loading) { if(ActiveGeneration && L.phase!=mai::LoadPhase::Ready && CanCancel()) Invalidate(); return; }
     if (ActiveGeneration!=L.generation || CompanyGeneration!=Company->Generation()) Start();
     if (Company->CampaignDomain()->View().loading.phase!=mai::LoadPhase::Loading) return;
     if (FPlatformTime::Seconds()-StartedAt>120.0) { Fail(TEXT("Load timed out after 120 seconds; inspect the asset/streaming log and retry")); return; }
@@ -65,7 +75,7 @@ void UMaiLoadingSubsystem::Tick(float DeltaTime) {
     auto* PC=Cast<AMaiPlayerController>(UGameplayStatics::GetPlayerController(GetGameInstance(),0)); if (!PC) { Progress(-1,TEXT("Waiting for player controller")); return; }
     // The city may be World Partition. Preload its package asynchronously, then
     // travel into that world; do not stream a partitioned city as a dynamic sublevel.
-    if(bTravelNeeded && !UGameplayStatics::GetCurrentLevelName(GetGameInstance(),true).Contains(TEXT("L_Scaffold_City"))) {
+    if(bTravelNeeded && UGameplayStatics::GetCurrentLevelName(GetGameInstance(),true)!=FPackageName::GetShortName(TravelPackage)) {
         Progress(-1,TEXT("City package loaded; activating world (exact percentage unavailable)"));
         if(!bTravelIssued) {bTravelIssued=true;GarageStream=nullptr;UGameplayStatics::OpenLevel(GetGameInstance(),FName(*TravelPackage));}
         return;
@@ -89,7 +99,7 @@ void UMaiLoadingSubsystem::Tick(float DeltaTime) {
     if (PendingStream && (!PendingStream->IsLevelLoaded() || !PendingStream->IsLevelVisible())) {
         Progress(-1,TEXT("Streaming level / waiting for visibility (exact percentage unavailable)")); return;
     }
-    Progress(-1,PendingStream?TEXT("Connecting loaded scene and player"):TEXT("Building explicit runtime graybox; not an imported CityV4 verification"));
+    Progress(-1,PendingStream?TEXT("Connecting loaded scene and player"):TEXT("Connecting scene and player"));
     FString Error;
     if (!PC->PrepareCampaignScene(UTF8_TO_TCHAR(L.interior.c_str()),L.destination==mai::Screen::MainMenu,Error)) { Fail(Error); return; }
     Company->CampaignTransact([&](mai::Campaign& C){return C.CompleteLoad(ActiveGeneration,true);});

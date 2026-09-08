@@ -2,10 +2,37 @@
   "FileVersion": 3,
   "EngineAssociation": "",
   "Category": "Games",
-  "Description": "Make Your AI SOURCE_SCAFFOLD; engine compilation and visual verification remain NOT VERIFIED.",
-  "Modules": [{"Name": "MakeYourAI", "Type": "Runtime", "LoadingPhase": "Default"}],
+  "Description": "Make Your AI \u2014 native city and company simulation",
+  "Modules": [
+    {
+      "Name": "MakeYourAI",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "MakeYourAIEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ],
   "Plugins": [
-    {"Name": "PythonScriptPlugin", "Enabled": true, "TargetAllowList": ["Editor"]},
-    {"Name": "EditorScriptingUtilities", "Enabled": true, "TargetAllowList": ["Editor"]}
+    {
+      "Name": "AndroidFileServer",
+      "Enabled": false
+    },
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "EditorScriptingUtilities",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    }
   ]
 }

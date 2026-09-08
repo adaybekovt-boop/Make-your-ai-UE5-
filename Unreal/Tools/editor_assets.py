@@ -16,6 +16,9 @@ def digest(path: Path) -> str:
 
 
 def import_mesh(repo: Path, relative: str, name: str, report: dict, skeletal: bool = False):
+    # Retire the destructive single-mesh CityV4 route before any assets are written.
+    if 'cityv4' in relative.lower() or name.lower().startswith('cityv4'):
+        raise RuntimeError('CityV4 requires export_cityv4_instances.py and build_city_content.py; combined FBX import is disabled.')
     source = repo / relative
     source_hash = digest(source)
     package = BASE + '/Imported/' + name

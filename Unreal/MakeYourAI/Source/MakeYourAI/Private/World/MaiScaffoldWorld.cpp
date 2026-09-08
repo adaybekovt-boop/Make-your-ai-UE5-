@@ -10,7 +10,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/SkyLight.h"
-#include "Engine/SkyAtmosphere.h"
+#include "Components/SkyAtmosphereComponent.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "UObject/ConstructorHelpers.h"

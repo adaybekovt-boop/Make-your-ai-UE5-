@@ -1,0 +1,10 @@
+{"bundle":229568,"sourceFiles":29,"sha256":"042f9eca84304c7b461b1b413ae3ef0a1f4584c9f1c9ccee6a2ecb3c8ad338c3","browserRuntime":false}
+{
+  "scope": "portable native VM versus pinned original browser store; NOT Unreal build or UI playthrough",
+  "strategies": 2,
+  "scenarios": 24,
+  "traceSteps": 3418,
+  "assertions": 568852,
+  "failures": 0
+}
+DURABLE_FILE_PASS: 11 assertions; actual filesystem writes/readback/backup/rejections

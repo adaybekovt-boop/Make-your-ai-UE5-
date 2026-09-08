@@ -15,7 +15,22 @@ Intermediate/
 Saved/
 .vs/
 *.sln
+*.slnx
+Unreal/MakeYourAI/.vsconfig
 
 # Blender temporary export files
 .city-v4.fbx.*
 *.blend1
+
+# Reproducible native rules/dependency/content output (original assets remain tracked)
+Unreal/ThirdParty/
+Unreal/Derived/
+Unreal/MakeYourAI/Content/Rules/mai-rules.js
+Unreal/MakeYourAI/Content/Rules/mai-rules.manifest.json
+Unreal/MakeYourAI/Content/Rules/city-content.json
+Unreal/MakeYourAI/Content/Generated/
+Unreal/Tests/.out/
+__pycache__/
+
+# Also ignore a local dependency-directory symlink used for isolated checks
+/node_modules

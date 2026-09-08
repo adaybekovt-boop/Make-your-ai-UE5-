@@ -200,6 +200,13 @@ public:
     Result SetTextScale(int textScaleBps);
     Result SetReducedMotion(bool enabled);
     Result BuyDataset(const std::string& offer);
+    // Browser adapter: attach the matching existing review offer to an already paid
+    // canonical lot. This does not post a second charge.
+    Result ReceivePaidDatasetSample(const std::string& offer);
+    // Browser rules own physical time and all model/economy work. Advance only the
+    // existing native review / ending extension against that validated projection.
+    Result SynchronizeBrowser(const State& projection, std::int64_t learnedMicroIQ, Tick elapsed, bool acquired);
+
     Result StartReview(std::int64_t batch, ReviewMethod method);
     Result ChooseReview(std::int64_t session, int side);
     Result SkipReview(std::int64_t session);

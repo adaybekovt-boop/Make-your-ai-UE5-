@@ -7,9 +7,14 @@ MPC = '/Game/Scaffold/Materials/MPC_DayNight'
 
 def _find_or_spawn(world, cls, label: str):
     actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()
-    for actor in actors:
-        if actor.get_class() == cls and actor.get_actor_label() == label:
-            return actor
+    matches = [a for a in actors if isinstance(a, cls)]
+    if len(matches) > 1:
+        raise RuntimeError('Several lights of this type exist; inspect duplicates. No actor was deleted or added.')
+    if matches:
+        existing = matches[0]
+        if existing.get_actor_label() != label:
+            raise RuntimeError('An authored/CityV4 light already exists. Use its rig; a duplicate will not be spawned or overwrite it.')
+        return existing
     spawned = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).spawn_actor_from_class(cls, unreal.Vector(0, 0, 30000))
     if not spawned:
         raise RuntimeError('Could not spawn ' + label)

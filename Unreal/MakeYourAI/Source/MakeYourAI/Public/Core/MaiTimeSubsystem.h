@@ -4,6 +4,7 @@
 #include "Tickable.h"
 #include "MaiTimeSubsystem.generated.h"
 class UMaiCompanySubsystem;
+class UMaiRulesSubsystem;
 
 UCLASS()
 class MAKEYOURAI_API UMaiTimeSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
@@ -18,6 +19,9 @@ public:
     UFUNCTION(BlueprintPure, Category="Time") double GetGameHours() const;
 private:
     UPROPERTY(Transient) TObjectPtr<UMaiCompanySubsystem> Company;
+    UPROPERTY(Transient) TObjectPtr<UMaiRulesSubsystem> Rules;
+    FDelegateHandle ForegroundHandle;
+    void EnterForeground();
     double FractionalMicroseconds = 0;
     uint64 SeenGeneration = 0;
     FDelegateHandle BackgroundHandle;

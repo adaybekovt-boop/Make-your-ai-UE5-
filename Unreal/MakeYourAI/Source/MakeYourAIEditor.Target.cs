@@ -7,6 +7,6 @@ public class MakeYourAIEditorTarget : TargetRules
         Type = TargetType.Editor;
         // Uses the defaults of the engine recorded in UE5Engine.lock.json.
         DefaultBuildSettings = BuildSettingsVersion.Latest;
-        ExtraModuleNames.Add("MakeYourAI");
+        ExtraModuleNames.AddRange(new[] { "MakeYourAI", "MakeYourAIEditor" });
     }
 }

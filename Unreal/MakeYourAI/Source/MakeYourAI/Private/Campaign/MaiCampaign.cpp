@@ -153,6 +153,16 @@ Result Campaign::BuyDataset(const std::string& offer) {
     Record("dataset-purchased",def->id);b.status=DatasetStatus::Unreviewed;state_.inventory.batches.push_back(b);Record("dataset-unreviewed",std::to_string(b.id));
     return Result::Success("Dataset entered Unreviewed inventory; it cannot train yet");
 }
+Result Campaign::ReceivePaidDatasetSample(const std::string& offer) {
+    if(!CanPlay() || state_.inventory.batches.size()>=512) return Result::Error("Review sample requires active company and inventory space");
+    const DatasetOffer* def=nullptr;for(const auto& d:rules_.offers) if(d.id==offer) def=&d;
+    if(!def) return Result::Error("Unknown dataset sample offer");
+    DatasetBatch b;b.id=++state_.inventory.sequence;b.offerId=def->id;b.type=def->type;b.volume=def->volume;
+    b.cost=Bps(def->cost,Difficulty()->procurementBps);b.original=def->quality;b.quality=b.original;b.purchasedAt=core_.View().now;
+    b.status=DatasetStatus::Unreviewed;state_.inventory.batches.push_back(b);
+    Record("paid-browser-sample",offer+" / parent lot already charged; sample cost is attribution, not another debit");
+    return Result::Success("Paid lot sample entered Unreviewed inventory");
+}
 Result Campaign::HireSpecialist() {
     if(!CanPlay() || state_.specialists.size()>=4) return Result::Error("Hire at most four specialists during gameplay");
     const auto cost=Bps(rules_.humanHire,Difficulty()->hiringBps);auto r=Spend(cost);if(!r.ok) return r;

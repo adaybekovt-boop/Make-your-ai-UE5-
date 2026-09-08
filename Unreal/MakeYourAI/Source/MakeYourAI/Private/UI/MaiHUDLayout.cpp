@@ -35,8 +35,8 @@ UTextBlock* UMaiHUDWidget::AddText(UPanelWidget* Parent, const FString& Value, i
 UMaiActionButton* UMaiHUDWidget::AddButton(UPanelWidget* Parent, const FString& Value, const FString& Command) {
     auto* Button = WidgetTree->ConstructWidget<UMaiActionButton>(); Button->Configure(this, Command);
     Button->SetBackgroundColor(FLinearColor(0.17f, 0.17f, 0.19f, 1));
-    auto* Padding = WidgetTree->ConstructWidget<UBorder>(); Padding->SetPadding(FMargin(8, 6)); Padding->SetBrushColor(FLinearColor::Transparent);
-    Padding->SetContent(AddText(nullptr, Value)); Button->SetContent(Padding);
+    auto* ButtonPadding = WidgetTree->ConstructWidget<UBorder>(); ButtonPadding->SetPadding(FMargin(8, 6)); ButtonPadding->SetBrushColor(FLinearColor::Transparent);
+    ButtonPadding->SetContent(AddText(nullptr, Value)); Button->SetContent(ButtonPadding);
     if (Parent) Parent->AddChild(Button); return Button;
 }
 UComboBoxString* UMaiHUDWidget::AddPicker(UPanelWidget* Parent, const TArray<FString>& Options) {
@@ -57,8 +57,8 @@ void UMaiHUDWidget::BuildLayout() {
     auto* OpsCanvas = WidgetTree->ConstructWidget<UCanvasPanel>(); OperationsRoot->SetContent(OpsCanvas);
     const auto OpsPanel = [&](bool Right, float Width) {
         auto* Border = WidgetTree->ConstructWidget<UBorder>(); Border->SetPadding(FMargin(16)); Border->SetBrushColor(FLinearColor(0.025f, 0.025f, 0.03f, 0.97f));
-        auto* Slot = OpsCanvas->AddChildToCanvas(Border); Slot->SetAnchors(Right ? FAnchors(1, 0, 1, 1) : FAnchors(0, 0, 0, 1));
-        Slot->SetOffsets(Right ? FMargin(-Width - 18, 18, Width, 18) : FMargin(18, 18, Width, 18));
+        auto* PanelSlot = OpsCanvas->AddChildToCanvas(Border); PanelSlot->SetAnchors(Right ? FAnchors(1, 0, 1, 1) : FAnchors(0, 0, 0, 1));
+        PanelSlot->SetOffsets(Right ? FMargin(-Width - 18, 18, Width, 18) : FMargin(18, 18, Width, 18));
         auto* Scroll = WidgetTree->ConstructWidget<UScrollBox>(); Border->SetContent(Scroll);
         auto* Box = WidgetTree->ConstructWidget<UVerticalBox>(); Scroll->AddChild(Box); return Box;
     };
@@ -124,10 +124,10 @@ void UMaiHUDWidget::BuildFlow(UCanvasPanel* Canvas) {
     FlowRoot = WidgetTree->ConstructWidget<UBorder>();
     FlowRoot->SetPadding(FMargin(48, 36));
     FlowRoot->SetBrushColor(FLinearColor(0.02f, 0.02f, 0.025f, 0.98f));
-    auto* Slot = Canvas->AddChildToCanvas(FlowRoot);
-    Slot->SetAnchors(FAnchors(0.5f, 0.5f, 0.5f, 0.5f));
-    Slot->SetAlignment(FVector2D(0.5f, 0.5f));
-    Slot->SetOffsets(FMargin(-420, -320, 840, 640));
+    auto* PanelSlot = Canvas->AddChildToCanvas(FlowRoot);
+    PanelSlot->SetAnchors(FAnchors(0.5f, 0.5f, 0.5f, 0.5f));
+    PanelSlot->SetAlignment(FVector2D(0.5f, 0.5f));
+    PanelSlot->SetOffsets(FMargin(-420, -320, 840, 640));
     auto* Scroll = WidgetTree->ConstructWidget<UScrollBox>(); FlowRoot->SetContent(Scroll);
     auto* Box = WidgetTree->ConstructWidget<UVerticalBox>(); Scroll->AddChild(Box);
     FlowTitle = AddText(Box, UTF8_TO_TCHAR(mai::Loc("app.title")), 28);

@@ -15,7 +15,7 @@ AMaiWalkCharacter::AMaiWalkCharacter() {
     GetCapsuleComponent()->InitCapsuleSize(34.f,88.f); GetCharacterMovement()->MaxWalkSpeed=220.f;
     GetCharacterMovement()->bOrientRotationToMovement=true; bUseControllerRotationYaw=false;
     GrayboxBody=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ExplicitGrayboxAvatar")); GrayboxBody->SetupAttachment(GetRootComponent());
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> Shape(TEXT("/Engine/BasicShapes/Capsule.Capsule"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> Shape(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     if (Shape.Succeeded()) GrayboxBody->SetStaticMesh(Shape.Object);
     GrayboxBody->SetRelativeScale3D(FVector(.55,.55,1.1)); GrayboxBody->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Arm=CreateDefaultSubobject<USpringArmComponent>(TEXT("InteriorCameraArm")); Arm->SetupAttachment(GetRootComponent()); Arm->TargetArmLength=650.f;

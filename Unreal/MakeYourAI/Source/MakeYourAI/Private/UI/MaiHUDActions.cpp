@@ -11,7 +11,7 @@
 #include "Core/MaiStrings.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Misc/LexFromString.h"
+#include "String/LexFromString.h"
 
 void UMaiHUDWidget::LocationChanged(FString Value, ESelectInfo::Type Type) {
     (void)Type; if (Value.IsEmpty()) return;

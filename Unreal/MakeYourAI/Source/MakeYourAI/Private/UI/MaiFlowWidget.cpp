@@ -17,11 +17,11 @@
 #include "Components/Image.h"
 #include "Engine/Texture2D.h"
 #include "Engine/GameInstance.h"
-#include "Misc/LexFromString.h"
+#include "String/LexFromString.h"
 namespace {
 FString S(const std::string& V){return UTF8_TO_TCHAR(V.c_str());}
 FString M(mai::Money V){return S(mai::FormatMoney(V));}
-constexpr const TCHAR* Slot=TEXT("MakeYourAI_01");
+constexpr const TCHAR* SaveSlot=TEXT("MakeYourAI_01");
 }
 void UMaiCampaignButton::Configure(UMaiFlowWidget* Owner,const FString& InCommand){Screen=Owner;Command=InCommand;OnClicked.AddUniqueDynamic(this,&UMaiCampaignButton::Execute);}
 void UMaiCampaignButton::Execute(){if(Screen) Screen->Command(Command);}
@@ -58,7 +58,7 @@ void UMaiFlowWidget::Build(){
         if(V.loading.phase==mai::LoadPhase::Failed) Button(Content,TEXT("Retry required load"),TEXT("retry"));
     }else if(V.screen==mai::Screen::MainMenu){
         Text(Content,TEXT("Build a company. Review your data. Live with the decisions."),20);
-        Button(Content,TEXT("New game"),TEXT("new"));Button(Content,TEXT("Load saved company"),TEXT("load"),Saves && Saves->HasSave(Slot));
+        Button(Content,TEXT("New game"),TEXT("new"));Button(Content,TEXT("Load saved company"),TEXT("load"),Saves && Saves->HasSave(SaveSlot));
         if(!V.difficulty.empty() && V.prologueStep==3 && !G.Core().View().ended) Button(Content,TEXT("Resume current company"),TEXT("resume"));
     }else if(V.screen==mai::Screen::NewGame){
         Text(Content,TEXT("Create a new company"),24);Text(Content,TEXT("Existing save slots are retained. Difficulty is locked once chosen."));Button(Content,TEXT("Choose difficulty"),TEXT("difficulty"));
@@ -141,7 +141,7 @@ void UMaiFlowWidget::BuildEnding(){
     Text(Content,FString::Printf(TEXT("%s / cash %s / company value %s / debt %s\nModel IQ %.2f / reputation %d / data quality %.1f%% / legal exposure %.1f%%\nDependency %.1f%% / employee care %.1f%% / automation %.1f%%"),*S(V.difficulty),*M(V.cash),*M(V.value),*M(V.debt),V.modelMicroIQ/1000000.,V.reputation,V.dataQualityBps/100.,V.legalBps/100.,V.dependencyBps/100.,V.employeeCareBps/100.,V.automationBps/100.),18);
     Text(Content,TEXT("Decisions that brought the company here"),22);for(const auto& D:E.decisions) Text(Content,S(D.action+": "+D.detail),14);
     Button(Content,TEXT("Start a new company"),TEXT("new"));auto* Saves=GetGameInstance()->GetSubsystem<UMaiSaveSubsystem>();
-    Button(Content,TEXT("Return to a playable saved company"),TEXT("return-save"),E.allowReturnToSave && Saves && Saves->CanReturnToSave(Slot));
+    Button(Content,TEXT("Return to a playable saved company"),TEXT("return-save"),E.allowReturnToSave && Saves && Saves->CanReturnToSave(SaveSlot));
 }
 void UMaiFlowWidget::Refresh(){
     if(!Canvas) return;

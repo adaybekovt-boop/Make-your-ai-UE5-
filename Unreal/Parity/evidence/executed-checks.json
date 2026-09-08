@@ -1,0 +1,87 @@
+{
+  "scope": "actually executed source/CPU checks; not UE acceptance",
+  "date": "2026-09-08",
+  "base": "cf087025697e9ba3e3ab3ca5380bcdee54edea3d",
+  "browser": "fd270196525c4c6fe61217327c81274e67a58d4b",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "tools": {
+    "g++": {
+      "executable": "/usr/bin/g++",
+      "version": "g++ (Debian 14.2.0-19) 14.2.0"
+    },
+    "clang++": {
+      "executable": "/usr/local/swift/usr/bin/clang++",
+      "version": "clang version 17.0.0 (https://github.com/swiftlang/llvm-project.git 10999b6d034fe318f3d56c83bddb6572593a8bb0)"
+    },
+    "node": {
+      "executable": "/opt/nvm/versions/node/v22.16.0/bin/node",
+      "version": "v22.16.0"
+    },
+    "cmake": {
+      "executable": "/usr/bin/cmake",
+      "version": "cmake version 3.31.6"
+    },
+    "UnrealEditor": {
+      "executable": null,
+      "version": null
+    },
+    "blender": {
+      "executable": null,
+      "version": null
+    },
+    "pwsh": {
+      "executable": null,
+      "version": null
+    },
+    "nvidia-smi": {
+      "executable": null,
+      "version": null
+    }
+  },
+  "browserOriginalCI": {
+    "run": 34162767672,
+    "testFiles": 29,
+    "tests": 388,
+    "passed": true
+  },
+  "nativeCampaign": {
+    "cases": 46,
+    "assertions": 1604,
+    "failures": 0,
+    "sanitizers": [
+      "ASan",
+      "UBSan"
+    ],
+    "actualNewProcessContinuation": true
+  },
+  "rulesDifferential": {
+    "strategies": 2,
+    "traceSteps": 3418,
+    "assertions": 568852,
+    "scenarios": 24,
+    "failures": 0,
+    "runtime": "compiled native QuickJS; no browser runtime"
+  },
+  "pythonSourceTests": {
+    "tests": 32,
+    "passed": true
+  },
+  "pythonToolTests": {
+    "tests": 16,
+    "passed": true
+  },
+  "durableFile": {
+    "assertions": 11,
+    "platform": "Linux",
+    "passed": true,
+    "windowsExecuted": false
+  },
+  "ueBuild": "NOT_RUN",
+  "ueAutomation": "NOT_RUN",
+  "gpuRender": "NOT_RUN",
+  "viewport1280x720": "NOT_RUN",
+  "viewport1600x900": "NOT_RUN",
+  "viewport1920x1080": "NOT_RUN",
+  "humanPlaytest": false,
+  "fullMigrationVerified": false
+}

@@ -4,7 +4,7 @@
 #include "Tickable.h"
 #include "Engine/EngineBaseTypes.h"
 #include "MaiLoadingSubsystem.generated.h"
-class FStreamableHandle;
+struct FStreamableHandle;
 class ULevelStreamingDynamic;
 class UMaiCompanySubsystem;
 
@@ -23,6 +23,7 @@ public:
     UFUNCTION(BlueprintCallable, Category="Loading") void Retry();
     // Invalidates callbacks after restoring a campaign, including a saved Loading screen.
     void Invalidate();
+    bool CanCancel() const { return !bTravelIssued; }
 private:
     UPROPERTY(Transient) TObjectPtr<UMaiCompanySubsystem> Company;
 

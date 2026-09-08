@@ -1,0 +1,636 @@
+{
+  "browserCommit": "fd270196525c4c6fe61217327c81274e67a58d4b",
+  "ueBase": "cf087025697e9ba3e3ab3ca5380bcdee54edea3d",
+  "actions": [
+    {
+      "name": "initialize",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "continueGame",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "beginSetup",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "cancelSetup",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "startNewGame",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "selectLocation",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "selectModel",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "sellAt",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "overclockAt",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "deployReserve",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "purchaseOffice",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "purchaseCityTower",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "purchaseLocation",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "openProcurement",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "closeProcurement",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "orderEquipment",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "orderKit",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "mountChip",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "mountChassis",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "tick",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "togglePause",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "setSpeed",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "persist",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "restore",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "reset",
+      "route": "native host adapter: initialization/tick/durable save/load/reset",
+      "ueExecuted": false
+    },
+    {
+      "name": "dismissNotice",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "buyDataLot",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "startTraining",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "setPersonality",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "runBenchmark",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "togglePreparing",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "acceptContract",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "declineContract",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "hireEmployee",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "fireEmployee",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "toggleOverwork",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "toggleAdvertising",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "setTokenPrice",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "toggleInsurance",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "toggleLicense",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "chooseOpenSource",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "unlockTech",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "attemptEspionage",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "unlockRegion",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "acceptAcquisition",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "declineAcquisition",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "renameSelected",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "purchaseBase",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "setModelQuantization",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    },
+    {
+      "name": "setAllocations",
+      "route": "original store via native VM",
+      "ueExecuted": false
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "src/main.tsx",
+      "sha256": "bbd9d3b2a7506e692f9cd267e33a4ff19e8dde44493f4947972d4e38a714e048"
+    },
+    {
+      "path": "src/persistence/companySaves.test.ts",
+      "sha256": "e2b1b54a228a53145ae1ad54aa53cccec4a332011c5befe9c4372cff70a25233"
+    },
+    {
+      "path": "src/persistence/companySaves.ts",
+      "sha256": "8334094d97eb6da774958005c10e5df110cc8cb3e2b7c894ce5a6c2346c8e51a"
+    },
+    {
+      "path": "src/persistence/gridSave.ts",
+      "sha256": "47141e8d72a8aabaf251dca70ae5357a1dd32bbddb1ca0f57387bd30acbe6625"
+    },
+    {
+      "path": "src/persistence/saves-compat.test.ts",
+      "sha256": "3248228245ec3b25302287fbafc66c3359563fe448abcf5c3555b819bc4ee766"
+    },
+    {
+      "path": "src/persistence/saves.test.ts",
+      "sha256": "09e97915dd55c26c2d1e1ddec2da63be6c1e3252997f70cba2af1b609ff75fbc"
+    },
+    {
+      "path": "src/persistence/saves.ts",
+      "sha256": "c02d8618b3186dd31050bb9b111011105b4c240b26272515c97822d97c310a17"
+    },
+    {
+      "path": "src/render/CityBackdrop.ts",
+      "sha256": "f4eef285917f8d7d904fc0dcbaf5e01f73a5d2a3b989197cc2400ddfd1a7224f"
+    },
+    {
+      "path": "src/render/InteriorScene.ts",
+      "sha256": "abcf8f53b6b9b747cd36f04fc5f01af454a00d7816c9d44a5792b3baaed5d737"
+    },
+    {
+      "path": "src/render/RegionMap.ts",
+      "sha256": "a66e73da438a9c383bbb66ad707d3a2946c13d8e8df6dcad4aa23c2a45aa9bfb"
+    },
+    {
+      "path": "src/render/StreetLife.test.ts",
+      "sha256": "28ce3a4e9b5968f8cede0ecec61f2da97c902e23fed1b7786ed9a01d8e8f4282"
+    },
+    {
+      "path": "src/render/StreetLife.ts",
+      "sha256": "42992260d27d09633dc8cbe856413b3eb0d9e0f02d3173e0fa6c8b08bff11611"
+    },
+    {
+      "path": "src/render/interiorLayout.test.ts",
+      "sha256": "5354e79d396e30e51f7feffb0bb3e827acf3b35949119599fab7178f59671cea"
+    },
+    {
+      "path": "src/render/interiorLayout.ts",
+      "sha256": "eba30eb03cf647e2e743ae6bb8e75ae5ffd75e9634f216c5ce0ab033955a4e18"
+    },
+    {
+      "path": "src/render/mapNavigation.test.ts",
+      "sha256": "fc6de113daefa14a3da72c1b958d4a0c134aa2ee1f1bc3ef358b11ad13fd01ec"
+    },
+    {
+      "path": "src/render/mapNavigation.ts",
+      "sha256": "637ad99e307cdd1342fd15b989d6712687cf88dd1a80382631702a91f45b7f94"
+    },
+    {
+      "path": "src/render/mapPresentation.test.ts",
+      "sha256": "9c784205e63ab521e780bef32d34f6e3cd3c1f4068b2a7e8bddd333a2310fb26"
+    },
+    {
+      "path": "src/render/mapPresentation.ts",
+      "sha256": "dc662b2e9a4e5ecfbd0273bc076552c3ae8fdf77502c158922818d4ab4d7cce1"
+    },
+    {
+      "path": "src/shared/currency.test.ts",
+      "sha256": "1eab35aa446815e19918995d11b0a36a55e2b5c8421cc4c461e01ba9ab1b40f5"
+    },
+    {
+      "path": "src/shared/currency.ts",
+      "sha256": "b218404ba8df70fe04f2321a83e09bd1b76a1a53dc5b1b35ed5a4c7400fca3ec"
+    },
+    {
+      "path": "src/store/gameStore.ts",
+      "sha256": "2e2630165968a352cc0fe44f92ed176bc8cd981cbd41b1245055e2b7eb021378"
+    },
+    {
+      "path": "src/store/useGameRuntime.ts",
+      "sha256": "98d858ef6a8e602cab67f84dd61a506b5f36dcbc3949e510cc45c1d558442ba4"
+    },
+    {
+      "path": "src/systems/benchmark.test.ts",
+      "sha256": "71b07981da90547599e21fdcc6219acf41fae47431fd7038d5ff571d786b8182"
+    },
+    {
+      "path": "src/systems/benchmark.ts",
+      "sha256": "efd18f2ad83503c513757217fd5ffb48bcb37987325cbacaef750ce41d624169"
+    },
+    {
+      "path": "src/systems/city.test.ts",
+      "sha256": "2792e0a7af24303c068bdf871764f4683e34d364d120d2b8b3dc7c81660da2da"
+    },
+    {
+      "path": "src/systems/city.ts",
+      "sha256": "b6bed539dbba2d0dcf512c9f0185b2a6f7b837d00bfd569338aa52cf47a96cfb"
+    },
+    {
+      "path": "src/systems/competitor.test.ts",
+      "sha256": "3c725db187b98a81c374bc01f8502c81937da90427ecc534f16fc0c2baba798f"
+    },
+    {
+      "path": "src/systems/competitor.ts",
+      "sha256": "37cbedece8a9deebd46ced55be04159e945672d559035038ced5941269cf2d46"
+    },
+    {
+      "path": "src/systems/config.ts",
+      "sha256": "f58bc3c4ab530131cafcfb326baec46d0735e411e7587006566cd8b843e62e7f"
+    },
+    {
+      "path": "src/systems/contract-lifecycle.test.ts",
+      "sha256": "fbf69e1089ffa6348b68bb8095107d06b24334f119c61f4a6d9bb7c9031a4192"
+    },
+    {
+      "path": "src/systems/contracts.test.ts",
+      "sha256": "96435cd99831c8ace5b074f2807de8fcdb67b7272c2600e785c7b8d6bb62b1c9"
+    },
+    {
+      "path": "src/systems/contracts.ts",
+      "sha256": "a75440563a6d060510d7e65233e2253a202c05ba297a99be671837928f8ef869"
+    },
+    {
+      "path": "src/systems/daily.test.ts",
+      "sha256": "081b6c0582d85d34a5a36977154b93f3860b48e4aa86a856a8f636edd458d8bc"
+    },
+    {
+      "path": "src/systems/daily.ts",
+      "sha256": "9c0f860474203a8322c316e37c5445872f92e238afc204d5673cf849171e9c88"
+    },
+    {
+      "path": "src/systems/economy-regression.test.ts",
+      "sha256": "0426b384027961878fb6bc0492d4b6d68c40e7b74ec1a9d9b4154e742ebadd0c"
+    },
+    {
+      "path": "src/systems/economy.test.ts",
+      "sha256": "80c3efe65e716b9ada43ed032674cc378c5950503db87f4587cf556f277785c3"
+    },
+    {
+      "path": "src/systems/economy.ts",
+      "sha256": "42adf684c302e724cd4253e0d9339f8a24873d698f6db8c20492331a6acc6464"
+    },
+    {
+      "path": "src/systems/equipment.ts",
+      "sha256": "8c7062e898b1138e4a40499977720ec601c4bfbb34946c879e439df6f0a31ca5"
+    },
+    {
+      "path": "src/systems/events.test.ts",
+      "sha256": "59600009ae45a8a0508844ce2b2d42dc7521209dd7df9420fa58d05841b6ec82"
+    },
+    {
+      "path": "src/systems/events.ts",
+      "sha256": "185a46ea0fdb093b88dae0bfc412f182f503723125f7e9a63af094db4f6f3be0"
+    },
+    {
+      "path": "src/systems/market.test.ts",
+      "sha256": "567eddea11961b373fbda80fcb429ea3f3fe6bc5613ee88e0c98e493dc2257ea"
+    },
+    {
+      "path": "src/systems/market.ts",
+      "sha256": "78b6f859c79aa97cf75c55d9a9c030287d758b30a5a596ae09d3c9adc1b45495"
+    },
+    {
+      "path": "src/systems/models/audit.test.ts",
+      "sha256": "f58e19bbc9686a242fb129e8a30d681fd46a636907c6fca408452cbb4f8b341a"
+    },
+    {
+      "path": "src/systems/models/commands.ts",
+      "sha256": "64f43427f702ad7802fbd53802f1a72a61a84980d658a281f03e4cb0ee2b1445"
+    },
+    {
+      "path": "src/systems/models/config.ts",
+      "sha256": "3a1af4c94021b4bdec6ae04c001e754bacc71a7ec51690054532747cc2d905aa"
+    },
+    {
+      "path": "src/systems/models/economy.ts",
+      "sha256": "01517c1a2a067acca77f5f69bcb8f47e00255ae3382e6c6e64240102aa4f169d"
+    },
+    {
+      "path": "src/systems/models/fixtures/legacy-goldens.json",
+      "sha256": "1d770b0d6e02c38e0b55adc0e7ad98533969cc65a13db919b17bfff819fb3e89"
+    },
+    {
+      "path": "src/systems/models/index.ts",
+      "sha256": "9c24d4057a25da1502eade4d2575b8be0e2bfb8c63012dee3be8b78873ee04d9"
+    },
+    {
+      "path": "src/systems/models/models.test.ts",
+      "sha256": "eefd55e0d3973e44ae6001e07424f88e3e516e0e94510684f59c0a1bac1fdb66"
+    },
+    {
+      "path": "src/systems/models/simulation.ts",
+      "sha256": "2990082b4327f3505daae847afad56d8a8ab2dc74a9a8980e36d699eb5719e00"
+    },
+    {
+      "path": "src/systems/models/state.ts",
+      "sha256": "cdec9f7c55c2a1d3148890095fd6a70e73fc2542f14b79c935f6e4ba2407f086"
+    },
+    {
+      "path": "src/systems/models/types.ts",
+      "sha256": "067ac76a8e45dcc24182ee4a446a1a251001ce1734820fc4d2dfffd5c2add6c8"
+    },
+    {
+      "path": "src/systems/placement.ts",
+      "sha256": "2a94b4d79a11524c47e07bd756154e7752e24f28d5cc21c40edd82d6ebdf5bcd"
+    },
+    {
+      "path": "src/systems/procurement.test.ts",
+      "sha256": "06e04f5ebf180f369b288d669e4186ec471d3ebcbefb428a8ec7c2095783f664"
+    },
+    {
+      "path": "src/systems/procurement.ts",
+      "sha256": "4464c9537f9766f1bd8dad68fb842c0d628ba6be487cc6ebd04d773974c12896"
+    },
+    {
+      "path": "src/systems/propertyExpansion.test.ts",
+      "sha256": "1929dda22a4f682b652afa78082245a6de4ee36168a2d95eb8c60b2cb2a00f90"
+    },
+    {
+      "path": "src/systems/rareTraffic.test.ts",
+      "sha256": "12913d91bf80d9010d83ed07ec025a7c7ca339e168075a1cd93813c999f04078"
+    },
+    {
+      "path": "src/systems/rareTraffic.ts",
+      "sha256": "94272fb15e17d2d0fd9b78e51f6745ae8b2072000eb14927783ecbb23328c24a"
+    },
+    {
+      "path": "src/systems/reputation.test.ts",
+      "sha256": "b6de37123feaaa330959d80b621c6dcf1101f861ec19ab29687533e19e6825e7"
+    },
+    {
+      "path": "src/systems/reputation.ts",
+      "sha256": "a50bdda61851815340d8770bbf8efda831a6d1f437b1413f59b099fe5bc137fe"
+    },
+    {
+      "path": "src/systems/serverGrid.test.ts",
+      "sha256": "4477f0365a7bfa8aa85ebe6986e9fce67c128e601afc607646377df84dd51d17"
+    },
+    {
+      "path": "src/systems/serverGrid.ts",
+      "sha256": "b2c5b15715476876c24b0f6200e2ff760e512cb06c59e9d53f62e76c4f57f6a9"
+    },
+    {
+      "path": "src/systems/serverSlots.ts",
+      "sha256": "c8559bb04107590a80b7e3817a9155bc4f429346488b166d51427b409a2ceffd"
+    },
+    {
+      "path": "src/systems/simulation.test.ts",
+      "sha256": "247931dd3ee79638d3ac241d2f9a2897d03df5aed7ea7caef1544dd7db012fe3"
+    },
+    {
+      "path": "src/systems/simulation.ts",
+      "sha256": "6e4d417a94233be3a2799b7593fea02553b625c01e9c08ee776b625dd4798da0"
+    },
+    {
+      "path": "src/systems/team.test.ts",
+      "sha256": "55c1b1431fa5d4178e516a0b2556544693c10d2b920f231ed6d0db878c5d6237"
+    },
+    {
+      "path": "src/systems/team.ts",
+      "sha256": "d6971a6dc8a2647a50deb3ff17fbcd0c4efe940bde3f3fe4caae26a478b4d208"
+    },
+    {
+      "path": "src/systems/testSupport.ts",
+      "sha256": "1c839f932976824a6a0808950ff60e87b7603be4880fca89f4165e622e0345bd"
+    },
+    {
+      "path": "src/systems/training.test.ts",
+      "sha256": "5998a2f1f20ce291fe37719ce5c7d6a15ad55f404a9b096000118e9d9b0bdf36"
+    },
+    {
+      "path": "src/systems/training.ts",
+      "sha256": "b5a70e027ae4f25af7449c99b290f463f839a291284461d84f58aed35d17a13d"
+    },
+    {
+      "path": "src/systems/types.ts",
+      "sha256": "fb18996ca891517c6fa82d5279d915f29cc7d996fe892579d0e9719007559021"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "f066c07a9f784cdce0924cb8571e0f7750924be244565b5c47dbe8a450b6d33e"
+    },
+    {
+      "path": "src/ui/CatalogScreen.tsx",
+      "sha256": "324405e0ce787b1dca397757e0ade2001a1f356fcf349fa7afba68b1fa195f51"
+    },
+    {
+      "path": "src/ui/CityCard.tsx",
+      "sha256": "f4a9f3de82c8bddb310ebb80f9f03ebd9c83f89cad5aa5fe2bb849ea9c9db537"
+    },
+    {
+      "path": "src/ui/CompetenceReadout.tsx",
+      "sha256": "e2aadd05a06f6966f73b713b019e7a211e581e99dded1079306f3b1a54063904"
+    },
+    {
+      "path": "src/ui/Icon.tsx",
+      "sha256": "4bff00885da47a36a52d07538747517e675ed9e3af72dd2ee7e88063a9263bdb"
+    },
+    {
+      "path": "src/ui/InteriorScreen.tsx",
+      "sha256": "8b0d38390f99d813b831190b241461724ecbe2d4dab8063f79916836d377d375"
+    },
+    {
+      "path": "src/ui/LocationCard.tsx",
+      "sha256": "8429e40ef695e6ab0cae7700db3643192f5cb073ac3c4b35ed97a6228a83b626"
+    },
+    {
+      "path": "src/ui/MainMenu.tsx",
+      "sha256": "4dbccdc2e5e0e49076ba9ee84ce58f6513bd8fb79e6af0c870aa0f23beec7626"
+    },
+    {
+      "path": "src/ui/MapView.tsx",
+      "sha256": "fa4550c185a95ee86241451497b2aec079db05ad0408831aa9ef5fd835f7dbbc"
+    },
+    {
+      "path": "src/ui/Modal.tsx",
+      "sha256": "38ac4ede37f0640497f43d797a337fe7827edad4fa43675668bd2c5138203232"
+    },
+    {
+      "path": "src/ui/ModelTabs.tsx",
+      "sha256": "961bd9d1438d2090f47db122ed349cacba0df1d6f45df3241f0cac99c5de9989"
+    },
+    {
+      "path": "src/ui/NewGameScreen.tsx",
+      "sha256": "3b583301950646361167f1a407a6c94284de0314bd294158b2adfdbd7b646a9b"
+    },
+    {
+      "path": "src/ui/NoticeToast.tsx",
+      "sha256": "5f123b17e28e8f23c96c148cc57ce7f36f6844ccb38d2dcf3d0dbd5057072359"
+    },
+    {
+      "path": "src/ui/OfficeScreen.tsx",
+      "sha256": "24af8f81efefe33c140624dbce46136a63394a7247651e772edcbd427cd1ccd6"
+    },
+    {
+      "path": "src/ui/PortfolioScreen.tsx",
+      "sha256": "47fbd5554a71ab97dae6b911b07c0deaf4873b1fa31c6a9aff9c3645486e7782"
+    },
+    {
+      "path": "src/ui/ProcurementModal.tsx",
+      "sha256": "500731c93ed7ead3e2ea76032448b75687ae5128a104ad3fa302aaf202a4b164"
+    },
+    {
+      "path": "src/ui/QuantizePanel.tsx",
+      "sha256": "fe078f39e04b84ed4efbb5cfe765251c6295d506d5e32c66dbc9ee3c857399fc"
+    },
+    {
+      "path": "src/ui/TestingScreen.tsx",
+      "sha256": "870bfcb583cb2624b8ed548090180c95ec4f2fc07fa9e75bb9e4c4a06c281a43"
+    },
+    {
+      "path": "src/ui/TrainingScreen.tsx",
+      "sha256": "3783c57acfd470517d82139c9bcbe4cabea7cf212a91aa429ee888c50b5c2ab3"
+    },
+    {
+      "path": "src/ui/format.ts",
+      "sha256": "4773f247b2df0df56b353ecce234a6567564762119bbf43312487cd6a89f6525"
+    },
+    {
+      "path": "src/ui/modelView.test.ts",
+      "sha256": "5c5a70af8ac6271395ef715da4ffacc59dd26f63033c78853c984615fb89e79f"
+    },
+    {
+      "path": "src/ui/modelView.ts",
+      "sha256": "056b7c683ab15d6bf39a9272f44600e6844e22022f7b095c6d50a075b230a200"
+    },
+    {
+      "path": "src/ui/styles.css",
+      "sha256": "4ce089ad58a9b8ec3deb51389dfe01a5c87fc92a3e27083704ba50a7881ad02c"
+    }
+  ],
+  "browserSourcesModified": false,
+  "fullParityVerified": false
+}

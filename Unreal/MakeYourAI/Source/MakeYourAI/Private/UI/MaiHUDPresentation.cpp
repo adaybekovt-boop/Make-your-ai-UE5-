@@ -7,7 +7,7 @@
 #include "Persistence/MaiSaveSubsystem.h"
 #include "Core/MaiStrings.h"
 #include "Engine/GameInstance.h"
-#include "Misc/LexFromString.h"
+#include "String/LexFromString.h"
 
 namespace {
 FString Money(mai::Money Value) { return UTF8_TO_TCHAR(mai::FormatMoney(Value).c_str()); }

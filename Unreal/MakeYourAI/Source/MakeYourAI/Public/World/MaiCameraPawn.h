@@ -14,9 +14,18 @@ public:
     void Focus(const FVector& GroundPosition, float Width);
     void ZoomIn();
     void ZoomOut();
+    void RememberOverview();
+    void ResetOverview();
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera") TObjectPtr<USpringArmComponent> Arm;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera") TObjectPtr<UCameraComponent> Camera;
 private:
     void MoveNorth(float Value);
     void MoveEast(float Value);
+    void MouseHorizontal(float Value);
+    void MouseVertical(float Value);
+    void Orbit(float Yaw, float Pitch);
+    void Zoom(float Factor);
+    FVector GroundTarget() const;
+    FTransform Overview;
+    bool bHasOverview=false;
 };

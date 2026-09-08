@@ -4,6 +4,7 @@
 #include "MaiPlayerController.generated.h"
 class UMaiHUDWidget;
 class UMaiFlowWidget;
+class UMaiNativeWidget;
 class AMaiCameraPawn;
 class AMaiWalkCharacter;
 class AMaiWalkPawn;
@@ -16,6 +17,7 @@ public:
     virtual void BeginPlay() override;
     virtual void PlayerTick(float DeltaTime) override;
     virtual void SetupInputComponent() override;
+    UMaiNativeWidget* NativeUI() const { return NativeScreen; }
     void SelectLocation(const FString& Id, int32 Cell = -1);
     void EnterLocation(const FString& Id);
     void ShowCity();
@@ -27,6 +29,7 @@ public:
     bool PrepareCampaignScene(const FString& Interior, bool bMenu, FString& Error);
     void ToggleOperations() { bOperationsOpen = !bOperationsOpen; }
 private:
+    UPROPERTY(Transient) TObjectPtr<UMaiNativeWidget> NativeScreen;
     UPROPERTY(Transient) TObjectPtr<UMaiHUDWidget> Screen;
     UPROPERTY(Transient) TObjectPtr<UMaiFlowWidget> Flow;
     UPROPERTY(Transient) TObjectPtr<AMaiCameraPawn> CityCamera;
@@ -34,6 +37,8 @@ private:
     UPROPERTY(Transient) TObjectPtr<AMaiWalkPawn> WalkPawn;
     UPROPERTY(Transient) TObjectPtr<AMaiGarageInterior> RuntimeGarage;
     bool bOperationsOpen = true;
+    float QualityClock=0;
+    bool bDistantView=false;
     void ClickWorld();
     void PossessCity();
     void PossessWalk();

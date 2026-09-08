@@ -27,7 +27,16 @@ class ScaffoldChecks(unittest.TestCase):
 
     def test_real_runtime_module_and_editor_only_plugins(self):
         descriptor = json.loads((PROJECT / 'MakeYourAI.uproject').read_text())
-        self.assertEqual(descriptor['Modules'], [{'Name': 'MakeYourAI', 'Type': 'Runtime', 'LoadingPhase': 'Default'}])
+        self.assertEqual(descriptor['Modules'], [
+            {'Name': 'MakeYourAI', 'Type': 'Runtime', 'LoadingPhase': 'Default'},
+            {'Name': 'MakeYourAIEditor', 'Type': 'Editor', 'LoadingPhase': 'Default'},
+        ])
+        runtime_rules = (PROJECT / 'Source/MakeYourAI/MakeYourAI.Build.cs').read_text()
+        self.assertNotIn('UnrealEd', runtime_rules)
+        self.assertNotIn('AssetTools', runtime_rules)
+        self.assertIn('QuickJS', runtime_rules)
+        editor_target = (PROJECT / 'Source/MakeYourAIEditor.Target.cs').read_text()
+        self.assertIn('MakeYourAIEditor', editor_target)
         for plugin in descriptor['Plugins']:
             self.assertEqual(plugin['TargetAllowList'], ['Editor'])
 

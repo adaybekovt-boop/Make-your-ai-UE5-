@@ -1,0 +1,1469 @@
+{
+  "scope": "authoritative tracked resources; presence/hash is not UE import verification",
+  "assets": [
+    {
+      "path": "Unreal/Assets/README_RU.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba7064f64db2a9157a2e1b0e44078462d6522c26"
+    },
+    {
+      "path": "Unreal/Assets/UNREAL_IMPORT_RU.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a7287fc76183f55c4692a5bd0eeb51eefb24554"
+    },
+    {
+      "path": "Unreal/Assets/asset-catalog.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f19bebb0c3ad45a3b93598178921dad70ac494c"
+    },
+    {
+      "path": "Unreal/Assets/before-car-1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67f41713bd6d8a5e6305f41df5961c8348295efa"
+    },
+    {
+      "path": "Unreal/Assets/before-garage.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5061fedf7ea582bbeaf2afb44f152c1fcb777d1"
+    },
+    {
+      "path": "Unreal/Assets/before-person-1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2c698211accc123dc8dea707dd7c6cd9cfb4563"
+    },
+    {
+      "path": "Unreal/Assets/before-rack-enterprise.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aebd2ea08bca7159edb63b9631a2993b373f0d5f"
+    },
+    {
+      "path": "Unreal/Assets/build/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc64270a8b9c5a9b6ae511a0c6d75085b4458ff4"
+    },
+    {
+      "path": "Unreal/Assets/build/blender_common.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e31b30f584046e0f38aac8b0cecec3901246aed"
+    },
+    {
+      "path": "Unreal/Assets/build/build_all.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbb6e79edfa0badccbd525372d273f22043711cc"
+    },
+    {
+      "path": "Unreal/Assets/build/enhance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf6789aebf24d99390d6f666decc7fac841035d0"
+    },
+    {
+      "path": "Unreal/Assets/build/make_catalog.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ecbf15b3e9c8b2cbf2f561a79f1e0970e334a54"
+    },
+    {
+      "path": "Unreal/Assets/build/make_maps.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d10178505d4fee0488829eb5c5312e6ca1727c3b"
+    },
+    {
+      "path": "Unreal/Assets/build/pipeline.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a16724a7b2b018659d5518c13d4a1f7e0af097fb"
+    },
+    {
+      "path": "Unreal/Assets/build/polish_exports.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43d761c60dfd61e8ec75fd0b0f0fa89045221f66"
+    },
+    {
+      "path": "Unreal/Assets/build/source/build_hero_coupe.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2a895ac970514feaf898f695a73386c4583ecdf"
+    },
+    {
+      "path": "Unreal/Assets/build/source/build_interiors.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "519206962ba1587b9eb2d0ad9b752654f30f16dd"
+    },
+    {
+      "path": "Unreal/Assets/build/source/build_reference_people.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04d4374d9d6f05e4aab692a56a6c7eb26462fe3d"
+    },
+    {
+      "path": "Unreal/Assets/build/source/build_reference_vehicles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19724b633060f308a561eeede539e50934da6745"
+    },
+    {
+      "path": "Unreal/Assets/build/validate.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88b53af23bac81eaf1a82444c0edd8d285dfc3e8"
+    },
+    {
+      "path": "Unreal/Assets/build/validate_enclosures.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "504d82071a743ac62aa2dbcf420d8273665efa41"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "984540939123a7d522b17c0cbb1252aa71ca5f2c"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0dd9452d5f233a3f0c50f48f3b6c3e845d0029a0"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/person-1.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f77109d71a22e6e966253eb1eeead3dc6514f8a9"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/person-1.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e333924ecf6e59b9032d05c498834d3a2b8cfdf"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/person-1.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0598763389c14968dd5b577b17f12a8d4a9f7751"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-1/person-1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1abbf834b29eaf441efd765f6f3a580ea1feb823"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ce6d80daf649c9fba3d3d6eecf723553f6dd4fa"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b80b2a1adf326615aef508a03f4b8b493110709a"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/person-2.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27720d182538ff519f33859267285b3b83bc2607"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/person-2.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d613cf163b0f9d2dd874a8302620f491a0d01896"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/person-2.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df711d7959afa01e4ccdb3d2899dab1e1598aeab"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-2/person-2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd2fca911474df75cd67b8f6a69ace53ce1cd6e7"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f56059abcbf659405723f3e5f4ac901e8db3961e"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85ca57e0d82e6a9625e48cde7f79b73681a4218f"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/person-3.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a108ac43dd8e7f3b6e6bf7dfc6d1dadf009c7d5"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/person-3.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86e56e0ff770732a8164340636770437fb17a248"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/person-3.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e23eddc917c8a36e6e4c5b9035c0c39e088f474a"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-3/person-3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9b1461c7a9346d90e0cddab34bd4ffc48a0841b"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96a1d6884f24258b14edb268f2f09080a7016e5c"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "783b5af7436995217deca764254c4674f8e763aa"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/person-4.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "295b34b4b14188b18025016f4ed4683c9ae28723"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/person-4.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c65ef195934c1ca5c11bcfb0c266eac407fad0e6"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/person-4.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82194204514641b299cbfb03e2adc2fec1459c94"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-4/person-4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a8e4d4076409589d601c3b2f3e9bd621649351e"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89031eb2eadbdd2410cc98660ad7fa2b730caa5d"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a70db32245a696ed576d7c571cbd48857c76592e"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/person-5.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8bbba8d27686680b481ff0e7feae37e9fe71df3c"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/person-5.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c267acc0c9a50e5791920d1a92a776a2219d5926"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/person-5.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c0591b7a54f1c63cc4789b09996e14a04387554"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-5/person-5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "168288c07e73fb097aef0656b6c8492329a23b98"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af456c1bbdce1e9a4365b20e727c733289c8e54e"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10a4552b5f92eafe02ce0be8460f9cb1e01526ed"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/person-6.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cabec2724369caa74704666773e056fea2671dfc"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/person-6.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "843a326a45a97c3d7cee0d9c0cfd98a4555f080f"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/person-6.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c18a12a5337fcf0c913353a5a4882c430d4a54e2"
+    },
+    {
+      "path": "Unreal/Assets/characters/person-6/person-6.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01b69609a86c3910ed40e8bb86998101873266bd"
+    },
+    {
+      "path": "Unreal/Assets/checksums.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "abbed91f6dbd750234b73cfcfc8f111e636b787a"
+    },
+    {
+      "path": "Unreal/Assets/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b71b3adad3254bab8912034526621ad959431a1"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dbe6b95f2604a46acd023e48351cc89d2ee53b8"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/campus-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa8b67a71108ee34a098ec778cb11cb741d3171f"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/campus.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b57d9b5ba99d0af9af8b3487a90bf8b252e8899d"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/campus.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca24658dd3ef98774f206c989af73084667f87d5"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/campus.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7832a9ddad0b45ac80ee12890adbe44039e0a9a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/campus.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3d0432ee5843b7dba780fb0f8de096444d69a59"
+    },
+    {
+      "path": "Unreal/Assets/interiors/campus/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6bd151d5e67bd6378b1fe6ca16e673012e4d7b6e"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d151e4b10a42bba1ae27e7ca4946aa9956f9c27"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/dc-north-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76d6fd48239d1cfa7b5e630a27fb6543e66a6bab"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/dc-north.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52661d71d174cf84f053d045996dc9a96948de7a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/dc-north.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5e5b155c4e74a06ff5fa1ac9d81c7a3459a254a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/dc-north.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d853e0c0b097f5e9dd173376cca569bbb941482"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/dc-north.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac6e5fb9a912c8359935b5b4a013b3d5dc52df92"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-north/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "709a8115c7f2e99f07275c391ca0aa3ff1cdf030"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c212093f4584cc84450d82a1ab38b7440d22d0d3"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/dc-south-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1136431c36d8dff252bc755b2e2f11d107e94de6"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/dc-south.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "658414e29ec1ab88f6de8d71db42f2694e66d141"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/dc-south.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd66ab5fe60f4556a0a079677de3b3b0abcf0b41"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/dc-south.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8a8e355e7aecd1531c729fc77a2633f14cbb80d"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/dc-south.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f64f9cfb4e9a9f11d5dc4f16128d1ee21ce6466e"
+    },
+    {
+      "path": "Unreal/Assets/interiors/dc-south/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "709a8115c7f2e99f07275c391ca0aa3ff1cdf030"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74417027e6c9ea82657c899f3e0fd3f5f8c3f560"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/garage-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41fa99fd34791ae204b4cb414209d38db321f3dc"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/garage.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2132f9cc8885e99659d8afccfeb08eac82c37242"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/garage.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f291e6dd3755de290bc06d0aaa05ac0da51000a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/garage.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c6c05ccc674bf61f44b404ac30f48b51b81fe00"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/garage.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b5093be96792a41cf240a00189317d2ced07648"
+    },
+    {
+      "path": "Unreal/Assets/interiors/garage/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd04e97cd7faacf7991901de1718a724169ed879"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca67da845925281160f5e9ecbec29b17366842f9"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/hq-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6915a720af8bf559516d51c70ef3ce776f6b6aaa"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/hq.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eecbb7e435955f2715572b4e074fa3079b9d75a4"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/hq.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a10b643fde5949534d8e7662b992f3ac7c438e2"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/hq.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07c65f51614a046eef781be72e533c8137d3663f"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/hq.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e76fd465834dfaf844add18986c2aa35e7e865a2"
+    },
+    {
+      "path": "Unreal/Assets/interiors/hq/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69fbbed7ee8da9fcb63b0b2c1c3491fe58793c9a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d93ea93d6186f6c77d99465ded043397a0196591"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "709a8115c7f2e99f07275c391ca0aa3ff1cdf030"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/server-hall-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4061543f99d2c95fb919bf573035d57f09391ec"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/server-hall.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3500726f77dbb80c105714a0cd1c24887cda1a6b"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/server-hall.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36c2fd68c04d8d41ac0c53c319ff0c6777a35f19"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/server-hall.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17d4b2aec0e114aa8dc0996db3c81ddfce88cb63"
+    },
+    {
+      "path": "Unreal/Assets/interiors/server-hall/server-hall.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03359a2ef55dad466b2d5fda01d0dd50a8af1bdd"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "475b77da2a301636581276b865953265e1742e90"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e81207e33c2bc89afd494f2fb6e4628821813c13"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/technopark-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d04504fcb1ce7032cdd25148969d44e1448ad795"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/technopark.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cffb49d58ed75943de2784a2363185b170fc13df"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/technopark.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af584c8a0523aff06a02ee669e5a6b47fbcc429e"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/technopark.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6630b1057db05ce6de4f916b930fa0ed90803f46"
+    },
+    {
+      "path": "Unreal/Assets/interiors/technopark/technopark.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f446151bfd0e95af894a63af6f1c654becaf05f"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6da6f17920e87cc9a9e4286aa30092e9f17341de"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05cac616c4f0e4612f150d8dc0620c9fe07ca145"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/workshop-enclosure.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81539770274a76061d08c9e186c2c552d1989651"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/workshop.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d1cd1a40ae70d7a8cdc1d63b672475f6246929e"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/workshop.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e9b047cc8c3203c5d0d4ec7d803fd5d0564674a"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/workshop.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0252ab167121b9cf0eb0eefac46715a7a02cb36e"
+    },
+    {
+      "path": "Unreal/Assets/interiors/workshop/workshop.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "384fdca64ffd4cd8fdde2b969c310fc95bf9313b"
+    },
+    {
+      "path": "Unreal/Assets/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c60b9b9b98d0fdeb7f1672edd54917464559a1a5"
+    },
+    {
+      "path": "Unreal/Assets/previews/characters.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17118e845643040fa00dd4c19deb5250b134d23a"
+    },
+    {
+      "path": "Unreal/Assets/previews/interiors.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff59c4f06069c9421967590a116ca4e69945f51f"
+    },
+    {
+      "path": "Unreal/Assets/previews/racks.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e9091e7d00fd2a416eeb38026e65d6583314b70"
+    },
+    {
+      "path": "Unreal/Assets/previews/vehicles.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c465a4df23607701a43689655070489f509fb9a"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b91f707f5ca33d523c750182c25f1bd5e4a40a96"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "071fc57aed08d2ad100cff40adbbe01f70efa122"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/rack-basic.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2308b596bc959725669109e6ccb10d52c91956a3"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/rack-basic.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "216fb7e4719dc6dd8f83238394fd0f66fd1eb3e2"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/rack-basic.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67909374f474bbe12e272ddcbd2f5ddceb6f94ab"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-basic/rack-basic.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78461eb247ef65dcad34103c3e3e86e4d4506a98"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "304cea969bdfc7559328ddbc463cca53dcf471ce"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "071fc57aed08d2ad100cff40adbbe01f70efa122"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/rack-cooled.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e2677b5815a9c3629aee736595d83110c66762e"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/rack-cooled.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1872e2a5eb8b73362b227e7f0351ca42b6c292fe"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/rack-cooled.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "255d6e846feb162758db04cdee6a98ea35a7d6d9"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-cooled/rack-cooled.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c76566c7274cf0805f523ec3868c9d1b1a0e523"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a74e431ae258e0373091a43deb6b6db698428345"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "071fc57aed08d2ad100cff40adbbe01f70efa122"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/rack-enterprise.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf3c8936e9f171a70d7e1d2bfb8db29a792a2135"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/rack-enterprise.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46843de81bc7cce96d3959867b04a5759e2df874"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/rack-enterprise.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee97140f66285ee527c10908084d5060e13b97cd"
+    },
+    {
+      "path": "Unreal/Assets/racks/rack-enterprise/rack-enterprise.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9ffff2ff8188418dad27a53933de5a392deb037"
+    },
+    {
+      "path": "Unreal/Assets/source-inventory.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26a7901dd6f2365876272e70b494b2dfa9e64ac7"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_concrete_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0419e87b7cd9cc5c8afb2d71444e60de38b93576"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_concrete_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71d8497bc66ba8cbb8df2fe96ed3d76fd90e3e4c"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_fabric_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80b7cbb239a55969da49d27a83103cedd0eca3e1"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_fabric_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95a98c3f010740c923bb885a0b351575354ef1b6"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_leather_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1281ab8bfe9595e090989cc9ecc09ba4c2018c2"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_leather_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7efcbfa87fd1173dc6f2fc91926dc16d6098cd95"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_metal_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2520c35f1977824870964e0393c10f85b38faacf"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_metal_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb060016304a5cbfcaeb95f7bea404ae23234c9a"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_oak_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e797e06e4abfa90905db363300205369de8ff47"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_oak_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba34b3506c0735e1a65c7ae5728a94f5c5b40650"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_rubber_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ac45122de4bd4f97aedd4f61303178ef91ca2e1"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_rubber_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3551324f3572b1e9cf9f8b86a7df0578fd880dce"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_skin_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "848d7ca2ea739c8e4e7a80440ab10dffa0a5ef96"
+    },
+    {
+      "path": "Unreal/Assets/textures/T_skin_Roughness.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5485af1b87dd45549757a104d7d8f41f545d8e2"
+    },
+    {
+      "path": "Unreal/Assets/validation-partial.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2e67349f6186e8a3c825cda1c69cc63554d7058"
+    },
+    {
+      "path": "Unreal/Assets/validation.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d50f1dbd70325dcb490559a420a91d60a7ec3d6e"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04b94698399790db5d0391d38712623dd2547944"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/car-1.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcf8a38649c559a8e99dbb109eec94f776a45163"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/car-1.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd2e69edf5d1a29d99c57d44570cb492ef6ebf38"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/car-1.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8305c43e68509dc59cbdc4f4417c8bf22e4b2b21"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/car-1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4431405e52a62e8813a1a169955c8359108cd770"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-1/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "740cba06c75c477d1bcfd7cf58ddead4bea34a53"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fcb39d867149980c7a05132c12a25735ab9fb99"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/car-2.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "118011cbf0855cdecb9af3f3de2a604927171e6f"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/car-2.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "111fa0015f3ffb2366b6979aa88a722238aaf837"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/car-2.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "458f6ceab8d0b1d617d360f347f235a47312a033"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/car-2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0dffe76040f82eb850603fbba335bb5d7a396ab0"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-2/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd77dfe5075c7278f23407cd7066fcd076d903d0"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25ca28ae568028c463e0cf0f16cd3c4a84ab65c9"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/car-3.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b7ff4ccbf245ee74faf1f3aee851be157e436c9"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/car-3.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e1e9b28d44f71b914cce369469f64971c71eb3b"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/car-3.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "102ddc09ae1a016a2d3b3f9055745aa3a7afc4d2"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/car-3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e53e1972dfffd6f82ec440cdafe031095877a16"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-3/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65b68332ae670998bb6971fab7ad3bcfa861ca14"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18352a9678097d716718cb321ea67166f6cab47c"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/car-4.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b308ea245df2da17ff1e35d4fa6b0e3a563b61a1"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/car-4.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07e91f8ac04f7690a714b6d54185112d208976d6"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/car-4.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94d2e8d67603aae6f83c74f2127f4daf42b8ebae"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/car-4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "220dd513e4365010278cb5e92d1fa4123782124b"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-4/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a385298aac2abea48381b9485517a509d9bfd160"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2338a837c170168140de0acd3c3e8058a9188d08"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/car-5.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "137b097fc1fc1b3e4bf24781e5ea77f8abb649d5"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/car-5.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d4b5b05681c005b20246161e38c1b6add3b25bb"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/car-5.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53a9b17a35ef29307766894590abe6f8438238f8"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/car-5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f57be27d405fd9192053735c48102697478f11f3"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-5/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "339a2c4ccf2d417d0a95a553ff301da1b15cc34d"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/asset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59f754b148a558c6459b1aabf5f43fa5c0cb203e"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/car-6.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c91264688d2cf09ea80cc20b750c523466fb863"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/car-6.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b28e549f28f3b22079bf7fc0a5b33e36b8f434c9"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/car-6.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff233b7d57535ce4a40850490eed314d4f956394"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/car-6.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc569dbfbd27cc8128addebbe54f343ce5febcd5"
+    },
+    {
+      "path": "Unreal/Assets/vehicles/car-6/materials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f3ecc5bd9d1f3b28c123dcdda2b7b56938597f2"
+    },
+    {
+      "path": "Unreal/CityV4/README_RU.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "725186394350d22155cd0e197d64b1a8cf1d816b"
+    },
+    {
+      "path": "Unreal/CityV4/build_city_v4.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d03ba7e6ec197b54a92485991b6885ffc47372bf"
+    },
+    {
+      "path": "Unreal/CityV4/checksums.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4218789793e4e0bf5d5465654256bce739112f99"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-auction.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62b13e3e65e8da94147591e497fbd499e150b808"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-day.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d02b3951f598eecbbb80848e54bacca87d01db4"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-fbx-validation.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4e96d3a0755f5afbaa96be03cae60469719270b"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-night.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51363aab0dc125e640f3e0600e0d358960fbaeda"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-nuclear.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30dadca90cc4bdf5d2b253b92dfe4246df4d9d68"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-report.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52272c52edc1f86ba2ddb237cd3cbdf3660a7ec5"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4-suburb.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fe2c73b397dd4234a595375a1a06cfcc8729daf"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4.blend",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c0539abc3f9528415a64c1064095bdc65df06e7"
+    },
+    {
+      "path": "Unreal/CityV4/city-v4.fbx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67105e990ad02eae231c9ab97d2630f8e6731c8c"
+    },
+    {
+      "path": "Unreal/CityV4/polish_night.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d47319b5eb22125fff57c1b5b547888a17989127"
+    },
+    {
+      "path": "Unreal/CityV4/render_city_v4.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6ad371c2702dd2c96429dff18bf9851fc570d36"
+    },
+    {
+      "path": "Unreal/CityV4/source_city_v3.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d6300bb6a640e63e82ab6a9f0ed46b7bb52b75b"
+    },
+    {
+      "path": "Unreal/CityV4/validate_fbx.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb13032701b51ab888eee854d79c40689c7e2df1"
+    },
+    {
+      "path": "public/favicon.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47b594abac22ee94b8da48ee454ccb27dd423944"
+    },
+    {
+      "path": "public/models/actors/car-1.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52aae442b7e0c23f3ea5aa6951f61b46e82e6ebb"
+    },
+    {
+      "path": "public/models/actors/car-2.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67e83c4c12af1eed590851f6c480b4df833aa904"
+    },
+    {
+      "path": "public/models/actors/car-3.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59d9deb2c14af53fda6c5954e09d4cce264ffeb4"
+    },
+    {
+      "path": "public/models/actors/car-4.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "208e115b30ae665c629fc4da34816b9abbba1f3d"
+    },
+    {
+      "path": "public/models/actors/car-5.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3e2b1b0fbea3c3a9b483b3bdd2fdcb6b5f82433"
+    },
+    {
+      "path": "public/models/actors/car-6.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf151808a6fb0beb145f7eb29c8c8a870ebac1cc"
+    },
+    {
+      "path": "public/models/actors/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79f3d48689408551db6a7feb7cb15336f11f5ae6"
+    },
+    {
+      "path": "public/models/actors/person-1.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ccd27eebcda75f3aa2666822d83981362e225c04"
+    },
+    {
+      "path": "public/models/actors/person-2.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3f6192ab9147f4444bf983b72dd7543c8f71dc4"
+    },
+    {
+      "path": "public/models/actors/person-3.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8fcc8ac1f8418d3ec3304ccec17343adcceba7b"
+    },
+    {
+      "path": "public/models/actors/person-4.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d242e7b704224b97d73019a3c906b8f2ef1008b1"
+    },
+    {
+      "path": "public/models/actors/person-5.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f4bf61878b43c60ffff606cc46413f13945a97d"
+    },
+    {
+      "path": "public/models/actors/person-6.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06a77e3ec5f380ba6118a8f7f8f056d4fd53a0a6"
+    },
+    {
+      "path": "public/models/interiors/campus.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7426457c4e19e7b604fd0389f1efec08fe602e9"
+    },
+    {
+      "path": "public/models/interiors/dc-north.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45c095c1176fc2e0be85237e7d65a51c8f821ac4"
+    },
+    {
+      "path": "public/models/interiors/dc-south.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b316567f264f6a60df18e275292f5a329d78ef1"
+    },
+    {
+      "path": "public/models/interiors/garage.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d3037970c02573efa174f3ef24c204b048293eb"
+    },
+    {
+      "path": "public/models/interiors/hq.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af438e6a2c44bb06e7095f838ebdcd38e5df61a0"
+    },
+    {
+      "path": "public/models/interiors/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22a01682490003624bc20842747d5b6bcba9707c"
+    },
+    {
+      "path": "public/models/interiors/server-hall.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7e5fb903557f25d90ddd7cd6c30c13adad0be25"
+    },
+    {
+      "path": "public/models/interiors/technopark.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66df0775b65f065b2b7dd7aa20aeb14d484fa8ff"
+    },
+    {
+      "path": "public/models/interiors/workshop.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa8bfcb0f07cba8f3803239a7b15533977ad03a7"
+    },
+    {
+      "path": "public/models/living-city/living-city.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d52dd66bd8cdc6a12cb688c94af951f7a5069052"
+    },
+    {
+      "path": "public/models/living-city/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35f1c37884a4e5841b62245720b41f1675078372"
+    },
+    {
+      "path": "public/models/metropolis/city-exterior.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1be44ef7e9bf854fc6022c4b30f2f5528202ce0c"
+    },
+    {
+      "path": "public/models/metropolis/draco/draco_decoder.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c84b0be2aa46407df9f3f3371d574dc165b55f8"
+    },
+    {
+      "path": "public/models/metropolis/draco/draco_decoder.wasm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "469904ebcb7b83523db73913a19c349528105ff8"
+    },
+    {
+      "path": "public/models/metropolis/draco/draco_wasm_wrapper.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43f15568384c84f9506cd86fc4a8736e1ba2ec1f"
+    },
+    {
+      "path": "public/models/metropolis/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fd4b407756e5c484d3950ac50bc159989a4c5f9"
+    },
+    {
+      "path": "public/models/racks/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a71c7b0973329c12a9045d3bbf02260932a4afe9"
+    },
+    {
+      "path": "public/models/racks/rack-basic.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcf0be4f22e69f28cb95ac6845cce399ee6f99c6"
+    },
+    {
+      "path": "public/models/racks/rack-basic.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffe876dccd93bd1c9747f4b909f994f75cd18727"
+    },
+    {
+      "path": "public/models/racks/rack-cooled.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c21d497b54daa16104754a6d79bf0e2bb3d9350"
+    },
+    {
+      "path": "public/models/racks/rack-cooled.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77c5b5dcafe853e8b1ecf07a54c4ddd76ad62182"
+    },
+    {
+      "path": "public/models/racks/rack-enterprise.glb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d99cfb2b736a0ac57f52e0780d5fc08e77fc9cb"
+    },
+    {
+      "path": "public/models/racks/rack-enterprise.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15f629894d4e987f569cd5327f7b48e781f603fc"
+    }
+  ]
+}

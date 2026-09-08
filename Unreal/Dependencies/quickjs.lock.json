@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/quickjs-ng/quickjs.git",
+  "commit": "1ab8676f4b6d6d669baeb5f21790fb9734636a20",
+  "tag": "v0.16.2",
+  "license": "MIT",
+  "linkage": "static",
+  "libc": false,
+  "memoryLimitMiB": 128,
+  "executionLimitMilliseconds": 2000
+}
