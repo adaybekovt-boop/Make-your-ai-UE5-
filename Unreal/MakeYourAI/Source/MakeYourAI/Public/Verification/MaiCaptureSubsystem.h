@@ -6,6 +6,7 @@
 class UMaiNativeWidget;
 class UMaiRulesSubsystem;
 class FJsonValue;
+class FJsonObject;
 UCLASS()
 class MAKEYOURAI_API UMaiCaptureSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
     GENERATED_BODY()
@@ -23,6 +24,11 @@ private:
     FString Directory,PendingShot,Session;
     TArray<FString> Captures;
     TArray<double> RecentFrameMs;
+    bool SweepRequested=false;
+    double SweepStarted=0,SweepPreviousTick=0;
+    FVector SweepPivot=FVector::ZeroVector,SweepOffset=FVector::ZeroVector;
+    TArray<double> SweepFrameMs;
+    TSharedPtr<FJsonObject> SweepReport;
     TArray<TSharedPtr<FJsonValue>> PerformanceSamples;
     UPROPERTY(Transient) TObjectPtr<UMaiRulesSubsystem> Rules;
     UMaiNativeWidget* UI() const;

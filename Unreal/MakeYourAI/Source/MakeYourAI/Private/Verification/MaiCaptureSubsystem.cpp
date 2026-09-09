@@ -48,6 +48,7 @@ void UMaiCaptureSubsystem::Initialize(FSubsystemCollectionBase& C){Super::Initia
     if(Session.IsEmpty()||Session.Len()>80)return;for(TCHAR Ch:Session)if(!FChar::IsAlnum(Ch)&&Ch!=TEXT('-')&&Ch!=TEXT('_'))return;
     C.InitializeDependency<UMaiRulesSubsystem>();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();
     Resume=FParse::Param(FCommandLine::Get(),TEXT("MaiCaptureResume"));
+    SweepRequested=FParse::Param(FCommandLine::Get(),TEXT("MaiCameraSweep"));
     Directory=FPaths::ProjectSavedDir()/TEXT("Verification")/Session/(Resume?TEXT("resume"):TEXT("capture"));
     if(IFileManager::Get().DirectoryExists(*Directory)){UE_LOG(LogTemp,Error,TEXT("Capture directory already exists; never overwrite evidence"));return;}
     IFileManager::Get().MakeDirectory(*Directory,true);Active=true;Started=FPlatformTime::Seconds();Next=Started+5;
@@ -77,6 +78,7 @@ void UMaiCaptureSubsystem::Finish(const FString& Error){
     Report->SetBoolField(TEXT("humanPlaytest"),false);Report->SetBoolField(TEXT("fullFlowVerified"),false);
     Report->SetStringField(TEXT("performanceScope"),TEXT("Recent game frame deltas per screen; includes transition frames, not isolated GPU timings or a sustained benchmark"));
     Report->SetArrayField(TEXT("performance"),PerformanceSamples);
+    if(SweepReport)Report->SetObjectField(TEXT("cameraSweep"),SweepReport);
     Report->SetStringField(TEXT("inputRoute"),TEXT("UMG semantic action dispatch; OS pointer hit testing remains manual"));
     Report->SetBoolField(TEXT("completed"),Error.IsEmpty());Report->SetBoolField(TEXT("processRestartLoadVerified"),Resume&&Error.IsEmpty());Report->SetStringField(TEXT("error"),Error);
     TArray<TSharedPtr<FJsonValue>> Paths;for(const auto& P:Captures)Paths.Add(MakeShared<FJsonValueString>(P));Report->SetArrayField(TEXT("captures"),Paths);
@@ -122,7 +124,39 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
         const FVector Position=Camera->GetActorLocation();const FVector Forward=Camera->GetActorForwardVector();
         const FVector Target=Position+Forward*(-Position.Z/Forward.Z);
         Camera->SetActorLocation(Target+(Position-Target)*.12);Stage=31;Next=Now+4;break;}
-    case 31:Capture(TEXT("05b-city-close-day"),32);break;
+    case 31:Capture(TEXT("05b-city-close-day"),SweepRequested?50:32);break;
+    case 50:{
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Camera){Finish(TEXT("Sweep camera missing"));break;}
+        const FVector Position=Camera->GetActorLocation(),Forward=Camera->GetActorForwardVector();
+        if(Forward.Z>=-.05){Finish(TEXT("Sweep requires a downward city view"));break;}
+        SweepPivot=Position+Forward*(-Position.Z/Forward.Z);SweepOffset=Position-SweepPivot;
+        SweepStarted=Now;SweepPreviousTick=Now;SweepFrameMs.Reset();Stage=51;Next=Now;break;
+    }
+    case 51:{
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Camera){Finish(TEXT("Sweep camera lost"));break;}
+        const double Elapsed=Now-SweepStarted;
+        const double WallFrameMs=(Now-SweepPreviousTick)*1000.;SweepPreviousTick=Now;
+        if(Elapsed>=2&&WallFrameMs>0&&FMath::IsFinite(WallFrameMs))SweepFrameMs.Add(WallFrameMs);
+        const double Phase=FMath::Clamp(Elapsed/14.,0.,1.)*2.*PI;
+        const FVector Offset=SweepOffset.RotateAngleAxis(18.*FMath::Sin(Phase),FVector::UpVector)*(1.-.28*FMath::Sin(Phase));
+        Camera->SetActorLocationAndRotation(SweepPivot+Offset,(-Offset).Rotation());
+        if(Elapsed<14){Next=Now;break;}
+        if(SweepFrameMs.Num()<60){Finish(TEXT("Insufficient camera sweep frames"));break;}
+        auto Sorted=SweepFrameMs;Sorted.Sort();double Sum=0;int32 Hitches=0;
+        for(double Ms:Sorted){Sum+=Ms;if(Ms>50)++Hitches;}
+        SweepReport=MakeShared<FJsonObject>();
+        SweepReport->SetStringField(TEXT("scope"),TEXT("Deterministic 14-second near-city zoom/orbit; first 2 seconds excluded. Monotonic wall time between game-thread ticks, not GPU time; no automatic visual flicker verdict."));
+        SweepReport->SetNumberField(TEXT("sampleCount"),Sorted.Num());
+        SweepReport->SetNumberField(TEXT("meanFrameMs"),Sum/Sorted.Num());
+        SweepReport->SetNumberField(TEXT("p95FrameMs"),Sorted[FMath::Min(Sorted.Num()-1,FMath::FloorToInt(Sorted.Num()*.95))]);
+        SweepReport->SetNumberField(TEXT("maxFrameMs"),Sorted.Last());
+        SweepReport->SetNumberField(TEXT("framesAbove50ms"),Hitches);
+        TArray<TSharedPtr<FJsonValue>> Raw;for(double Ms:SweepFrameMs)Raw.Add(MakeShared<FJsonValueNumber>(Ms));
+        SweepReport->SetArrayField(TEXT("frameMs"),Raw);
+        Stage=32;Next=Now+1;break;
+    }
     case 32:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->SetActorTickEnabled(false);It->ApplyPreview(true);}Stage=33;Next=Now+5;break;
     case 33:Capture(TEXT("05c-city-close-night"),34);break;
     case 34:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->ApplyPreview(false);It->SetActorTickEnabled(true);}

@@ -7,6 +7,7 @@ param(
     [string]$CityManifest,
     [switch]$EnableNanite,
     [ValidateSet('all','1280x720','1600x900','1920x1080')][string]$VisualResolution='all',
+    [switch]$CameraSweep,
     [int]$TimeoutSeconds=3600
 )
 Set-StrictMode -Version Latest
@@ -161,6 +162,7 @@ try {
                 $Report.visualResolution=$VisualResolution
                 $Session=$RunId+'-'+$Size[0]+'x'+$Size[1]
                 $Args=@($Project,'-game','-windowed',"-ResX=$($Size[0])","-ResY=$($Size[1])",'-ForceRes','-d3d12','-sm6','-nosplash',"-MaiCaptureSession=$Session",'-stdout','-FullStdOutLogOutput')
+                if($CameraSweep){$Args+='-MaiCameraSweep'}
                 foreach($Mode in @('capture','resume')){
                     $RunArgs=$Args;if($Mode -eq 'resume'){$RunArgs+=@('-MaiCaptureResume')}
                     $null=Run "visual-$Session-$Mode" $Editor $RunArgs
