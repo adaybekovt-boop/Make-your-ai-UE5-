@@ -48,7 +48,7 @@
     "Unreal/MakeYourAI/Source/MakeYourAI/Public/World/MaiPlayerController.h": "303a8873ca5b086002192a3028cc8279303d3df3",
     "Unreal/MakeYourAI/Source/MakeYourAI/Public/World/MaiWalkCharacter.h": "1267126430e726799360f24240dffe90da65fec4",
     "Unreal/Rules/build.mjs": "3fe964e3437b838f63b6652353d8fbf146bb1a80",
-    "Unreal/Rules/kernel.ts": "09ca68b2ad81712b6a3059c66d5fde5af05d03bb",
+    "Unreal/Rules/kernel.ts": "521f5ed530b6112e6d25709ac57c18cba78602d3",
     "Unreal/Rules/nativePersistence.ts": "63288b996ae11ff6361a3f4cc8c6bc7b5d76cd79",
     "Unreal/Rules/noBrowserStorage.ts": "dd5c033f4cbeed574152d5a2d3cf44b40b37e90e",
     "Unreal/Rules/prelude.js": "ffbcb97aeceb47f7d0af6e1066225ff0ae973004",

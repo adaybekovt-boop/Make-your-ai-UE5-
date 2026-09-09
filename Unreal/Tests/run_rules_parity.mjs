@@ -51,10 +51,18 @@ async function differential(strategy){
     }
   }
   // VM process boundary, restored RNG and original V3 codec: not a UE UI playthrough.
+  await n.call(cmd('ui:location','campus'))
+  await n.call(cmd('ui:page','training'))
   await n.call(cmd('ui:field','domain','coding'))
   const saved=(await n.call({method:'save',savedAt:'2026-09-08T00:00:00Z'})).value
   const second=native();assert.equal((await second.call({method:'load',payload:saved})).ok,true)
   assert.equal((await second.call({method:'state'})).value.ui.domain,'coding')
+  assert.equal((await second.call({method:'view'})).value.selectedLocation,'campus')
+  assert.equal((await second.call({method:'state'})).value.ui.page,'training')
+  const badLocation=structuredClone(saved);badLocation.ui.location='not-a-location'
+  assert.equal((await second.call({method:'validate',payload:badLocation})).ok,false)
+  assert.equal((await second.call({method:'load',payload:badLocation})).ok,false)
+  assert.equal((await second.call({method:'view'})).value.selectedLocation,'campus')
   const badDomain=structuredClone(saved);badDomain.ui.domain='unknown-domain'
   assert.equal((await second.call({method:'validate',payload:badDomain})).ok,false)
   assert.equal((await second.call({method:'load',payload:badDomain})).ok,false)

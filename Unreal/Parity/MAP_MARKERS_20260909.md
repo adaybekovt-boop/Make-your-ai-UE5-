@@ -53,6 +53,28 @@ Log `Saved/Verification/package-map-ui-v2-20260909.log`.
 Rules parity 568,852 comparisons / 24 scenarios / 3,418 steps, zero failures;
 Python suite 41 tests, one skipped, OK. Logs `map-ui-v2-parity-20260909.log`
 and `map-ui-v2-source-20260909.log` in Saved/Verification.
-The two follow-up UI changes are NOT yet OS-pointer verified in v2.
+The two follow-up UI changes were OS-pointer verified in v2: Campus displays
+120,000 dollar cost, 119,337 shortfall with cash 663; clicking disabled purchase
+does not buy or spend money. The expanded marker has no duplicate white tooltip.
+v2 Shipping binary SHA256:
+`1ae8a4c7acb527f845739e4142a9fb81bd238dc33e69a7d06515d6088eae1c33`.
+
+Explicit Save wrote `ui.location=campus`, but actual restart/Continue selected
+Garage. This failed runtime check exposed that kernel load ignored UI location.
+The loader now validates saved location against decoded mainland/region sites,
+then restores it before the saved page (so selecting a location does not reset
+the restored Training page). Missing legacy field retains the default; unknown
+locations are rejected before mutating the live company.
+New native process-boundary assertions cover Campus + Training + Coding and
+invalid-location validate/load rejection. Rules parity remains 568,852 comparisons,
+zero failures; rules typecheck and Python 41 tests / one skip pass. Evidence:
+`location-restore-parity-20260909.log`, `location-restore-source-20260909.log`.
+Shipping v3 packaging succeeded in 59.06 seconds:
+`outputs/Neuron-map-ui-20260909-Windows-v3/Windows/MakeYourAI.exe`
+(workspace-relative). Log `package-map-ui-v3-20260909.log`.
+Runtime confirmation of location restoration in v3 is pending. The user asked
+to stop bug hunting and publish the current source to main; further bug checks
+are handed off, not declared passed. Generated/cooked content and executable
+archives remain separate from the source Git history.
 Keyboard navigation, exhaustive campaign and visual acceptance remain open.
 No GitHub publication or release claim.
