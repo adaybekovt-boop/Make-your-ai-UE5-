@@ -40,6 +40,7 @@ export function buyDataLot(state: GameState, quality: DataQuality): ActionResult
     state: {
       ...state,
       cash: state.cash - spec.price,
+      totalExpenses: state.totalExpenses + spec.price,
       dataLotSeq: lot.id,
       model: { ...state.model, queue: [...state.model.queue, lot] },
     },

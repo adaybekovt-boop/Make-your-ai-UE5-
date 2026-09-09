@@ -37,6 +37,11 @@ export function competitorGrowth(state: GameState, rng: Rng): number {
   return growth
 }
 
+/** Deterministic midpoint forecast for UI; rendering must never advance randomness. */
+export function expectedCompetitorGrowth(state: GameState): number {
+  return competitorGrowth(state, () => 0.5)
+}
+
 export function dailyCompetitorStep(state: GameState, rng: Rng): GameState {
   const score = state.competitor.score + competitorGrowth(state, rng)
   const samples = [...state.competitor.samples, score].slice(-COMPETITOR_SAMPLES_MAX)
@@ -75,7 +80,6 @@ export function dailyAmbientGmi(state: GameState, rng: Rng): GameState {
   next = scheduleNext(next)
   return pushNotice(next, `Сводка GMI: соперник (${Math.round(rivalScore)}) обходит вашу модель (${Math.round(playerScore)}). Часть аудитории уходит.`)
 }
-
 
 /** Paid one-shot espionage: reveals the rival curve or fails loudly. */
 export function attemptEspionage(state: GameState, rng: Rng): ActionResult {

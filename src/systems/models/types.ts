@@ -30,6 +30,8 @@ export interface ManagedModel {
 export type CompanyLedger = Omit<GameState, 'model' | 'users' | 'benchmark'>
 export interface CompanyState {
   strategy: Strategy
+  /** Equity injected at the start of this run, including the selected difficulty modifier. */
+  startingCapital: number
   company: CompanyLedger
   models: ManagedModel[]
   modelSeq: number

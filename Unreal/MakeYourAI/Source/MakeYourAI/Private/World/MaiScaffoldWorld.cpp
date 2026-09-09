@@ -37,8 +37,11 @@ void AMaiScaffoldWorld::BeginPlay() {
     Super::BeginPlay();
     if (!bImportedCity) BuildGraybox();
     BuildMarkers();
-    const FVector Garage = FindLandmark(TEXT("garage"));
-    GetWorld()->SpawnActor<AMaiDemoNpc>(Garage + FVector(650, 0, 0), FRotator::ZeroRotator);
+    if (const FVector* Garage = MarkerPositions.Find(TEXT("garage"))) {
+        GetWorld()->SpawnActor<AMaiDemoNpc>(*Garage + FVector(650, 0, 0), FRotator::ZeroRotator);
+    } else {
+        UE_LOG(LogTemp, Warning, TEXT("Garage landmark is unavailable; skipping demo NPC instead of spawning it at a world-coordinate fallback."));
+    }
 }
 void AMaiScaffoldWorld::BuildGraybox() {
     // Logical test layout only. It is explicitly NOT CityV4 or a replacement city.

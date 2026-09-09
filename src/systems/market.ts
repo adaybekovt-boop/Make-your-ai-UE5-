@@ -43,6 +43,7 @@ import {
   WINTER_START_DAY,
   getRegionLocationDefinition,
 } from './config'
+import { gameDay } from './calendar'
 import { adCostMultiplier, adEffectiveness } from './reputation'
 import { getLocationDefinition } from './config'
 import type {
@@ -55,14 +56,18 @@ import type {
   TechNodeId,
 } from './types'
 
+export { gameDay } from './calendar'
+
+const CHIP_PRICE_PHASE: Record<ChipId, number> = {
+  'consumer-gpu': 0,
+  'pro-gpu': Math.PI / 2,
+  accelerator: Math.PI,
+  flagship: 3 * Math.PI / 2,
+}
+
 // ---------- Notices ----------
 export function pushNotice(state: GameState, message: string): GameState {
   return { ...state, pendingNotices: [...state.pendingNotices, message] }
-}
-
-/** The UI clock starts at 08:00 of day 1, so day boundaries sit 8 hours into elapsed time. */
-export function gameDay(state: GameState): number {
-  return Math.floor((state.elapsedGameHours + 8) / 24) + 1
 }
 
 /** Insurance pays a fixed share of court fines, incident repairs and complaints. */
@@ -75,10 +80,10 @@ export function chipBasePrice(chip: ChipId): number {
   return CHIPS[chip].price
 }
 
-/** Price of a chip class on a given day: base ±20% sine, phase offset per class. */
+/** Price of a chip class on a given day: base ±20% sine, with a distinct phase per class. */
 export function chipPriceForDay(chip: ChipId, day: number, rng: Rng): { price: number; trend: 1 | 0 | -1 } {
   const period = CHIP_PRICE_PERIOD_DAYS[chip]
-  const phase = period === 9 ? 0 : period === 13 ? Math.PI / 2 : Math.PI
+  const phase = CHIP_PRICE_PHASE[chip]
   const noise = (rng() * 2 - 1) * 0.03
   const factor = 1 + CHIP_PRICE_SWING * Math.sin((2 * Math.PI * day) / period + phase) + noise
   const price = Math.round(chipBasePrice(chip) * factor)
@@ -91,7 +96,7 @@ export function currentChipPrice(state: GameState, chip: ChipId): number {
 
 // ---------- Seasonality ----------
 export function seasonalityMult(state: GameState): number {
-  const dayIndex = Math.floor(state.elapsedGameHours / 24) % GAME_YEAR_DAYS
+  const dayIndex = (gameDay(state) - 1) % GAME_YEAR_DAYS
   if (dayIndex >= SUMMER_START_DAY && dayIndex < SUMMER_END_DAY) return SEASON_SUMMER_MULT
   if (dayIndex >= WINTER_START_DAY && dayIndex < WINTER_END_DAY) return SEASON_WINTER_MULT
   return 1
@@ -125,7 +130,7 @@ export function userCapacity(state: GameState, economy: Pick<CompanyEconomy, 'ef
   if (economy.effectiveCompute <= 0) return 0
   const demandFactor = 1.6 - state.market.tokenPrice / TOKEN_PRICE_DEFAULT * 0.6
   const ads = state.market.advertising ? 1 + AD_USER_BOOST * adEffectiveness(state) : 1
-  const gmiBoost = state.benchmark.adBoostUntil !== null ? 1 + GMI_AD_BOOST : 1
+  const gmiBoost = state.benchmark.adBoostUntil !== null && state.elapsedGameHours < state.benchmark.adBoostUntil ? 1 + GMI_AD_BOOST : 1
   const reputationFactor = 0.5 + state.reputation / 100 * 0.5
   const base = USERS_PER_COMPUTE * economy.effectiveCompute * demandFactor * retentionMultiplier(state)
   return Math.max(0, base * reputationFactor * ads * gmiBoost * techCapacityMultiplier(state) * effectCapacityMultiplier(state, state.elapsedGameHours))
@@ -250,7 +255,6 @@ export function powerLimitFor(id: AnyLocationId): number {
   return getLocationDefinition(id).powerLimitKw
 }
 
-
 // ---------- Daily market systems ----------
 export function dailyChipMarket(state: GameState, rng: Rng): GameState {
   const day = gameDay(state)
@@ -287,6 +291,7 @@ export function dailyInvestors(state: GameState, economy: CompanyEconomy, rng: R
   let next: GameState = {
     ...state,
     cash: state.cash - payout,
+    totalExpenses: state.totalExpenses + payout,
     investors: {
       nextCheckDay,
       restrictedUntil: state.elapsedGameHours + INVESTOR_RESTRICTION_HOURS,

@@ -36,7 +36,7 @@ function state() {
   const current = store.getState()
   return { company: current.company, game: current.game, economy: portfolioEconomy(current.company),
     learnedIQ: companyLearnedIQ(current.company), users: companyUsers(current.company),
-    phase: current.phase, selectedId: current.selectedId, selectedModelId: current.selectedModelId,
+    phase: current.phase, selectedId: ui.location, selectedModelId: current.selectedModelId,
     notice: current.notice, eventLog: current.eventLog, procurement: current.procurement,
     generation, ui, storageSequence: storageSequence(), rng, reservedCompute: nativeReserve }
 }
@@ -53,6 +53,7 @@ async function execute(request: Record<string, unknown>) {
     if (typeof request.seed !== 'number' || !Number.isSafeInteger(request.seed) || request.seed < 1 || request.seed > 0xffffffff) throw new Error('Invalid session seed')
     rng = request.seed >>> 0
     await store.getState().initialize()
+    ui = uiCommand(ui, 'location', [store.getState().selectedId], store.getState()).ui
     return state()
   }
   if (method === 'sync-review') {
@@ -76,8 +77,8 @@ async function execute(request: Record<string, unknown>) {
   if (method === 'save') {
     if (typeof request.savedAt !== 'string') throw new Error('Host save timestamp required')
     return { nativeRulesVersion: 1, browser: makeCompanySave(store.getState().company, request.savedAt),
-      rng, selectedModelId: store.getState().selectedModelId, selectedId: store.getState().selectedId,
-      // The original event log was UI-only. Native saves retain it as an explicitly separate extension.
+      rng, selectedModelId: store.getState().selectedModelId, selectedId: ui.location,
+      // The UI location is canonical; selectedId remains as a compatibility mirror for native save v1.
       eventLog: store.getState().eventLog, phase: store.getState().phase, ui }
   }
   if (method === 'validate' || method === 'load') {
@@ -90,35 +91,41 @@ async function execute(request: Record<string, unknown>) {
     if (typeof restoredRng !== 'number' || !Number.isSafeInteger(restoredRng) || restoredRng < 0 || restoredRng > 0xffffffff) throw new Error('Invalid saved RNG')
     const selectedModelId = native ? raw.selectedModelId : decoded.game.models[0].id
     if (!decoded.game.models.some(m => m.id === selectedModelId)) throw new Error('Invalid saved model selection')
-    const selectedId = native ? raw.selectedId : 'garage'
-    if (!decoded.game.company.locations.some(l => l.id === selectedId)) throw new Error('Invalid saved location selection')
+    const locations = [...decoded.game.company.locations, ...decoded.game.company.regionLocations]
+    if (native && raw.ui !== undefined && (!raw.ui || typeof raw.ui !== 'object' || Array.isArray(raw.ui) || JSON.stringify(raw.ui).length > 16384)) throw new Error('Invalid saved UI')
+    const savedUi = native && raw.ui && typeof raw.ui === 'object' && !Array.isArray(raw.ui) ? raw.ui as Record<string, unknown> : undefined
+    if (savedUi?.location !== undefined && typeof savedUi.location !== 'string') throw new Error('Invalid saved UI location')
+    const legacySelectedId = native ? raw.selectedId : 'garage'
+    const canonicalLocation = savedUi?.location ?? legacySelectedId
+    if (typeof canonicalLocation !== 'string' || !locations.some(l => l.id === canonicalLocation)) throw new Error('Invalid saved location selection')
     const eventLog = native ? raw.eventLog : []
     if (!Array.isArray(eventLog) || eventLog.length > 40 || eventLog.some(v => !v || typeof v.message !== 'string' || v.message.length > 4096 || !['success','error','info'].includes(v.kind) || !Number.isFinite(v.atHours) || v.atHours < 0 || v.atHours > decoded.game.company.elapsedGameHours || !Number.isSafeInteger(v.id) || v.id < 1)) throw new Error('Invalid saved journal')
     if (native && !['menu','setup','playing'].includes(String(raw.phase ?? 'playing'))) throw new Error('Invalid saved phase')
-    if (native && raw.ui !== undefined && JSON.stringify(raw.ui).length > 16384) throw new Error('Invalid saved UI')
-    if (native && raw.ui && typeof raw.ui === 'object') { const u = raw.ui as Record<string, unknown>; let candidate = initialUi();
-      if (u.location !== undefined && (typeof u.location !== 'string' || ![...decoded.game.company.locations,...decoded.game.company.regionLocations].some(l=>l.id===u.location))) throw new Error('Invalid saved UI location')
-      if (u.fields && typeof u.fields === 'object') for (const [k,v] of Object.entries(u.fields)) candidate = uiCommand(candidate,'field',[k,v],store.getState()).ui
-      if (u.domain !== undefined) candidate = uiCommand(candidate,'field',['domain',u.domain],store.getState()).ui
-      if (typeof u.page === 'string') uiCommand(candidate,'page',[u.page],store.getState())
+    if (savedUi) { let candidate = initialUi()
+      if (savedUi.fields !== undefined && (!savedUi.fields || typeof savedUi.fields !== 'object' || Array.isArray(savedUi.fields))) throw new Error('Invalid saved input fields')
+      if (savedUi.fields && typeof savedUi.fields === 'object') for (const [k,v] of Object.entries(savedUi.fields)) {
+        if (typeof v !== 'string' || v.length > 512) throw new Error('Invalid saved input')
+        candidate = uiCommand(candidate,'field',[k,v],store.getState()).ui
+      }
+      if (savedUi.domain !== undefined) candidate = uiCommand(candidate,'field',['domain',savedUi.domain],store.getState()).ui
+      if (savedUi.page !== undefined) {
+        if (typeof savedUi.page !== 'string') throw new Error('Invalid saved page')
+        candidate = uiCommand(candidate,'page',[savedUi.page],store.getState()).ui
+      }
     }
     if (method === 'validate') return { ok: true, browserSchema: decoded.schemaVersion, ended: decoded.game.company.ending !== null }
     stageSave(decoded)
     await store.getState().restore()
     if (!store.getState().storageEnabled) throw new Error('Restore rejected')
-    store.setState({ selectedModelId: selectedModelId as never, selectedId: selectedId as never, eventLog })
-    rng = restoredRng >>> 0; ui = initialUi();
-    if (native && raw.ui && typeof raw.ui === 'object') {
-      const saved = raw.ui as Record<string, unknown>
-      if (saved.fields && typeof saved.fields === 'object') for (const [k,v] of Object.entries(saved.fields)) {
-        if (typeof v !== 'string' || v.length > 512) throw new Error('Invalid saved input')
-        ui = uiCommand(ui,'field',[k,v],store.getState()).ui
-      }
-      if (typeof saved.location === 'string') ui = uiCommand(ui,'location',[saved.location],store.getState()).ui
-      if (typeof saved.page === 'string') ui = uiCommand(ui,'page',[saved.page],store.getState()).ui
-      if (saved.domain !== undefined) ui = uiCommand(ui,'field',['domain',saved.domain],store.getState()).ui
+    rng = restoredRng >>> 0; ui = initialUi()
+    if (savedUi) {
+      if (savedUi.fields && typeof savedUi.fields === 'object') for (const [k,v] of Object.entries(savedUi.fields)) ui = uiCommand(ui,'field',[k,v],store.getState()).ui
+      if (savedUi.domain !== undefined) ui = uiCommand(ui,'field',['domain',savedUi.domain],store.getState()).ui
     }
-    if (native) store.setState({ phase: (raw.phase ?? 'playing') as 'menu'|'setup'|'playing' })
+    ui = uiCommand(ui,'location',[canonicalLocation],store.getState()).ui
+    if (savedUi?.page !== undefined) ui = uiCommand(ui,'page',[savedUi.page],store.getState()).ui
+    store.setState({ selectedModelId: selectedModelId as never, selectedId: ui.location as never, eventLog,
+      ...(native ? { phase: (raw.phase ?? 'playing') as 'menu'|'setup'|'playing' } : {}) })
     nativeReserve = 0; reviewedLots.clear(); generation += 1
     return state()
   }
@@ -128,8 +135,9 @@ async function execute(request: Record<string, unknown>) {
     const s = store.getState(), c = s.company
     const cash = boundedDelta(request.cash ?? 0, 'cash'), expenses = boundedDelta(request.expenses ?? 0, 'expenses')
     const capex = boundedDelta(request.capex ?? 0, 'capex'), revenue = boundedDelta(request.revenue ?? 0, 'revenue')
+    const startingCapital = boundedDelta(request.startingCapital ?? 0, 'startingCapital')
     const reputation = boundedDelta(request.reputation ?? 0, 'reputation')
-    const next = { ...c, company: { ...c.company, cash: c.company.cash + cash,
+    const next = { ...c, startingCapital: c.startingCapital + startingCapital, company: { ...c.company, cash: c.company.cash + cash,
       totalExpenses: c.company.totalExpenses + expenses, totalCapex: c.company.totalCapex + capex, totalRevenue: c.company.totalRevenue + revenue,
       reputation: Math.max(0, Math.min(100, c.company.reputation + reputation)) } }
     validateCompanyState(next)
@@ -139,8 +147,10 @@ async function execute(request: Record<string, unknown>) {
   if (method === 'command') {
     if (typeof request.action !== 'string') throw new Error('Action required')
     if (request.action.startsWith('ui:')) {
+      const previousLocation = ui.location
       const resolved = uiCommand(ui, request.action.slice(3), request.args, store.getState())
       ui = resolved.ui
+      if (ui.location !== previousLocation) store.setState({ selectedId: ui.location as never })
       if (!resolved.action) return state()
       request = { ...request, action: resolved.action, args: resolved.args }
     }
@@ -155,7 +165,7 @@ async function execute(request: Record<string, unknown>) {
     const beforeCompany = store.getState().company
     await f(...request.args)
     validateCompanyState(store.getState().company)
-    if (request.action === 'startNewGame' && store.getState().company !== beforeCompany) { ui = initialUi(); reviewedLots.clear(); generation += 1 }
+    if (request.action === 'startNewGame' && store.getState().company !== beforeCompany) { ui = initialUi(); store.setState({ selectedId: ui.location as never }); reviewedLots.clear(); generation += 1 }
     return state()
   }
   throw new Error('Unknown native method')

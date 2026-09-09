@@ -1,5 +1,5 @@
 import { createInitialGame } from '../simulation'
-import { TRAINING_IQ_PER_VOLUME } from '../config'
+import { OPEN_SOURCE_IQ_THRESHOLD, TRAINING_IQ_PER_VOLUME } from '../config'
 import type { ActionResult, GameState, ModelState } from '../types'
 import type { CompanyActionResult, CompanyLedger, CompanyState, ManagedModel, ModelId, Strategy } from './types'
 import { addProfile, CATEGORIES, COMPUTE_BUDGET_BPS, effectiveProfile, GENERAL_GAINS, quantizationQuality, scaleProfile } from './config'
@@ -7,6 +7,12 @@ import { addProfile, CATEGORIES, COMPUTE_BUDGET_BPS, effectiveProfile, GENERAL_G
 export function ledgerOf(game: GameState): CompanyLedger {
   const { model: _model, users: _users, benchmark: _benchmark, ...ledger } = game
   return ledger
+}
+export function startingCapitalFromLedger(ledger: Pick<CompanyLedger, 'cash'|'totalRevenue'|'totalExpenses'|'totalCapex'>): number {
+  return ledger.cash - ledger.totalRevenue + ledger.totalExpenses + ledger.totalCapex
+}
+export function expectedCompanyCash(state: CompanyState): number {
+  return state.startingCapital + state.company.totalRevenue - state.company.totalExpenses - state.company.totalCapex
 }
 export function modelFromLegacy(game: GameState, id: ModelId = 'model-1'): ManagedModel {
   return {
@@ -24,7 +30,8 @@ export function migrateSingleModel(game: GameState): CompanyState {
 }
 /** Internal pure runtime adapter: no deep clone on every UI tick. */
 export function adaptSingleModel(copy: GameState): CompanyState {
-  return { strategy: 'flagship', company: ledgerOf(copy), models: [modelFromLegacy(copy)], modelSeq: 1, purchasedBases: [],
+  const company = ledgerOf(copy)
+  return { strategy: 'flagship', startingCapital: startingCapitalFromLedger(company), company, models: [modelFromLegacy(copy)], modelSeq: 1, purchasedBases: [],
     dataLiability: copy.model.dirtyHistory, contractModelId: copy.contracts.active?.requiresOfficialData ? 'model-1' : null }
 }
 export function createCompanyGame(strategy: Strategy = 'flagship'): CompanyState {
@@ -63,10 +70,24 @@ export function mergeModel(state: CompanyState, id: ModelId, result: GameState):
 export function mergeCompany(state: CompanyState, result: GameState): CompanyState {
   return { ...state, company: ledgerOf(result), dataLiability: state.dataLiability || result.model.dirtyHistory, contractModelId: result.contracts.active ? state.contractModelId : null }
 }
+
+function openSourceTransitionError(before: GameState, after: GameState): string | null {
+  const changedDecision = after.model.openSourceChosen !== before.model.openSourceChosen || after.model.openSource !== before.model.openSource
+  if (!changedDecision) return null
+  if (before.ending) return 'Компания уже продана.'
+  if (before.model.openSourceChosen) return 'Решение об открытом коде уже принято.'
+  if (!after.model.openSourceChosen) return 'Решение об открытом коде должно быть окончательным.'
+  if (before.model.iq < OPEN_SOURCE_IQ_THRESHOLD) return `Открытый код доступен с IQ ${OPEN_SOURCE_IQ_THRESHOLD}.`
+  return null
+}
+
 export function applyModel(state: CompanyState, id: ModelId, action: (view: GameState) => ActionResult): CompanyActionResult {
   if (!state.models.some(item => item.id === id)) return { ok: false, error: 'Модель не найдена.' }
-  const result = action(modelView(state, id))
-  return result.ok ? { ok: true, state: mergeModel(state, id, result.state) } : result
+  const before = modelView(state, id)
+  const result = action(before)
+  if (!result.ok) return result
+  const transitionError = openSourceTransitionError(before, result.state)
+  return transitionError ? { ok: false, error: transitionError } : { ok: true, state: mergeModel(state, id, result.state) }
 }
 export function companyLearnedIQ(state: CompanyState): number {
   return state.models.reduce((sum, model) => sum + model.state.iq * quantizationQuality(model.quantization), 0)

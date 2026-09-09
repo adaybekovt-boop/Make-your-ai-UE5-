@@ -24,6 +24,7 @@ import type {
   Rng,
 } from './types'
 
+export const MAX_PENDING_EQUIPMENT_ORDERS = 198
 
 // ---------- Цены: канал закупки и опт ----------
 export function unitPrice(basePrice: number, channel: Channel): number {
@@ -110,7 +111,7 @@ export function orderEquipment(state: GameState, request: OrderRequest): ActionR
   const { kind, item, channel } = request
   if (channel !== 'official' && channel !== 'grey') return { ok: false, error: 'Неизвестный канал закупки.' }
   if (kind !== 'chip' && kind !== 'chassis') return { ok: false, error: 'Неизвестный тип оборудования.' }
-  if (state.orders.length >= 198) return { ok: false, error: 'Слишком много заказов в пути.' }
+  if (state.orders.length >= MAX_PENDING_EQUIPMENT_ORDERS) return { ok: false, error: 'Слишком много заказов в пути.' }
   const qty = request.qty
   if (!Number.isInteger(qty) || qty < 1 || qty > MAX_ORDER_QTY) return { ok: false, error: `Заказ: от 1 до ${MAX_ORDER_QTY} единиц за раз.` }
   let basePrice: number

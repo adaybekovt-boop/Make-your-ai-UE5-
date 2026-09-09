@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 import { BALANCE_VERSION, TRAINING_IQ_PER_VOLUME } from '../systems/config'
 import { BASE_MODELS, CATEGORIES, COMPUTE_BUDGET_BPS, DOMAINS, MAX_PORTFOLIO_MODELS, MODEL_BALANCE_VERSION, MODEL_NAME_MAX } from '../systems/models/config'
-import { ledgerOf, migrateSingleModel } from '../systems/models/state'
+import { ledgerOf, migrateSingleModel, startingCapitalFromLedger } from '../systems/models/state'
 import type { BaseModelId, CompanyLedger, CompanyState, DataDomain, GmiProfile, ManagedModel, ModelId } from '../systems/models/types'
 import { DATABASE_NAME, decodeSave, validateGameState } from './saves'
 
@@ -26,7 +26,7 @@ function profile(value: unknown, name: string): GmiProfile {
   if (Object.keys(source).length !== CATEGORIES.length) throw new Error(`Некорректный профиль ${name}.`)
   return Object.fromEntries(CATEGORIES.map(key => [key, number(source[key], `${name}.${key}`)])) as GmiProfile
 }
-function near(a: number, b: number): boolean { return Math.abs(a - b) <= 1e-8 * Math.max(1, a, b) }
+function near(a: number, b: number): boolean { return Math.abs(a - b) <= 1e-8 * Math.max(1, Math.abs(a), Math.abs(b)) }
 function sum(p: GmiProfile): number { return CATEGORIES.reduce((total, key) => total + p[key], 0) }
 
 /** V3 accepts no legacy single-model mirrors. Validation is non-mutating and fail-closed. */
@@ -96,7 +96,10 @@ export function validateCompanyState(value: unknown): CompanyState {
   if (requiresData ? typeof contractModelId !== 'string' || !ids.has(contractModelId) : contractModelId !== null) throw new Error('Неверная привязка контракта к модели.')
   const receipts = models.reduce((sum, model) => sum + model.receipts.tokens + model.receipts.subscriptions + model.receipts.licensing, 0)
   if (receipts > ledger!.totalRevenue && !near(receipts, ledger!.totalRevenue)) throw new Error('Поступления моделей превышают выручку компании.')
-  return { strategy: root.strategy, company: ledger!, modelSeq, models: models.sort((a, b) => Number(a.id.slice(6)) - Number(b.id.slice(6))),
+  const startingCapital = root.startingCapital === undefined ? startingCapitalFromLedger(ledger!) : number(root.startingCapital, 'startingCapital')
+  const expectedCash = startingCapital + ledger!.totalRevenue - ledger!.totalExpenses - ledger!.totalCapex
+  if (!near(ledger!.cash, expectedCash)) throw new Error('Нарушен финансовый инвариант: cash ≠ startingCapital + revenue − expenses − capex.')
+  return { strategy: root.strategy, startingCapital, company: ledger!, modelSeq, models: models.sort((a, b) => Number(a.id.slice(6)) - Number(b.id.slice(6))),
     purchasedBases, dataLiability: root.dataLiability, contractModelId: contractModelId as ModelId | null }
 }
 export function makeCompanySave(game: CompanyState, savedAt = new Date().toISOString()): CompanySaveEnvelope {

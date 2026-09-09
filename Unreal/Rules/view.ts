@@ -1,5 +1,6 @@
 import type { useGameStore } from '../../src/store/gameStore'
 import * as cfg from '../../src/systems/config'
+import { gameClock } from '../../src/systems/calendar'
 import { CITY_TOWERS, CHIP_SHOPS, OFFICE_PRICE } from '../../src/systems/city'
 import { orderPrice, deliveryHours, chassisSupports } from '../../src/systems/procurement'
 import { normalizeLocation, locationDefinition, firstFreeCell, sameCell, serverOutput } from '../../src/systems/serverGrid'
@@ -51,6 +52,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
   const m=c.models.find(v=>v.id===s.selectedModelId) ?? c.models[0]
   const rates=e.models.find(v=>v.modelId===m.id)!
   const title=host.companyName||'Make Your AI'
+  const clock=gameClock(g.elapsedGameHours)
   let content: Node, mode='world', modal: Node|null=null
   const close=button('close-dialog','Закрыть','ui:modal',[''])
   if (host.loading) {
@@ -176,7 +178,6 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     } else if (ui.page==='office') {
       mode='panel'; content=column('office',head('office-title','Офис компании'),text('office-cash',money(g.cash)),text('office-portfolio',`${c.models.length} моделей · ${n(companyUsers(c))} пользователей`),text('office-owned',`${g.locations.filter(v=>v.owned).length} городских площадок`),button('office-models','Модели','ui:page',['portfolio']),button('office-enter','Войти в офис','host:office',[],g.officeOwned),button('office-buy',`Купить офис · ${money(OFFICE_PRICE)}`,'purchaseOffice',[],!g.officeOwned))
     } else {
-      // World remains readable. Location browser is a deliberate drawer, never a permanent wall.
       const loc=[...g.locations,...g.regionLocations].find(v=>v.id===ui.location)??g.locations[0],d=locationDefinition(loc.id)
       const size=normalizeLocation(loc).gridSize
       content=column('location-card',text('location-eyebrow',loc.owned?'Ваша серверная':'Будущая серверная','muted'),head('location-name',d.name),text('location-description',loc.owned?'Площадка куплена. Расставляйте серверы в ячейках внутри помещения.':d.description),
@@ -193,7 +194,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     column('capital-metric',text('capital-label','Капитал','muted'),button('cash',n(g.cash)+' $','ui:modal',['economy'],true,'metric')),
     column('profit-metric',text('profit-label','Прибыль в час','muted'),text('profit',n(e.profitPerHour)+' $',e.profitPerHour<0?'danger':'positive')),
     {kind:'spacer',id:'toolbar-space'},
-    text('clock',`День ${Math.floor((g.elapsedGameHours+8)/24)+1}  ${n(Math.floor((g.elapsedGameHours+8)%24)).padStart(2,'0')}:${n(Math.floor((g.elapsedGameHours%1)*60)).padStart(2,'0')}`),
+    text('clock',`День ${clock.day}  ${clock.time}`),
     iconButton(button('pause',g.paused?'Продолжить':'Пауза','togglePause'),g.paused?'play':'pause'),
     button('speed-1','1×','setSpeed',[1],true,g.speed===1?'selected':'secondary'),button('speed-3','3×','setSpeed',[3],true,g.speed===3?'selected':'secondary'),
     iconButton(button('save','Сохранить','host:save'),'save'),iconButton(button('settings','Настройки','ui:modal',['settings']),'settings'),
@@ -206,9 +207,9 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     ...CITY_TOWERS.map(t=>card('tower-'+t.id,head('tower-title-'+t.id,t.name),text('tower-description-'+t.id,t.description),text('tower-rent-'+t.id,`Аренда ${money(t.rentPerHour)}/ч · Обслуживание ${money(t.upkeepPerHour)}/ч`),button('tower-buy-'+t.id,money(t.price),'purchaseCityTower',[t.id],!(g.cityProperties??[]).includes(t.id)))),
     ...CHIP_SHOPS.map(t=>button('shop-'+t.id,t.name,'ui:procurement',[ui.location])),button('auction','Аукцион','host:auction'),button('nuclear','АЭС','host:nuclear'),button('greenhaven','Greenhaven','host:greenhaven'),close)
   if(ui.modal==='economy') modal=column('economy',head('economy-title','Финансы компании'),...[
-    ['Баланс',g.cash],['Доход моделей / ч',e.serverRevenuePerHour],['Арендный доход / ч',e.propertyRevenuePerHour],['Выручка / ч',e.revenuePerHour],['Расходы / ч',e.expensesPerHour],['Прибыль / ч',e.profitPerHour],['Капитальные вложения',g.totalCapex],['Выручка за всё время',g.totalRevenue],['Расходы за всё время',g.totalExpenses],
+    ['Стартовый капитал',c.startingCapital],['Баланс',g.cash],['Доход моделей / ч',e.serverRevenuePerHour],['Арендный доход / ч',e.propertyRevenuePerHour],['Выручка / ч',e.revenuePerHour],['Расходы / ч',e.expensesPerHour],['Прибыль / ч',e.profitPerHour],['Капитальные вложения',g.totalCapex],['Выручка за всё время',g.totalRevenue],['Расходы за всё время',g.totalExpenses],
   ].map(([label,value],i)=>row('ledger-'+i,text('ledger-label-'+i,String(label)),text('ledger-value-'+i,money(Number(value))))),text('economy-compute',`Мощность ${n(e.effectiveCompute,2)} · Репутация ${n(g.reputation)}`),...g.locations.filter(l=>l.owned).map(l=>{const x=portfolioLocationEconomy(c,l.id);return text('location-profit-'+l.id,`${locationDefinition(l.id).name} · ${money(x.expensesPerHour)}/ч расходов · ${n(x.effectiveCompute,2)} compute`)}),close)
-  if(ui.modal==='events') modal=column('events',head('events-title','Журнал событий'),...s.eventLog.slice().reverse().map((v,i)=>text('event-'+i,`День ${Math.floor(v.atHours/24)+1} · ${v.message}`,v.kind==='error'?'danger':'body')),close)
+  if(ui.modal==='events') modal=column('events',head('events-title','Журнал событий'),...s.eventLog.slice().reverse().map((v,i)=>{const eventClock=gameClock(v.atHours);return text('event-'+i,`День ${eventClock.day} · ${v.message}`,v.kind==='error'?'danger':'body')}),close)
   if(ui.modal==='settings') modal=column('settings',head('settings-title','Настройки'),text('settings-info','Настройки сохраняются отдельно от партии.'),
     slider('master-volume','Общая громкость',Number(ui.fields.volume??'80'),0,100,5,'host:volume'),
     slider('text-scale','Размер интерфейса',Number(ui.fields.scale??'100'),85,140,5,'host:scale'),
@@ -248,7 +249,7 @@ function procurement(s:Store,ui:UiState,close:Node):Node {
     select('chassis','Стойка',chassis,Object.values(cfg.CHASSIS).map(v=>({value:v.id,label:v.name}))),
     select('chip','Совместимый чип',chip?.id??'',chips.map(v=>({value:v.id,label:`${v.name} · ${v.compute} compute · ${v.powerKw} кВт`}))),
     select('channel','Канал поставки',channel,[{value:'official',label:'Официальный'},{value:'grey',label:'Серый импорт · риск брака'}]),
-    slider('quantity','Количество',qty,1,kind==='kit'?1:cfg.MAX_ORDER_QTY,1,'ui:quantity'),
+    kind==='kit'?text('quantity-fixed','Количество: 1 комплект'):slider('quantity','Количество',qty,1,cfg.MAX_ORDER_QTY,1,'ui:quantity'),
     text('purchase-price',`Итого ${money(price)} · ${kind==='chassis'?deliveryHours('chassis',chassis,channel):chip?deliveryHours('chip',chip.id,channel):0} игровых ч.`),
     button('place-order','Оформить заказ','ui:order',[],loc.owned&&(kind==='chassis'||!!chip),'primary'),
     text('delivery-info','Деньги списываются при заказе. После доставки монтаж использует складские запасы.'),

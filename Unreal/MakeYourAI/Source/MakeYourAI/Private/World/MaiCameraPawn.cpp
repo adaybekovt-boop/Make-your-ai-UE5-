@@ -65,8 +65,12 @@ void AMaiCameraPawn::MouseVertical(float V){
 void AMaiCameraPawn::Zoom(float Factor){
     FVector Target=GroundTarget();auto* PC=Cast<APlayerController>(GetController());FVector P,D;
     if(PC&&PC->DeprojectMousePositionToWorld(P,D)&&D.Z<-.05){const double T=-P.Z/D.Z;if(T>0&&T<200000)Target=P+D*T;}
-    const FVector Next=Target+(GetActorLocation()-Target)*Factor;
-    if(Next.Z>=250&&Next.Z<=150000)SetActorLocation(Next);
+    const FVector Offset=GetActorLocation()-Target;
+    const FVector Desired=Target+Offset*Factor;
+    const double ClampedZ=FMath::Clamp(Desired.Z,250.,150000.);
+    double EffectiveFactor=Factor;
+    if(!FMath::IsNearlyZero(Offset.Z))EffectiveFactor=(ClampedZ-Target.Z)/Offset.Z;
+    SetActorLocation(Target+Offset*EffectiveFactor);
 }
 void AMaiCameraPawn::ZoomIn(){Zoom(.85f);}
 void AMaiCameraPawn::ZoomOut(){Zoom(1.f/.85f);}

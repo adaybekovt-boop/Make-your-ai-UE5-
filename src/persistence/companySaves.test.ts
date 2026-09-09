@@ -11,6 +11,7 @@ function ok(result: CompanyActionResult) { if (!result.ok) throw new Error(resul
 const date = '2026-09-07T00:00:00.000Z'
 function populated(): CompanyState {
   let game = createCompanyGame('portfolio')
+  game.startingCapital = 1_000_000
   game.company.cash = 1_000_000
   game = ok(purchaseBaseModel(game, 'titan-c7'))
   game = ok(purchaseBaseModel(game, 'helios-m13'))
@@ -91,6 +92,7 @@ describe('canonical model save V3', () => {
     ['strategy field missing', (s: any) => { delete s.strategy }],
     ['illegal flagship array', (s: any) => { s.strategy = 'flagship' }],
     ['sequence behind IDs', (s: any) => { s.modelSeq = 1 }],
+    ['cash without accounting bucket', (s: any) => { s.company.cash -= 1 }],
   ])('rejects %s without silently repairing corruption', (_, damage) => {
     const state = populated(); damage(state)
     expect(() => validateCompanyState(state)).toThrow()
@@ -111,7 +113,7 @@ describe('canonical model save V3', () => {
     expect(a.models[1].state.iq).toBe(0) // 25% compute / training-cost 2 needs 400 hours.
   })
   it('persists stale benchmark provenance across quantization without removing fraud evidence', () => {
-    let s = createCompanyGame('portfolio'); s.company.cash = 1_000_000
+    let s = createCompanyGame('portfolio'); s.startingCapital = 1_000_000; s.company.cash = 1_000_000
     s = ok(purchaseBaseModel(s, 'terra-s3'))
     s = ok(benchmarkModel(s, 'model-2', () => .5))
     s.company.elapsedGameHours = 10; s.models[1].benchmark.testing = false

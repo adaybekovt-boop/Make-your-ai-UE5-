@@ -99,8 +99,6 @@ export function buyModelData(state: CompanyState, id: ModelId, quality: DataQual
   if (!DOMAINS.includes(domain) || (quality !== 'official' && quality !== 'unofficial')) return denied('Некорректный домен или качество данных.')
   const result = applyModel(state, id, view => buyDataLot(view, quality))
   if (!result.ok) return result
-  result.state = { ...result.state, company: { ...result.state.company,
-    totalExpenses: state.company.totalExpenses + state.company.cash - result.state.company.cash } }
   const model = getModel(result.state, id)
   return { ok: true, state: withModel(result.state, { ...model, state: { ...model.state,
     queue: model.state.queue.map(lot => lot.id === result.state.company.dataLotSeq ? { ...lot, domain } : lot) } }) }

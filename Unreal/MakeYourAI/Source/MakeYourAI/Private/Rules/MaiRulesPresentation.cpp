@@ -36,7 +36,8 @@ TSharedPtr<FJsonObject> UMaiRulesSubsystem::HostView(){
         const auto* Loader=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>();L->SetBoolField(TEXT("cancel"),G.prologueStep==3&&Loader&&Loader->CanCancel());L->SetBoolField(TEXT("failed"),G.loading.phase==mai::LoadPhase::Failed);H->SetObjectField(TEXT("loading"),L);return H;}
     TSharedPtr<FJsonObject> Overlay;
     if(G.screen==mai::Screen::Difficulty){Overlay=Node(TEXT("column"),TEXT("difficulty"));Add(Overlay.ToSharedRef(),Head(TEXT("difficulty-title"),TEXT("Сложность")));Add(Overlay.ToSharedRef(),Text(TEXT("difficulty-rule"),TEXT("Сложность фиксируется на всю партию.")));
-        for(const auto& D:C->Rules().difficulties){auto Card=Node(TEXT("card"),Utf(D.id));Add(Card,Head(Utf(D.id)+TEXT("-title"),D.id=="Easy"?TEXT("Легко"):D.id=="Hard"?TEXT("Сложно"):TEXT("Обычно")));Add(Card,Text(Utf(D.id)+TEXT("-capital"),TEXT("Начальный капитал: ")+Dollars(mai::Dollars(12000)*D.capitalBps/10000)));Add(Card,Button(Utf(D.id)+TEXT("-choose"),TEXT("Выбрать"),TEXT("host:difficulty"),{S(Utf(D.id))}));Add(Overlay.ToSharedRef(),Card);}}
+        const double BaseCapital=Number(Object(State,TEXT("company")),TEXT("startingCapital"),12000.);
+        for(const auto& D:C->Rules().difficulties){auto Card=Node(TEXT("card"),Utf(D.id));Add(Card,Head(Utf(D.id)+TEXT("-title"),D.id=="Easy"?TEXT("Легко"):D.id=="Hard"?TEXT("Сложно"):TEXT("Обычно")));Add(Card,Text(Utf(D.id)+TEXT("-capital"),TEXT("Начальный капитал: ")+Dollars(static_cast<mai::Money>(BaseCapital*mai::Unit)*D.capitalBps/10000)));Add(Card,Button(Utf(D.id)+TEXT("-choose"),TEXT("Выбрать"),TEXT("host:difficulty"),{S(Utf(D.id))}));Add(Overlay.ToSharedRef(),Card);}}
     if(G.screen==mai::Screen::Prologue){Overlay=Node(TEXT("column"),TEXT("prologue"));Add(Overlay.ToSharedRef(),Head(TEXT("prologue-title"),TEXT("Всё начинается с гаража")));
         if(G.prologueStep==0){auto Name=Node(TEXT("input"),TEXT("company-name"),TEXT("Название компании"));Name->SetStringField(TEXT("action"),TEXT("ui:field"));Name->SetArrayField(TEXT("args"),{S(TEXT("companyName"))});Name->SetStringField(TEXT("value"),String(Object(Object(State,TEXT("ui")),TEXT("fields")),TEXT("companyName"),String(Object(Object(State,TEXT("ui")),TEXT("fields")),TEXT("name"))));Add(Overlay.ToSharedRef(),Name);Add(Overlay.ToSharedRef(),Button(TEXT("prologue-create"),TEXT("Основать компанию"),TEXT("host:prologue-name")));}
         else if(G.prologueStep==1){Add(Overlay.ToSharedRef(),Text(TEXT("prologue-budget"),TEXT("Площадка, оборудование, данные и сотрудники оплачиваются отдельно. Заказ не устанавливается мгновенно: дождитесь доставки, затем используйте склад.")));Add(Overlay.ToSharedRef(),Button(TEXT("prologue-budget-next"),TEXT("Бюджет понятен"),TEXT("host:prologue-budget")));}
@@ -76,7 +77,7 @@ bool UMaiRulesSubsystem::HostAction(const FString& Action,const TArray<TSharedPt
     const auto Flow=[&](TFunctionRef<mai::Result(mai::Campaign&)> F){const auto R=Company->CampaignTransact(F);if(!R.bSuccess)LastError=R.Message.ToString();return R.bSuccess;};
     if(Action==TEXT("end-accept"))return NativeAction([](mai::Campaign& G){return G.ChooseEnding(mai::EndingKind::Acquisition);});
     if(Action==TEXT("end-decline"))return NativeAction([](mai::Campaign& G){return G.DeclineSale();});
-    if(Action==TEXT("save"))return SaveSlot();if(Action==TEXT("load"))return LoadSlot();
+    if(Action==TEXT("save"))return SaveSlot(TEXT("campaign"));if(Action==TEXT("load"))return LoadSlot(TEXT("campaign"));
     if(Action==TEXT("new"))return Command(TEXT("beginSetup"),{});
     if(Action==TEXT("setup-next")){
         const FString Name=String(Object(Object(State,TEXT("ui")),TEXT("fields")),TEXT("name")).TrimStartAndEnd();if(Name.IsEmpty()||Name.Len()>48){LastError=TEXT("Введите название модели: 1–48 символов.");return false;}
@@ -88,12 +89,12 @@ bool UMaiRulesSubsystem::HostAction(const FString& Action,const TArray<TSharedPt
     if(Action==TEXT("prologue-name")){FString Name=String(Object(Object(State,TEXT("ui")),TEXT("fields")),TEXT("companyName"),String(Object(Object(State,TEXT("ui")),TEXT("fields")),TEXT("name")));FTCHARToUTF8 Encoded(*Name);if(Encoded.Length()>80){LastError=TEXT("Название компании в прологе превышает 80 байт UTF-8.");return false;}return Flow([&](mai::Campaign& G){return G.PrologueAction(TCHAR_TO_UTF8(*Name));});}
     if(Action==TEXT("prologue-budget"))return Flow([](mai::Campaign& G){return G.PrologueAction("budget");});
     if(Action==TEXT("prologue-start")){
-        const auto Capital=C->Core().View().cash;if(!Command(TEXT("ui:start"),{}))return false;
-        auto R=Request(TEXT("native-ledger"));R->SetNumberField(TEXT("cash"),double(Capital)/mai::Unit-12000);TSharedPtr<FJsonObject> Out;if(!Invoke(R,Out))return false;
+        const auto Capital=C->Core().View().cash;const double BaseCapital=Number(Object(State,TEXT("company")),TEXT("startingCapital"),Number(Object(Object(State,TEXT("company")),TEXT("company")),TEXT("cash"),12000.));if(!Command(TEXT("ui:start"),{}))return false;
+        const double Delta=double(Capital)/mai::Unit-BaseCapital;auto R=Request(TEXT("native-ledger"));R->SetNumberField(TEXT("cash"),Delta);R->SetNumberField(TEXT("startingCapital"),Delta);TSharedPtr<FJsonObject> Out;if(!Invoke(R,Out))return false;
         if(!Flow([](mai::Campaign& G){return G.PrologueAction("accept-task");}))return false;return Project();
     }
     if(Action==TEXT("menu")){if(!Flow([](mai::Campaign& G){return G.ShowScreen(mai::Screen::MainMenu);}))return false;bReviewOpen=false;return Command(TEXT("cancelSetup"),{});}
-    if(Action==TEXT("quit")){if(String(State,TEXT("phase"))==TEXT("playing")&&!SaveSlot())return false;UKismetSystemLibrary::QuitGame(GetGameInstance(),PC,EQuitPreference::Quit,false);return true;}
+    if(Action==TEXT("quit")){if(String(State,TEXT("phase"))==TEXT("playing")&&!SaveSlot(TEXT("autosave")))return false;UKismetSystemLibrary::QuitGame(GetGameInstance(),PC,EQuitPreference::Quit,false);return true;}
     if(Action==TEXT("cancel")){auto* L=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>();if(!L||!L->CanCancel()){LastError=TEXT("Мир уже активируется; эту фазу нельзя отменить.");return false;}L->Invalidate();bRestoreCancelled=bLoadingTransaction;const bool Ok=Flow([](mai::Campaign& G){return G.CancelLoad();});CheckRestore();return Ok;}
     if(Action==TEXT("retry")){if(auto* L=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>()){L->Retry();return true;}return false;}
     if(Action==TEXT("enter")){
