@@ -6,6 +6,7 @@ param(
     [string]$Blender=$env:BLENDER_EXE,
     [string]$CityManifest,
     [switch]$EnableNanite,
+    [ValidateSet('all','1280x720','1600x900','1920x1080')][string]$VisualResolution='all',
     [int]$TimeoutSeconds=3600
 )
 Set-StrictMode -Version Latest
@@ -156,6 +157,8 @@ try {
             Require-Pin
             if(!$GPU.Count){throw 'No display adapter detected; GPU capture is not verified.'}
             foreach($Size in @(@(1280,720),@(1600,900),@(1920,1080))){
+                if($VisualResolution -ne 'all' -and "$($Size[0])x$($Size[1])" -ne $VisualResolution){continue}
+                $Report.visualResolution=$VisualResolution
                 $Session=$RunId+'-'+$Size[0]+'x'+$Size[1]
                 $Args=@($Project,'-game','-windowed',"-ResX=$($Size[0])","-ResY=$($Size[1])",'-ForceRes','-d3d12','-sm6','-nosplash',"-MaiCaptureSession=$Session",'-stdout','-FullStdOutLogOutput')
                 foreach($Mode in @('capture','resume')){

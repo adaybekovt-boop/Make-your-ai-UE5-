@@ -4,6 +4,9 @@
 #include "World/MaiPlayerController.h"
 #include "World/MaiCameraPawn.h"
 #include "World/MaiCityLighting.h"
+#include "World/MaiCityBatch.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "EngineUtils.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
@@ -129,7 +132,22 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 43:if(Click(TEXT("walk-in")))Stage=40;break;
     case 40:if(UI()->ActionIds().Contains(TEXT("leave-interior")))Capture(TEXT("05d-walkable-garage"),41);break;
     case 41:if(Click(TEXT("leave-interior")))Stage=42;break;
-    case 42:if(UI()->ActionIds().Contains(TEXT("open-location")))Capture(TEXT("05e-city-after-interior"),44);break;
+    case 42:if(UI()->ActionIds().Contains(TEXT("open-location")))Capture(TEXT("05e-city-after-interior"),47);break;
+    case 47:{
+        FVector Target;double Closest=TNumericLimits<double>::Max();bool Found=false;
+        const FVector ForestReference(-16000,600,0);
+        for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It){auto* Instances=It->Instances.Get();
+            if(!Instances||!Instances->GetStaticMesh()||!Instances->GetStaticMesh()->GetName().StartsWith(TEXT("SM_TreeLODs_")))continue;
+            for(int32 Index=0;Index<Instances->GetInstanceCount();++Index){FTransform Placement;
+                if(Instances->GetInstanceTransform(Index,Placement,true)){const double Distance=(Placement.GetLocation()-ForestReference).SizeSquared2D();if(Distance<Closest){Target=Placement.GetLocation();Closest=Distance;Found=true;}}
+            }
+        }
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Found||!Camera){Finish(TEXT("Detailed tree instance not found"));break;}
+        const FRotator Rotation(-20,180,0);Camera->SetActorLocationAndRotation(Target-Rotation.Vector()*700,Rotation);Stage=48;Next=Now+2;break;
+    }
+    case 48:Capture(TEXT("05f-tree-detail"),49);break;
+    case 49:if(auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0)))Camera->ResetOverview();Stage=44;Next=Now+1;break;
     case 44:if(Click(TEXT("open-location")))Stage=14;break;
     case 14:Capture(TEXT("06-equipment"),15);break;
     case 15:if(Click(TEXT("procurement")))Stage=16;break;

@@ -12,9 +12,10 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cityv4_format import sha256
+from cityv4_format import sha256, write_owned, audit_mesh
 from cityv4_plan import make_plan
 from city_surface_detail import surface_profile, surface_code, NORMAL_CODE
+from city_tree_detail import build_tree
 import unreal
 
 OWNER = 'MakeYourAI.CityV4.v2'
@@ -136,6 +137,7 @@ def build():
     import_source = Path(__file__).resolve().parents[1] / 'MakeYourAI/Source/MakeYourAIEditor/Private/MaiCityImportLibrary.cpp'
     batch_source = Path(__file__).resolve().parents[1] / 'MakeYourAI/Source/MakeYourAI/Private/World/MaiCityBatch.cpp'
     fingerprint = hashlib.sha256((sha256(manifest)+sha256(Path(__file__))+sha256(import_source)+sha256(batch_source)+sha256(Path(__file__).with_name('cityv4_plan.py'))+sha256(Path(__file__).with_name('city_surface_detail.py'))+engine+str(nanite)).encode()).hexdigest()[:20]
+    fingerprint = hashlib.sha256((fingerprint+sha256(Path(__file__).with_name('city_tree_detail.py'))).encode()).hexdigest()[:20]
     root = '/Game/Generated/CityV4/R_' + fingerprint
     world_package = root + '/L_City_DAY'
     map_file = Path(unreal.Paths.project_content_dir()) / (world_package.removeprefix('/Game/') + '.umap')
@@ -200,6 +202,24 @@ def build():
             if not result.get('ok') or result['sourceLOD0Triangles']!=item['triangles'] or result['renderLOD0Triangles']!=item['triangles']-result.get('collapsedSourceTriangles',0):
                 raise RuntimeError('Source/imported LOD0 mismatch: '+json.dumps(result))
             report['meshAudits'].append(result); meshes[key]=unreal.load_asset(path);record(package_file(path))
+            if item['source_name'] in ('template tree.001','template tree.002','template tree.004'):
+                colors={slot:tuple(data['materials'][name]['base_color']) for slot,name in
+                        [(6,'Trees / deep green'),(7,'Trees / olive green'),(8,'Trunks')]}
+                raw=build_tree(item,colors)
+                detail_file=Path(unreal.Paths.project_saved_dir())/'TreeDetailSources'/fingerprint/(key+'.maimesh')
+                write_owned(detail_file,raw);detail_audit=audit_mesh(detail_file)
+                near_path=root+'/Geometry/SM_Near_'+key;known_asset(near_path)
+                near_result=json.loads(unreal.MaiCityImportLibrary.import_city_mesh(str(detail_file),near_path,hashlib.sha1(raw).hexdigest(),False))
+                if not near_result.get('ok') or near_result['renderLOD0Triangles']!=detail_audit['triangles']:
+                    raise RuntimeError('Near tree geometry import failed: '+json.dumps(near_result))
+                record(package_file(near_path))
+                lod_path=root+'/Geometry/SM_TreeLODs_'+key;known_asset(lod_path)
+                lod_result=json.loads(unreal.MaiCityImportLibrary.create_tree_detail(unreal.load_asset(near_path),meshes[key],lod_path))
+                if (not lod_result.get('ok') or lod_result.get('sourceLODTriangles',[0,0,0])[2]!=item['triangles']
+                        or lod_result.get('renderLODTriangles',[0,0,0])[2]!=result['renderLOD0Triangles']):
+                    raise RuntimeError('Original distant tree LOD not preserved: '+json.dumps(lod_result))
+                meshes[key]=unreal.load_asset(lod_path);record(package_file(lod_path))
+                report.setdefault('treeDetail',[]).append(dict(sourceMesh=key,sourceTriangles=item['triangles'],nearTriangles=detail_audit['triangles'],audit=lod_result))
         level = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
         actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
         if map_file.exists():
