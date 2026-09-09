@@ -98,6 +98,7 @@ async function execute(request: Record<string, unknown>) {
     if (native && raw.ui !== undefined && JSON.stringify(raw.ui).length > 16384) throw new Error('Invalid saved UI')
     if (native && raw.ui && typeof raw.ui === 'object') { const u = raw.ui as Record<string, unknown>; let candidate = initialUi();
       if (u.fields && typeof u.fields === 'object') for (const [k,v] of Object.entries(u.fields)) candidate = uiCommand(candidate,'field',[k,v],store.getState()).ui
+      if (u.domain !== undefined) candidate = uiCommand(candidate,'field',['domain',u.domain],store.getState()).ui
       if (typeof u.page === 'string') uiCommand(candidate,'page',[u.page],store.getState())
     }
     if (method === 'validate') return { ok: true, browserSchema: decoded.schemaVersion, ended: decoded.game.company.ending !== null }
@@ -113,6 +114,7 @@ async function execute(request: Record<string, unknown>) {
         ui = uiCommand(ui,'field',[k,v],store.getState()).ui
       }
       if (typeof saved.page === 'string') ui = uiCommand(ui,'page',[saved.page],store.getState()).ui
+      if (saved.domain !== undefined) ui = uiCommand(ui,'field',['domain',saved.domain],store.getState()).ui
     }
     if (native) store.setState({ phase: (raw.phase ?? 'playing') as 'menu'|'setup'|'playing' })
     nativeReserve = 0; reviewedLots.clear(); generation += 1

@@ -32,6 +32,7 @@ public:
     void Dispatch(const FString& Id,const TSharedPtr<FJsonValue>& Value=nullptr);
     bool ValidateViewport(FString& Error) const;
     bool IsWalkingView() const;
+    bool RevealContentNode(const FString& Id);
     bool ApplyingSnapshot=false;
     UFUNCTION(BlueprintPure,Category="MakeYourAI|UI") TArray<FString> ActionIds() const;
 private:

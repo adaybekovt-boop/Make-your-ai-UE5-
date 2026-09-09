@@ -8,6 +8,8 @@
 #include "Components/ComboBoxString.h"
 #include "Components/EditableTextBox.h"
 #include "Components/NativeWidgetHost.h"
+#include "Components/Overlay.h"
+#include "Components/OverlaySlot.h"
 #include "Components/ProgressBar.h"
 #include "Components/ScrollBox.h"
 #include "Components/SizeBox.h"
@@ -58,6 +60,25 @@ public:
 };
 TSharedPtr<FJsonObject> Obj(const TSharedPtr<FJsonObject>& N,const TCHAR* Key){const TSharedPtr<FJsonObject>* V=nullptr;return N&&N->TryGetObjectField(Key,V)?*V:nullptr;}
 FLinearColor Color(const FString& Role){if(Role==TEXT("danger"))return FLinearColor(.88f,.43f,.36f);if(Role==TEXT("positive")||Role==TEXT("primary")||Role==TEXT("selected"))return FLinearColor(.46f,.78f,.65f);return FLinearColor(.88f,.90f,.87f);}
+class SMaiTrainingRing final:public SLeafWidget {
+public:
+    SLATE_BEGIN_ARGS(SMaiTrainingRing) {} SLATE_END_ARGS()
+    void Construct(const FArguments&){}
+    float Progress=-1.f;
+    virtual FVector2D ComputeDesiredSize(float)const override{return FVector2D(180,180);}
+    virtual int32 OnPaint(const FPaintArgs&,const FGeometry& G,const FSlateRect&,FSlateWindowElementList& Out,int32 Layer,const FWidgetStyle& Style,bool)const override {
+        const FVector2D Center=G.GetLocalSize()*.5f;
+        const float Radius=FMath::Max(0.f,FMath::Min(Center.X,Center.Y)-18.f);
+        const auto Arc=[&](float Fraction,const FLinearColor& Tint,int32 Z){
+            TArray<FVector2D> Points;const int32 Segments=FMath::Max(1,FMath::CeilToInt(96*Fraction));
+            for(int32 I=0;I<=Segments;++I){const float A=-PI*.5f+2*PI*Fraction*I/Segments;Points.Add(Center+FVector2D(FMath::Cos(A),FMath::Sin(A))*Radius);}
+            FSlateDrawElement::MakeLines(Out,Z,G.ToPaintGeometry(),Points,ESlateDrawEffect::None,Tint*Style.GetColorAndOpacityTint(),true,5.f);
+        };
+        Arc(1.f,FLinearColor(.035f,.075f,.078f),Layer);
+        if(Progress>0.f)Arc(FMath::Clamp(Progress,0.f,1.f),Color(TEXT("positive")),Layer+1);
+        return Layer+2;
+    }
+};
 class SMaiHistory final:public SLeafWidget {
 public:
     SLATE_BEGIN_ARGS(SMaiHistory) {} SLATE_END_ARGS()
@@ -89,6 +110,11 @@ TSharedRef<SWidget> UMaiNativeWidget::RebuildWidget(){
 }
 void UMaiNativeWidget::NativeConstruct(){Super::NativeConstruct();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();SetVisibility(ESlateVisibility::SelfHitTestInvisible);Refresh();}
 bool UMaiNativeWidget::IsWalkingView()const{return Snapshot&&Str(Obj(Snapshot,TEXT("content")),TEXT("id"))==TEXT("walk-prompt")&&!Obj(Snapshot,TEXT("modal"));}
+bool UMaiNativeWidget::RevealContentNode(const FString& Id){
+    auto* Scroll=Cast<UScrollBox>(Widgets.FindRef(TEXT("__content")));auto* Target=Widgets.FindRef(Id).Get();
+    if(!Scroll||!Target)return false;
+    Scroll->ScrollWidgetIntoView(Target,false,EDescendantScrollDestination::TopOrLeft);return true;
+}
 FReply UMaiNativeWidget::NativeOnPreviewKeyDown(const FGeometry& Geometry,const FKeyEvent& Event){
     if(IsWalkingView() && Event.GetKey()==EKeys::Tab){
         if(auto* PC=Cast<AMaiPlayerController>(GetOwningPlayer())){PC->ToggleWalkCursor();return FReply::Handled();}
@@ -156,12 +182,26 @@ UWidget* UMaiNativeWidget::BuildNode(const TSharedPtr<FJsonObject>& N){
     }
     else if(Kind==TEXT("slider")){auto* S=WidgetTree->ConstructWidget<USlider>();S->OnValueChanged.AddDynamic(Binding,&UMaiNativeBinding::SliderChanged);W=S;}
     else if(Kind==TEXT("progress")){W=WidgetTree->ConstructWidget<UProgressBar>();}
+    else if(Kind==TEXT("ring")){
+        auto* Overlay=WidgetTree->ConstructWidget<UOverlay>();
+        auto* Host=WidgetTree->ConstructWidget<UNativeWidgetHost>();auto Ring=SNew(SMaiTrainingRing);Host->SetContent(Ring);SlateCharts.Add(Id,Ring);
+        auto* RingSlot=Overlay->AddChildToOverlay(Host);RingSlot->SetHorizontalAlignment(HAlign_Fill);RingSlot->SetVerticalAlignment(VAlign_Fill);
+        auto* Core=WidgetTree->ConstructWidget<UVerticalBox>();
+        auto* Value=WidgetTree->ConstructWidget<UTextBlock>();Value->SetFont(FCoreStyle::GetDefaultFontStyle(TEXT("Bold"),32));Value->SetColorAndOpacity(Color(TEXT("positive")));Value->SetJustification(ETextJustify::Center);Labels.Add(Id+TEXT("__value"),Value);Core->AddChild(Value);
+        auto* Caption=Text();Caption->SetJustification(ETextJustify::Center);Core->AddChild(Caption);
+        auto* CoreSlot=Overlay->AddChildToOverlay(Core);CoreSlot->SetHorizontalAlignment(HAlign_Center);CoreSlot->SetVerticalAlignment(VAlign_Center);
+        W=Overlay;
+    }
     else if(Kind==TEXT("chart")){auto* H=WidgetTree->ConstructWidget<UNativeWidgetHost>();auto Chart=SNew(SMaiHistory);const TArray<TSharedPtr<FJsonValue>>* A=nullptr;if(N->TryGetArrayField(TEXT("samples"),A))for(const auto& V:*A)Chart->Samples.Add(float(V->AsNumber()));H->SetContent(Chart);SlateCharts.Add(Id,Chart);W=H;}
     else {
         UPanelWidget* P=nullptr;if(Kind==TEXT("bar")||Kind==TEXT("columns"))P=WidgetTree->ConstructWidget<UHorizontalBox>();else if(Kind==TEXT("row")){auto* Wrap=WidgetTree->ConstructWidget<UWrapBox>();Wrap->SetInnerSlotPadding(FVector2D(8,8));P=Wrap;}else P=WidgetTree->ConstructWidget<UVerticalBox>();
         const TArray<TSharedPtr<FJsonValue>>* A=nullptr;if(N->TryGetArrayField(TEXT("children"),A))for(const auto& Child:*A){if(auto* Item=BuildNode(Child->AsObject())){auto* ChildSlot=P->AddChild(Item);if(auto* V=Cast<UVerticalBoxSlot>(ChildSlot))V->SetPadding(FMargin(0,0,0,Id.EndsWith(TEXT("-metric"))?3:10));if(auto* H=Cast<UHorizontalBoxSlot>(ChildSlot)){H->SetVerticalAlignment(VAlign_Center);H->SetPadding(FMargin(4,0));if(Str(Child->AsObject(),TEXT("kind"))==TEXT("spacer"))H->SetSize(FSlateChildSize(ESlateSizeRule::Fill));}}}
         if(Kind==TEXT("columns"))for(auto* ChildSlot:P->GetSlots())if(auto* H=Cast<UHorizontalBoxSlot>(ChildSlot)){H->SetSize(FSlateChildSize(ESlateSizeRule::Fill));H->SetVerticalAlignment(VAlign_Top);H->SetPadding(FMargin(0,0,12,0));}
         if(Kind==TEXT("card")){auto* B=WidgetTree->ConstructWidget<UBorder>();B->SetBrush(FSlateRoundedBoxBrush(FLinearColor(.014f,.029f,.034f,.98f),12.f));B->SetPadding(FMargin(16));B->AddChild(P);W=B;}else W=P;
+    }
+    if(Kind==TEXT("card")&&Id.StartsWith(TEXT("competence-"))){
+        auto* Border=CastChecked<UBorder>(W);Border->SetPadding(FMargin(12,8));
+        if(auto* Stack=Cast<UVerticalBox>(Border->GetContent()))for(auto* ChildSlot:Stack->GetSlots())if(auto* V=Cast<UVerticalBoxSlot>(ChildSlot))V->SetPadding(FMargin(0,0,0,3));
     }
     if(!W)W=Text();Widgets.Add(Id,W);ApplyNode(N);
     if(auto* T=Labels.FindRef(Id).Get()){
@@ -184,7 +224,12 @@ void UMaiNativeWidget::ApplyNode(const TSharedPtr<FJsonObject>& N){
     if(auto* C=Cast<UComboBoxString>(W)){const TArray<TSharedPtr<FJsonValue>>* A=nullptr;if(N->TryGetArrayField(TEXT("options"),A))for(const auto& O:*A)if(Str(O->AsObject(),TEXT("value"))==Str(N,TEXT("value")))C->SetSelectedOption(Str(O->AsObject(),TEXT("label")));}
     if(auto* S=Cast<USlider>(W)){S->SetMinValue(float(N->GetNumberField(TEXT("min"))));S->SetMaxValue(float(N->GetNumberField(TEXT("max"))));S->SetStepSize(float(N->GetNumberField(TEXT("step"))));S->SetValue(float(N->GetNumberField(TEXT("value"))));}
     if(auto* P=Cast<UProgressBar>(W))P->SetPercent(float(N->GetNumberField(TEXT("value"))));
-    if(SlateCharts.Contains(Id)){auto Chart=StaticCastSharedPtr<SMaiHistory>(SlateCharts.FindRef(Id));if(Chart.IsValid()){Chart->Samples.Reset();const TArray<TSharedPtr<FJsonValue>>* A=nullptr;if(N->TryGetArrayField(TEXT("samples"),A))for(const auto& V:*A)Chart->Samples.Add(float(V->AsNumber()));Chart->Invalidate(EInvalidateWidgetReason::Paint);}}
+    if(SlateCharts.Contains(Id)&&Str(N,TEXT("kind"))==TEXT("ring")){
+        auto Ring=StaticCastSharedPtr<SMaiTrainingRing>(SlateCharts.FindRef(Id));double Value=-1;N->TryGetNumberField(TEXT("value"),Value);
+        Ring->Progress=float(Value);Ring->Invalidate(EInvalidateWidgetReason::Paint);
+        if(auto* Label=Labels.FindRef(Id+TEXT("__value")).Get())Label->SetText(FText::FromString(Value<0?TEXT("—"):FString::Printf(TEXT("%d%%"),FMath::RoundToInt(FMath::Clamp(Value,0.,1.)*100))));
+    }
+    else if(SlateCharts.Contains(Id)&&Str(N,TEXT("kind"))==TEXT("chart")){auto Chart=StaticCastSharedPtr<SMaiHistory>(SlateCharts.FindRef(Id));if(Chart.IsValid()){Chart->Samples.Reset();const TArray<TSharedPtr<FJsonValue>>* A=nullptr;if(N->TryGetArrayField(TEXT("samples"),A))for(const auto& V:*A)Chart->Samples.Add(float(V->AsNumber()));Chart->Invalidate(EInvalidateWidgetReason::Paint);}}
     const TArray<TSharedPtr<FJsonValue>>* Children=nullptr;if(N->TryGetArrayField(TEXT("children"),Children))for(const auto& C:*Children)ApplyNode(C->AsObject());
 }
 void UMaiNativeWidget::Rebuild(const TSharedPtr<FJsonObject>& View){

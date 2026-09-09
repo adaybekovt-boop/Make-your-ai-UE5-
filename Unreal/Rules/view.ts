@@ -10,7 +10,7 @@ import type { DataDomain, QuantizationStep } from '../../src/systems/models'
 
 type Store = ReturnType<typeof useGameStore.getState>
 export interface Node {
-  kind: 'text'|'heading'|'button'|'input'|'select'|'slider'|'progress'|'row'|'column'|'card'|'chart'|'bar'|'spacer'|'grid'|'columns'
+  kind: 'text'|'heading'|'button'|'input'|'select'|'slider'|'progress'|'ring'|'row'|'column'|'card'|'chart'|'bar'|'spacer'|'grid'|'columns'
   id: string; label?: string; value?: string|number; role?: string; enabled?: boolean
   action?: string; args?: unknown[]; options?: {label: string;value: string}[]; icon?: string; tooltip?: string
   min?: number; max?: number; step?: number; children?: Node[]; samples?: number[]; columns?: number
@@ -95,15 +95,30 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     if (ui.page==='training') {
       mode='panel'
       const run=m.state.run, volume=m.state.queue.reduce((sum,v)=>sum+v.volume,0)
-      content=column('training',modelTitle,
-        card('dataset-store',head('datasets','Данные'),select('domain','Специализация',ui.domain,Object.entries(DOMAIN_LABELS).map(([value,label])=>({value,label}))),
-          row('data-offers',button('official-data',`${cfg.DATA_LOT_OFFICIAL.volume} официальных · ${money(cfg.DATA_LOT_OFFICIAL.price)}`,'buyDataLot',['official',ui.domain]),button('unofficial-data',`${cfg.DATA_LOT_UNOFFICIAL.volume} неофициальных · ${money(cfg.DATA_LOT_UNOFFICIAL.price)}`,'buyDataLot',['unofficial',ui.domain])),
+      const live=effectiveProfile(m), purchased=startingGmi(m)
+      const competence:Node={kind:'columns',id:'training-competence',children:[column('training-summary',modelTabs,
+        text('training-eyebrow','ОБУЧЕНИЕ · '+modelDisplayName(m),'muted'),
+        head('training-earned-iq','Заработанный IQ '+n(m.state.iq,1)),
+        text('training-model-status',modelIdleStatus(c,m).label)),
+        {kind:'grid',id:'training-categories',columns:2,children:CATEGORIES.map(k=>card('competence-'+k,
+          text('competence-label-'+k,CATEGORY_LABELS[k],'muted'),head('competence-live-'+k,n(live[k],1)),
+          text('competence-base-'+k,'Стартовый GMI '+n(purchased[k],1),'muted')))}]}
+      content=column('training',competence,
+        card('dataset-store',head('datasets','Партии данных'),text('domain-label','ДОМЕН ПАРТИИ','muted'),
+          row('domain',...Object.entries(DOMAIN_LABELS).map(([value,label])=>button('domain-'+value,label,'ui:field',['domain',value],true,ui.domain===value?'selected':'secondary'))),
+          column('data-offers',
+            iconButton(button('official-data',`Официальные данные · ${cfg.DATA_LOT_OFFICIAL.volume} ед. · ${money(cfg.DATA_LOT_OFFICIAL.price)}`,'buyDataLot',['official',ui.domain],g.cash>=cfg.DATA_LOT_OFFICIAL.price),'flask'),
+            text('official-safety','Проверенное происхождение. Без риска заражения.','muted'),
+            iconButton(button('unofficial-data',`Данные с рынка · ${cfg.DATA_LOT_UNOFFICIAL.volume} ед. · ${money(cfg.DATA_LOT_UNOFFICIAL.price)}`,'buyDataLot',['unofficial',ui.domain],g.cash>=cfg.DATA_LOT_UNOFFICIAL.price),'flask')),
           profile('data-forecast',domainGainPreview(ui.domain,cfg.DATA_LOT_OFFICIAL.volume)),text('data-risk','Официальные и неофициальные данные имеют разное происхождение и риск заражения.')),
-        card('dataset-inventory',head('inventory','Dataset Inventory'),...m.state.queue.map(l=>text('lot-'+l.id,`#${l.id} · ${l.quality==='official'?'Официальные':'Неофициальные'} · ${DOMAIN_LABELS[l.domain]} · ${l.volume} ед.`)),text('queue-volume',`В очереди: ${volume} ед.`),
+        card('dataset-inventory',head('inventory','Очередь данных'),...m.state.queue.map(l=>text('lot-'+l.id,`#${l.id} · ${l.quality==='official'?'Официальные':'Неофициальные'} · ${DOMAIN_LABELS[l.domain]} · ${l.volume} ед.`)),text('queue-volume',`В очереди: ${volume} ед.`),
           button('open-review','Проверка данных','host:review')),
         host.review??column('review-state'),
-        card('training-run',head('training-title','Обучение модели'),run?progress('training-progress',`Обучение: ${n(run.total-run.remaining,1)} / ${run.total} ед.`,1-run.remaining/run.total):text('training-idle',volume>0?'Данные готовы. Проверьте партии перед запуском.':'Модель ждёт данные. Приобретите первую партию справа.'),
-          text('training-rate',`${n(rates.trainingVolumePerHour,2)} ед./игровой час`),button('train','Начать обучение','host:start-training',[],!run&&volume>0,'primary')),
+        card('training-run',head('training-title','Обучение модели'),
+          {kind:'ring',id:'training-progress',value:run&&run.total>0?Math.max(0,Math.min(1,1-run.remaining/run.total)):-1,
+            label:run?`Загрузка в ${modelDisplayName(m)}`:volume>0?'Данные в очереди':'Ожидание данных'},
+          text('training-idle',run?`${n(run.total-run.remaining,1)} / ${n(run.total)} ед.`:volume>0?'Данные готовы. Проверьте партии перед запуском.':'Приобретите первую партию справа.'),
+          text('training-rate',`${n(rates.trainingVolumePerHour,2)} ед./игровой час`),iconButton(button('train','Начать обучение','host:start-training',[],!run&&volume>0&&modelIsOnline(c,m),'primary'),'play')),
         card('team',head('team-title','Команда'),text('morale',`Мораль ${n(g.team.morale)} · Сотрудников ${g.team.employees.length}/${cfg.MAX_EMPLOYEES}`),
           row('hire',button('hire-engineer',`Инженер · ${money(cfg.HIRE_COST.engineer)}`,'hireEmployee',['engineer']),button('hire-safety',`Специалист безопасности · ${money(cfg.HIRE_COST.safety)}`,'hireEmployee',['safety'])),
           ...g.team.employees.map(v=>row('employee-'+v.id,text('employee-label-'+v.id,`${v.role==='engineer'?'Инженер':'Безопасность'} #${v.id} · ${money(v.salaryPerHour)}/ч`),button('fire-'+v.id,'Уволить','fireEmployee',[v.id]))),

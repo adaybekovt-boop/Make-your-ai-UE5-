@@ -138,7 +138,9 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 18:Capture(TEXT("08-ordered"),19);break;
     case 19:if(Click(TEXT("close-dialog")))Stage=20;break;
     case 20:if(Click(TEXT("nav-training")))Stage=21;break;
-    case 21:Capture(TEXT("09-training"),22);break;
+    case 21:Capture(TEXT("09-training"),45);break;
+    case 45:if(UI()->RevealContentNode(TEXT("training-run"))){Stage=46;Next=Now+1;}else Finish(TEXT("Training controls not found"));break;
+    case 46:Capture(TEXT("09b-training-controls"),22);break;
     case 22:{if(!Rules->SaveSlot()){Finish(TEXT("Real save failed: ")+Rules->LastError);break;}
         auto Expected=MakeShared<FJsonObject>();Expected->SetObjectField(TEXT("company"),Rules->CanonicalState()->GetObjectField(TEXT("company")));
         if(!FFileHelper::SaveStringToFile(Encode(Expected),*(FPaths::GetPath(Directory)/TEXT("expected-company.json")),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM)){Finish(TEXT("Cannot retain restart oracle"));break;}
