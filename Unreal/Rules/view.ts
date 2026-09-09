@@ -180,7 +180,9 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
       const loc=[...g.locations,...g.regionLocations].find(v=>v.id===ui.location)??g.locations[0],d=locationDefinition(loc.id)
       const size=normalizeLocation(loc).gridSize
       content=column('location-card',text('location-eyebrow',loc.owned?'Ваша серверная':'Будущая серверная','muted'),head('location-name',d.name),text('location-description',loc.owned?'Площадка куплена. Расставляйте серверы в ячейках внутри помещения.':d.description),
-        ...(!loc.owned?[text('location-grid',`Сетка помещения     ${size.rows} × ${size.cols}`),text('location-power',`Энергосеть     ${d.powerLimitKw} кВт`),text('location-rent',`Аренда     ${n(d.rentPerHour)} $/ч`),button('buy-location',`Купить локацию    ${n(d.price)} $`,'purchaseLocation',[loc.id],true,'primary')]:
+        ...(!loc.owned?[text('location-grid',`Сетка помещения     ${size.rows} × ${size.cols}`),text('location-power',`Энергосеть     ${d.powerLimitKw} кВт`),text('location-rent',`Аренда     ${n(d.rentPerHour)} $/ч`),text('location-price',`Стоимость     ${money(d.price)}`),
+          ...(g.cash<d.price?[text('location-shortfall',`Не хватает ${money(d.price-g.cash)}`,'danger')]:[]),
+          button('buy-location','Приобрести площадку','purchaseLocation',[loc.id],g.cash>=d.price,'primary')]:
           [button('enter-location','Войти в интерьер','host:enter',[loc.id],true,'primary'),button('open-location','Оборудование','ui:interior',[loc.id])]),
         button('locations-drawer','Все локации','ui:modal',['locations']))
       if(host.walking) content=column('walk-prompt',text('walk-hint',host.inputHint||'WASD — движение · ПКМ — осмотр · E — взаимодействие'),button('leave-interior','Вернуться в город','host:leave'),button('walk-operations','Управление площадкой','ui:interior',[ui.location]))

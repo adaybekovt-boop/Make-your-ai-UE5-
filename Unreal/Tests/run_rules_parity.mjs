@@ -67,7 +67,11 @@ async function differential(strategy){
   const viewBefore=(await second.call({method:'state'})).value
   for(const location of ['garage','campus','dc-north','dc-south']){
     await second.call(cmd('ui:location',location))
-    assert.equal((await second.call({method:'view'})).value.selectedLocation,location,'Map marker selection must reflect canonical UI location')
+    const selectedView=(await second.call({method:'view'})).value
+    assert.equal(selectedView.selectedLocation,location,'Map marker selection must reflect canonical UI location')
+    const findNode=(node,id)=>node?.id===id?node:(node?.children??[]).map(child=>findNode(child,id)).find(Boolean)
+    const purchase=findNode(selectedView.content,'buy-location')
+    if(purchase){assert(findNode(selectedView.content,'location-price'));assert.equal(purchase.enabled,!findNode(selectedView.content,'location-shortfall'))}
   }
   await second.call(cmd('ui:location',viewBefore.ui.location))
   for(const page of ['map','training','testing','catalog','portfolio','office']){

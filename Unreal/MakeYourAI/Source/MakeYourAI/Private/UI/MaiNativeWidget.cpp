@@ -281,6 +281,7 @@ void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=
     MarkerIds.Sort([&](const FString& A,const FString& B){if(A==SelectedMarker)return B!=SelectedMarker;if(B==SelectedMarker)return false;return A<B;});
     for(const auto& MarkerId:MarkerIds){auto* W=Widgets.FindRef(MarkerId).Get();if(!W)continue;FVector2D Point;
         const bool Selected=MarkerId==SelectedMarker,Expanded=Selected||W->IsHovered()||W->HasKeyboardFocus();
+        W->SetToolTipText(Expanded?FText::GetEmpty():FText::FromString(Str(Nodes.FindRef(MarkerId),TEXT("tooltip"))));
         const float Width=Expanded?FMath::Clamp(50.f+Str(Nodes.FindRef(MarkerId),TEXT("label")).Len()*8.f,120.f,246.f):42.f,Height=38.f;
         if(auto* Label=Labels.FindRef(MarkerId).Get()){Label->SetVisibility(Expanded?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);Label->SetColorAndOpacity(FLinearColor(.88f,.94f,.92f));}
         if(auto* Button=Cast<UButton>(W))Button->SetBackgroundColor(Selected?FLinearColor(.055f,.22f,.18f):FLinearColor(.012f,.035f,.043f));

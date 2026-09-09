@@ -31,5 +31,28 @@ claim that every marker is visible behind the left panel or outside the camera.
 - TypeScript rules typecheck PASS; Python tools/source suite 41 tests,
   one skipped, OK (`map-markers-source-20260909.log`).
 
-OS hover/click, keyboard navigation and a fresh Shipping package are not yet
-verified for this change. No GitHub publication or release claim.
+## Standalone pointer check and follow-up
+
+Shipping `outputs/Neuron-map-ui-20260909-Windows/Windows/MakeYourAI.exe`
+(workspace-relative) built successfully in 76.18 seconds. Game binary SHA256:
+`595394039fb4047279942e6ced4ca4249f86391f5f2450c9a7bf9a0478233533`.
+Actual Windows UI: Continue loaded isolated QA campaign, 663 dollars, paused
+day 1 08:42. Moving the cursor to Campus expanded its name without selection;
+clicking Campus selected it and displayed its matching purchase card.
+
+This revealed duplicate white tooltips and a purchase button that looked active
+without enough cash. Follow-up suppresses the tooltip while the marker name is
+expanded, separates location price from the button label, disables purchase
+when cash is insufficient, and displays the exact shortfall. Underlying purchase
+commands/prices are unchanged. Rules assertions verify the price row and that
+button enablement agrees with the displayed shortfall for selectable locations.
+
+Follow-up Shipping v2 built successfully:
+`outputs/Neuron-map-ui-20260909-Windows-v2/Windows/MakeYourAI.exe`.
+Log `Saved/Verification/package-map-ui-v2-20260909.log`.
+Rules parity 568,852 comparisons / 24 scenarios / 3,418 steps, zero failures;
+Python suite 41 tests, one skipped, OK. Logs `map-ui-v2-parity-20260909.log`
+and `map-ui-v2-source-20260909.log` in Saved/Verification.
+The two follow-up UI changes are NOT yet OS-pointer verified in v2.
+Keyboard navigation, exhaustive campaign and visual acceptance remain open.
+No GitHub publication or release claim.
