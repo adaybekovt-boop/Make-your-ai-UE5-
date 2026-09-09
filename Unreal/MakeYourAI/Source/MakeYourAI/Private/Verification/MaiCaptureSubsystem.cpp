@@ -114,7 +114,7 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 8:if(Click(TEXT("prologue-budget-next")))Stage=9;break;
     case 9:if(Click(TEXT("prologue-play")))Stage=10;break;
     case 10:if(Click(TEXT("friendly")))Stage=11;break;
-    case 11:if(UI()->ActionIds().Contains(TEXT("buy-location")))Capture(TEXT("05-city"),30);break;
+    case 11:if(UI()->ActionIds().Contains(TEXT("buy-location"))){if(!UI()->CanControlMap(false)){Finish(TEXT("Map keyboard input unexpectedly blocked"));break;}Capture(TEXT("05-city"),30);}break;
     case 30:{auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));if(!Camera){Finish(TEXT("City camera missing"));break;}
         const FVector Position=Camera->GetActorLocation();const FVector Forward=Camera->GetActorForwardVector();
         const FVector Target=Position+Forward*(-Position.Z/Forward.Z);
@@ -138,7 +138,7 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 18:Capture(TEXT("08-ordered"),19);break;
     case 19:if(Click(TEXT("close-dialog")))Stage=20;break;
     case 20:if(Click(TEXT("nav-training")))Stage=21;break;
-    case 21:Capture(TEXT("09-training"),45);break;
+    case 21:if(UI()->CanControlMap(false)||UI()->CanControlMap(true)){Finish(TEXT("Training panel leaks map input"));break;}Capture(TEXT("09-training"),45);break;
     case 45:if(UI()->RevealContentNode(TEXT("training-run"))){Stage=46;Next=Now+1;}else Finish(TEXT("Training controls not found"));break;
     case 46:Capture(TEXT("09b-training-controls"),22);break;
     case 22:{if(!Rules->SaveSlot()){Finish(TEXT("Real save failed: ")+Rules->LastError);break;}

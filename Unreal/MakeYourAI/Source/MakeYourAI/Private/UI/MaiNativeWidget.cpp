@@ -33,6 +33,7 @@
 #include "EngineUtils.h"
 #include "Widgets/SLeafWidget.h"
 #include "Rendering/DrawElements.h"
+#include "Framework/Application/SlateApplication.h"
 namespace {
 FString Str(const TSharedPtr<FJsonObject>& N,const TCHAR* Key,const FString& Default={}){FString S;return N&&N->TryGetStringField(Key,S)?S:Default;}
 // Native vector equivalents of src/ui/Icon.tsx; no webview or icon-font dependency.
@@ -110,6 +111,16 @@ TSharedRef<SWidget> UMaiNativeWidget::RebuildWidget(){
 }
 void UMaiNativeWidget::NativeConstruct(){Super::NativeConstruct();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();SetVisibility(ESlateVisibility::SelfHitTestInvisible);Refresh();}
 bool UMaiNativeWidget::IsWalkingView()const{return Snapshot&&Str(Obj(Snapshot,TEXT("content")),TEXT("id"))==TEXT("walk-prompt")&&!Obj(Snapshot,TEXT("modal"));}
+bool UMaiNativeWidget::CanControlMap(bool CheckPointer)const{
+    if(!Snapshot||Str(Snapshot,TEXT("mode"))!=TEXT("world")||Str(Snapshot,TEXT("page"))!=TEXT("map")||Obj(Snapshot,TEXT("modal"))||IsWalkingView())return false;
+    if(CheckPointer){
+        if(!FSlateApplication::IsInitialized())return false;
+        const FVector2D PointerPosition=FSlateApplication::Get().GetCursorPos();
+        for(const TCHAR* Id:{TEXT("__toolbar_frame"),TEXT("__content_frame")})if(auto* Panel=Widgets.FindRef(Id).Get())
+            if(Panel->IsVisible()&&Panel->GetCachedGeometry().IsUnderLocation(PointerPosition))return false;
+    }
+    return true;
+}
 bool UMaiNativeWidget::RevealContentNode(const FString& Id){
     auto* Scroll=Cast<UScrollBox>(Widgets.FindRef(TEXT("__content")));auto* Target=Widgets.FindRef(Id).Get();
     if(!Scroll||!Target)return false;

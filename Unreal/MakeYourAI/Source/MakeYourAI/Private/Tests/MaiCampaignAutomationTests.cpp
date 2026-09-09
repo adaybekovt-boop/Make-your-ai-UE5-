@@ -9,6 +9,7 @@
 #include "World/MaiGarageInterior.h"
 #include "World/MaiWalkCharacter.h"
 #include "World/MaiCityLighting.h"
+#include "World/MaiCameraPawn.h"
 #include "Interaction/MaiInteriorPoint.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
@@ -29,6 +30,10 @@ bool Prepare(mai::Campaign& G) {
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignAssetAutomation,"MakeYourAI.Campaign.EditableProfilesMatchDomain",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignAssetAutomation::RunTest(const FString& Parameters) {
     (void)Parameters;auto* Asset=NewObject<UMaiCampaignAsset>();mai::CampaignRules Rules;FString Error;
+    TestEqual(TEXT("Idle wheel does not zoom"),AMaiCameraPawn::WheelZoomFactor(0),1.f);
+    TestTrue(TEXT("Wheel packets preserve multiple notches"),FMath::IsNearlyEqual(AMaiCameraPawn::WheelZoomFactor(3),FMath::Pow(.85f,3)));
+    TestTrue(TEXT("Opposite wheel steps cancel within float precision"),FMath::IsNearlyEqual(AMaiCameraPawn::WheelZoomFactor(2)*AMaiCameraPawn::WheelZoomFactor(-2),1.f,1.e-6f));
+    TestEqual(TEXT("Extreme wheel packets are bounded"),AMaiCameraPawn::WheelZoomFactor(100),AMaiCameraPawn::WheelZoomFactor(8));
     TestEqual(TEXT("Windows never emit in full daylight"),AMaiCityLighting::NightWindowStrength(.65f,1.f),0.f);
     TestEqual(TEXT("Non-emissive facades remain non-emissive"),AMaiCityLighting::NightWindowStrength(0.f,0.f),0.f);
     TestTrue(TEXT("Weak authored evening windows remain visible at night"),AMaiCityLighting::NightWindowStrength(.03f,0.f)>=.8f);
