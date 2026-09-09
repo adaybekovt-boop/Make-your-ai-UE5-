@@ -55,7 +55,8 @@ bool UMaiRulesSubsystem::SaveSlot(const FString& Slot){
     if(!mai::WriteDurableFile(std::string(Filename.Get(),Filename.Length()),std::string(Bytes.Get(),Bytes.Length()),Error)){LastError=UTF8_TO_TCHAR(Error.c_str());return false;}bHasSave=true;return true;
 }
 bool UMaiRulesSubsystem::LoadSlot(const FString& Slot){
-    const FString Path=SlotPath(Slot);if(Path.IsEmpty()||bLoadingTransaction||(Company&&Company->Campaign()&&Company->Campaign()->View().loading.phase==mai::LoadPhase::Loading)){LastError=TEXT("Загрузка сейчас недоступна.");return false;}
+    FString Path=SlotPath(Slot);if(Slot==TEXT("campaign")&&!FPaths::FileExists(Path)){const FString Auto=SlotPath(TEXT("autosave"));if(FPaths::FileExists(Auto))Path=Auto;}
+    if(Path.IsEmpty()||bLoadingTransaction||(Company&&Company->Campaign()&&Company->Campaign()->View().loading.phase==mai::LoadPhase::Loading)){LastError=TEXT("Загрузка сейчас недоступна.");return false;}
     std::string Text,Error;const FTCHARToUTF8 Filename(*Path);if(!mai::ReadBoundedFile(std::string(Filename.Get(),Filename.Length()),Text,Error)){LastError=UTF8_TO_TCHAR(Error.c_str());return false;}
     const auto Envelope=Decode(UTF8_TO_TCHAR(Text.c_str()));const FString Body=String(Envelope,TEXT("payload"));
     if(!Envelope||Body.IsEmpty()||String(Envelope,TEXT("checksumSHA1"))!=Checksum(Body)){LastError=TEXT("Сохранение повреждено. Исходный файл и текущая партия сохранены.");return false;}

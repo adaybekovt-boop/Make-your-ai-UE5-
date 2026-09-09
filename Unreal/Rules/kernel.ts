@@ -128,8 +128,9 @@ async function execute(request: Record<string, unknown>) {
     const s = store.getState(), c = s.company
     const cash = boundedDelta(request.cash ?? 0, 'cash'), expenses = boundedDelta(request.expenses ?? 0, 'expenses')
     const capex = boundedDelta(request.capex ?? 0, 'capex'), revenue = boundedDelta(request.revenue ?? 0, 'revenue')
+    const startingCapital = boundedDelta(request.startingCapital ?? 0, 'startingCapital')
     const reputation = boundedDelta(request.reputation ?? 0, 'reputation')
-    const next = { ...c, company: { ...c.company, cash: c.company.cash + cash,
+    const next = { ...c, startingCapital: c.startingCapital + startingCapital, company: { ...c.company, cash: c.company.cash + cash,
       totalExpenses: c.company.totalExpenses + expenses, totalCapex: c.company.totalCapex + capex, totalRevenue: c.company.totalRevenue + revenue,
       reputation: Math.max(0, Math.min(100, c.company.reputation + reputation)) } }
     validateCompanyState(next)

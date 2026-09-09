@@ -8,6 +8,12 @@ export function ledgerOf(game: GameState): CompanyLedger {
   const { model: _model, users: _users, benchmark: _benchmark, ...ledger } = game
   return ledger
 }
+export function startingCapitalFromLedger(ledger: Pick<CompanyLedger, 'cash'|'totalRevenue'|'totalExpenses'|'totalCapex'>): number {
+  return ledger.cash - ledger.totalRevenue + ledger.totalExpenses + ledger.totalCapex
+}
+export function expectedCompanyCash(state: CompanyState): number {
+  return state.startingCapital + state.company.totalRevenue - state.company.totalExpenses - state.company.totalCapex
+}
 export function modelFromLegacy(game: GameState, id: ModelId = 'model-1'): ManagedModel {
   return {
     id, baseId: 'custom', allocationBps: COMPUTE_BUDGET_BPS, quantization: 0,
@@ -24,7 +30,8 @@ export function migrateSingleModel(game: GameState): CompanyState {
 }
 /** Internal pure runtime adapter: no deep clone on every UI tick. */
 export function adaptSingleModel(copy: GameState): CompanyState {
-  return { strategy: 'flagship', company: ledgerOf(copy), models: [modelFromLegacy(copy)], modelSeq: 1, purchasedBases: [],
+  const company = ledgerOf(copy)
+  return { strategy: 'flagship', startingCapital: startingCapitalFromLedger(company), company, models: [modelFromLegacy(copy)], modelSeq: 1, purchasedBases: [],
     dataLiability: copy.model.dirtyHistory, contractModelId: copy.contracts.active?.requiresOfficialData ? 'model-1' : null }
 }
 export function createCompanyGame(strategy: Strategy = 'flagship'): CompanyState {

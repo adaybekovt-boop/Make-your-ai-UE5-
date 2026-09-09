@@ -19,9 +19,9 @@ void UMaiRulesSubsystem::Initialize(FSubsystemCollectionBase& Collection){
     VM=MakeUnique<mai::RulesVM>();std::string Error;const auto* Instance=Cast<UMaiGameInstance>(GetGameInstance());
     const uint32 Seed=Instance&&Instance->SessionSeed?uint32(Instance->SessionSeed):1296124209u;
     if(!VM->Open(std::string(reinterpret_cast<const char*>(Bytes.GetData()),Bytes.Num()),Seed,Error)){LastError=TEXT("Не удалось запустить игровые правила.");UE_LOG(LogTemp,Error,TEXT("Native rules startup: %s"),UTF8_TO_TCHAR(Error.c_str()));return;}
-    Invoke(Request(TEXT("state")),State);bHasSave=FPaths::FileExists(SlotPath(TEXT("campaign")));
+    Invoke(Request(TEXT("state")),State);bHasSave=FPaths::FileExists(SlotPath(TEXT("campaign")))||FPaths::FileExists(SlotPath(TEXT("autosave")));
 }
-void UMaiRulesSubsystem::Deinitialize(){if(IsReady()&&!bLoadingTransaction&&String(State,TEXT("phase"))==TEXT("playing"))SaveSlot();VM.Reset();Company=nullptr;Super::Deinitialize();}
+void UMaiRulesSubsystem::Deinitialize(){if(IsReady()&&!bLoadingTransaction&&String(State,TEXT("phase"))==TEXT("playing"))SaveSlot(TEXT("autosave"));VM.Reset();Company=nullptr;Super::Deinitialize();}
 bool UMaiRulesSubsystem::Invoke(const TSharedRef<FJsonObject>& R,TSharedPtr<FJsonObject>& Value){
     if(!IsReady())return false;std::string Response,Error;const FTCHARToUTF8 Input(*Encode(R));
     if(!VM->Call(std::string(Input.Get(),Input.Length()),Response,Error)){LastError=TEXT("Операция прервана. Состояние игры не подтверждено.");UE_LOG(LogTemp,Error,TEXT("Native rules call: %s"),UTF8_TO_TCHAR(Error.c_str()));return false;}
@@ -98,7 +98,7 @@ bool UMaiRulesSubsystem::NativeAction(TFunctionRef<mai::Result(mai::Campaign&)> 
     const auto After=C->Core().View();auto R=Request(TEXT("native-ledger"));R->SetNumberField(TEXT("cash"),double(After.cash-Before.cash)/mai::Unit);R->SetNumberField(TEXT("capex"),double(After.capex-Before.capex)/mai::Unit);R->SetNumberField(TEXT("expenses"),double(After.expenses-Before.expenses)/mai::Unit);R->SetNumberField(TEXT("revenue"),double(After.revenue-Before.revenue)/mai::Unit);R->SetNumberField(TEXT("reputation"),After.reputation-Before.reputation);
     TSharedPtr<FJsonObject> Out;if(!Invoke(R,Out)){C->Load(BeforeCampaign);return false;}return Project()&&SyncReviews();
 }
-void UMaiRulesSubsystem::SetForeground(bool Foreground){if(bForeground==Foreground)return;bForeground=Foreground;FrameCarry=0;bSkipForegroundFrame=Foreground;if(!Foreground&&IsReady()&&!bLoadingTransaction)SaveSlot();}
+void UMaiRulesSubsystem::SetForeground(bool Foreground){if(bForeground==Foreground)return;bForeground=Foreground;FrameCarry=0;bSkipForegroundFrame=Foreground;if(!Foreground&&IsReady()&&!bLoadingTransaction)SaveSlot(TEXT("autosave"));}
 void UMaiRulesSubsystem::AdvanceFrame(float Seconds){
     CheckRestore();if(!IsReady()||!Company||!Company->Campaign()||!bForeground||bLoadingTransaction||!FMath::IsFinite(Seconds)||Seconds<=0)return;
     if(bSkipForegroundFrame){bSkipForegroundFrame=false;return;}
@@ -108,7 +108,7 @@ void UMaiRulesSubsystem::AdvanceFrame(float Seconds){
     auto R=Request(TEXT("tick"));R->SetNumberField(TEXT("seconds"),Delta);R->SetNumberField(TEXT("reservedCompute"),Number(State,TEXT("reservedCompute")));TSharedPtr<FJsonObject> Out;
     if(!Invoke(R,Out))return;const double After=Number(Object(Object(State,TEXT("company")),TEXT("company")),TEXT("elapsedGameHours"));
     if(!Project(After-Before)||!SyncReviews()){const FString Why=LastError;if(Old)ApplyCapture(Old);LastError=Why;return;}
-    Company->OnChanged.Broadcast();if(AutoSaveCarry>=15){AutoSaveCarry=0;SaveSlot();}
+    Company->OnChanged.Broadcast();if(AutoSaveCarry>=15){AutoSaveCarry=0;SaveSlot(TEXT("autosave"));}
 }
 TSharedPtr<FJsonObject> UMaiRulesSubsystem::ViewModel(){
     if(!IsReady()){auto V=MakeShared<FJsonObject>();V->SetStringField(TEXT("mode"),TEXT("full"));auto C=Node(TEXT("column"),TEXT("startup-error"));Add(C,Head(TEXT("startup-title"),TEXT("Не удалось открыть игру")));Add(C,Text(TEXT("startup-error-text"),LastError));V->SetObjectField(TEXT("content"),C);return V;}
