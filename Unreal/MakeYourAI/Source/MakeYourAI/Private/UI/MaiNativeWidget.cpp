@@ -81,7 +81,7 @@ void UMaiNativeWidget::Dispatch(const FString& Id,const TSharedPtr<FJsonValue>& 
 }
 UWidget* UMaiNativeWidget::BuildNode(const TSharedPtr<FJsonObject>& N){
     if(!N)return nullptr;const FString Id=Str(N,TEXT("id")),Kind=Str(N,TEXT("kind"));Nodes.Add(Id,N);UWidget* W=nullptr;
-    auto Text=[&](){auto* T=WidgetTree->ConstructWidget<UTextBlock>();T->SetAutoWrapText(true);T->SetFont(FCoreStyle::GetDefaultFontStyle(Kind==TEXT("heading")?TEXT("Bold"):TEXT("Regular"),Kind==TEXT("heading")?24:14));T->SetColorAndOpacity(Color(Str(N,TEXT("role"))));T->SetText(FText::FromString(Str(N,TEXT("label"))));Labels.Add(Id,T);return T;};
+    auto Text=[&](){auto* T=WidgetTree->ConstructWidget<UTextBlock>();T->SetAutoWrapText(!Id.StartsWith(TEXT("map-location-")));T->SetFont(FCoreStyle::GetDefaultFontStyle(Kind==TEXT("heading")?TEXT("Bold"):TEXT("Regular"),Id==TEXT("brand")?28:Kind==TEXT("heading")?21:12));T->SetColorAndOpacity(Color(Str(N,TEXT("role"))));T->SetText(FText::FromString(Str(N,TEXT("label"))));Labels.Add(Id,T);return T;};
     UMaiNativeBinding* Binding=nullptr;
     if(N->HasField(TEXT("action"))){Binding=NewObject<UMaiNativeBinding>(this);Binding->Owner=this;Binding->Id=Id;Bindings.Add(Binding);}
     if(Kind==TEXT("text")||Kind==TEXT("heading"))W=Text();
@@ -130,7 +130,7 @@ void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=
     if(auto* W=Widgets.FindRef(TEXT("__toolbar_frame")).Get()){auto* S=Cast<UCanvasPanelSlot>(W->Slot);S->SetPosition(FVector2D(12,12));S->SetSize(FVector2D(Size.X-24,FMath::Max(64.f,float(W->GetDesiredSize().Y))));Top=12+S->GetSize().Y+12;}
     const FString Mode=Str(Snapshot,TEXT("mode"));
     auto Position=[&](const TCHAR* Name,bool Modal){auto* W=Widgets.FindRef(FString(Name)+TEXT("_frame")).Get();if(!W)return;auto* S=Cast<UCanvasPanelSlot>(W->Slot);
-        const bool Small=!Modal&&Mode==TEXT("world");const float Width=FMath::Min(Size.X-24,Small?370.f:Modal?860.f:Mode==TEXT("full")?600.f:1080.f);
+        const bool Small=!Modal&&Mode==TEXT("world");const bool Menu=Str(Obj(Snapshot,TEXT("content")),TEXT("id"))==TEXT("menu");const float Width=FMath::Min(Size.X-24,Small?272.f:Modal?860.f:Menu?460.f:Mode==TEXT("full")?600.f:1080.f);
         const bool Center=Modal||Mode==TEXT("full");const float Available=Size.Y-(Center?64:Top+52);const float Height=Small?FMath::Min(430.f,Available):Center?FMath::Clamp(float(W->GetDesiredSize().Y)+24.f,360.f,FMath::Max(360.f,Available)):Available;S->SetPosition(FVector2D(Small?12:(Size.X-Width)/2,Center?(Size.Y-Height)/2:Top));S->SetSize(FVector2D(Width,FMath::Max(80.f,Height)));};
     Position(TEXT("__content"),false);Position(TEXT("__modal"),true);
     TArray<FVector2D> PlacedMarkers;

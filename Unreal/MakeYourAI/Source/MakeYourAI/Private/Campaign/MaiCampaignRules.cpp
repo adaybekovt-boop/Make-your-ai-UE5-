@@ -103,8 +103,8 @@ EndingResult EndingEvaluator::Evaluate(const EndingMetrics& m,const std::vector<
 std::vector<InteriorProfile> InteriorProfiles() {
     const std::vector<InteriorPoint> points={{"location-panel","location",-400,-250},{"warehouse","warehouse",400,-250},{"desk","review",-400,280},{"advisor","talk",400,280},{"exit","city",0,-520}};
     std::vector<InteriorProfile> out;
-    for(const auto& pair:std::vector<std::pair<std::string,std::string>>{{"garage","Garage"},{"workshop","Workshop"},{"technopark","Technopark"},{"server-hall","Server Hall"},{"campus","Campus"}})
-        out.push_back({pair.first,pair.second,"server-interior","/Game/Scaffold/Maps/L_Campaign_"+(pair.first=="server-hall"?std::string("ServerHall"):pair.second),pair.first=="garage",points,{"procurement","warehouse","dataset-review","training"},{"rack-basic","rack-cooled","rack-enterprise"}});
+    for(const auto& pair:std::vector<std::pair<std::string,std::string>>{{"garage","Garage"},{"workshop","Workshop"},{"technopark","Technopark"},{"server-hall","Server Hall"},{"campus","Campus"},{"dc-north","DC North"},{"dc-south","DC South"},{"overseas-west","Overseas West"},{"overseas-east","Overseas East"}})
+        out.push_back({pair.first,pair.second,"server-interior","",true,points,{"procurement","warehouse","dataset-review","training"},{"rack-basic","rack-cooled","rack-enterprise"}});
     return out;
 }
 bool WithinInteractionRange(int x,int y,int z,int radius) {

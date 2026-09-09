@@ -118,7 +118,10 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 34:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->ApplyPreview(false);It->SetActorTickEnabled(true);}
         if(auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0)))Camera->ResetOverview();Stage=12;Next=Now+2;break;
     case 12:if(Click(TEXT("buy-location")))Stage=13;break;
-    case 13:if(Click(TEXT("open-location")))Stage=14;break;
+    case 13:if(Click(TEXT("enter-location")))Stage=40;break;
+    case 40:if(UI()->ActionIds().Contains(TEXT("leave-interior")))Capture(TEXT("05d-walkable-garage"),41);break;
+    case 41:if(Click(TEXT("leave-interior")))Stage=42;break;
+    case 42:if(Click(TEXT("open-location")))Stage=14;break;
     case 14:Capture(TEXT("06-equipment"),15);break;
     case 15:if(Click(TEXT("procurement")))Stage=16;break;
     case 16:Capture(TEXT("07-procurement"),17);break;

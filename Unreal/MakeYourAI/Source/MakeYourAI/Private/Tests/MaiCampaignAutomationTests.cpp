@@ -71,7 +71,19 @@ bool FMaiCampaignGaragePhysicsAutomation::RunTest(const FString& Parameters) {
     TestTrue(TEXT("Movement component changes physical location"),Character->GetActorLocation().Y>160);
     Character->GetCharacterMovement()->SafeMoveUpdatedComponent(FVector(0,-1200,0),FQuat::Identity,true,Hit);
     TestTrue(TEXT("Wall stops swept capsule"),Hit.bBlockingHit);TestTrue(TEXT("Character stays inside room"),Character->GetActorLocation().Y>-710);
-    TestFalse(TEXT("Distant review point is not callable"),Desk->CanInteract(Character));return true;
+    TestFalse(TEXT("Distant review point is not callable"),Desk->CanInteract(Character));
+    for(const auto& Profile:mai::InteriorProfiles()) {
+        Room->ConfigureLocation(UTF8_TO_TCHAR(Profile.id.c_str()));
+        TestTrue(TEXT("Server room builds"),Room->Build());
+        Character->SetActorLocation(Room->PlayerStart(),false,nullptr,ETeleportType::TeleportPhysics);
+        Character->SetRoomBounds(Room->GetActorLocation(),Room->WalkHalfSize());
+        const FVector Start=Character->GetActorLocation();
+        for(const FVector Escape:{FVector(10000,0,100),FVector(0,10000,100),FVector(0,0,-500)}) {
+            Character->SetActorLocation(Escape,false,nullptr,ETeleportType::TeleportPhysics);Character->Tick(0);
+            TestTrue(TEXT("Escaped capsule returns to safe spawn"),Character->GetActorLocation().Equals(Start,1));
+        }
+    }
+    return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignFlow, "MakeYourAI.Campaign.LoadingDifficultyAndInventory", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignFlow::RunTest(const FString& Parameters) {

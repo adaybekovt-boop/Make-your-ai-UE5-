@@ -13,6 +13,7 @@ class MAKEYOURAI_API AMaiInteriorPoint : public AActor, public IMaiInteractable 
 public:
     AMaiInteriorPoint();
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString PointId;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString LocationId=TEXT("garage");
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString Action;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") int32 Cell=-1;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") float RangeCm=220.f;

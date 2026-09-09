@@ -24,7 +24,20 @@ AMaiWalkCharacter::AMaiWalkCharacter() {
 }
 bool AMaiWalkCharacter::CanMoveInCampaign() const {
     auto* C=GetGameInstance()?GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>():nullptr;
-    return C && C->CampaignDomain() && C->CampaignDomain()->CanPlay() && C->CampaignDomain()->View().screen==mai::Screen::Gameplay && C->CampaignDomain()->View().interior=="garage";
+    return C && C->CampaignDomain() && C->CampaignDomain()->CanPlay() && C->CampaignDomain()->View().screen==mai::Screen::Gameplay && !C->CampaignDomain()->View().interior.empty();
+}
+void AMaiWalkCharacter::SetRoomBounds(const FVector& Origin,const FVector2D& HalfSize) {
+    RoomOrigin=Origin;RoomHalfSize=HalfSize;SafeSpawn=GetActorLocation();bRoomBoundsSet=true;
+}
+void AMaiWalkCharacter::Tick(float DeltaSeconds) {
+    Super::Tick(DeltaSeconds);
+    if(!bRoomBoundsSet)return;
+    const FVector Local=GetActorLocation()-RoomOrigin;
+    // Solid walls are the primary boundary. Recover if physics or a bad spawn escapes.
+    if(Local.ContainsNaN() || FMath::Abs(Local.X)>RoomHalfSize.X || FMath::Abs(Local.Y)>RoomHalfSize.Y || Local.Z < -40 || Local.Z>600) {
+        GetCharacterMovement()->StopMovementImmediately();
+        SetActorLocation(SafeSpawn,false,nullptr,ETeleportType::TeleportPhysics);
+    }
 }
 void AMaiWalkCharacter::SetupPlayerInputComponent(UInputComponent* Input) {
     Super::SetupPlayerInputComponent(Input); Input->BindAxis(TEXT("MaiNorth"),this,&AMaiWalkCharacter::North); Input->BindAxis(TEXT("MaiEast"),this,&AMaiWalkCharacter::East);

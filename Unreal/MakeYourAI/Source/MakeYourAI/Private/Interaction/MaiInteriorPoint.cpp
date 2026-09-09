@@ -33,10 +33,10 @@ bool AMaiInteriorPoint::CanInteract(const AMaiWalkCharacter* Character) const {
 void AMaiInteriorPoint::Interact_Implementation(APlayerController* Player) {
     auto* PC=Cast<AMaiPlayerController>(Player);auto* Character=PC?Cast<AMaiWalkCharacter>(PC->GetPawn()):nullptr;
     auto* C=GetGameInstance()?GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>():nullptr;
-    if(!C || !C->CampaignDomain() || !C->CampaignDomain()->CanPlay() || C->CampaignDomain()->View().interior!="garage" || !CanInteract(Character)) return;
+    if(!C || !C->CampaignDomain() || !C->CampaignDomain()->CanPlay() || C->CampaignDomain()->View().interior!=TCHAR_TO_UTF8(*LocationId) || !CanInteract(Character)) return;
     if(Action==TEXT("city")) PC->ShowCity();
     else if(Action==TEXT("review")) PC->OpenTraining(true);
     else if(Action==TEXT("talk")) C->CampaignTransact([](mai::Campaign& G){return G.TalkToGarageNpc();});
     else if(Action==TEXT("warehouse")) PC->ShowWarehouse();
-    else PC->SelectLocation(TEXT("garage"),Cell);
+    else PC->SelectLocation(LocationId,Cell);
 }

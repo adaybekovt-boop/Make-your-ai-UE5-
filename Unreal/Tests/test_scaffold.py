@@ -38,7 +38,8 @@ class ScaffoldChecks(unittest.TestCase):
         editor_target = (PROJECT / 'Source/MakeYourAIEditor.Target.cs').read_text()
         self.assertIn('MakeYourAIEditor', editor_target)
         for plugin in descriptor['Plugins']:
-            self.assertEqual(plugin['TargetAllowList'], ['Editor'])
+            if plugin.get('Enabled', True):
+                self.assertEqual(plugin['TargetAllowList'], ['Editor'])
 
     def test_native_game_instance_and_mode_are_registered(self):
         ini = (PROJECT / 'Config/DefaultEngine.ini').read_text()

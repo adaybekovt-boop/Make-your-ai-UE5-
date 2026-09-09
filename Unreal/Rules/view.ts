@@ -61,7 +61,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
   }
   if (host.overlay) return {schema:1,mode:'full',page:host.screen||'campaign',content:host.overlay,toolbar:null,modal:null,notice:host.saveError||s.notice?.message||null}
   if (s.phase==='menu') {
-    content=column('menu',head('brand','Neuron'),text('tagline','Создайте свою AI-компанию.'),
+    content=column('menu',head('brand','Neuron.'),text('tagline','Лаборатория, серверы и модели — в одном городе. Выбор стратегии делается один раз.'),
       button('new-game','Новая игра','beginSetup',[],s.ready,'primary'),
       button('continue','Продолжить','host:load',[],!!host.hasSave),
       button('settings','Настройки','ui:modal',['settings']),button('quit','Выйти из игры','host:quit'))

@@ -117,15 +117,21 @@ bool AMaiPlayerController::PrepareCampaignScene(const FString& Interior, bool bM
         }
         return GetPawn() == CityCamera;
     }
-    if (Interior != TEXT("garage")) { Error = TEXT("Прогулка по этому интерьеру пока не подключена. Оборудование доступно в панели площадки."); return false; }
     AMaiGarageInterior* Room = nullptr;
     for (TActorIterator<AMaiGarageInterior> It(GetWorld()); It; ++It) if (!It->IsHidden()) { Room = *It; break; }
     if (!Room) { RuntimeGarage = GetWorld()->SpawnActor<AMaiGarageInterior>(FVector(100000, 100000, 0), FRotator::ZeroRotator); Room = RuntimeGarage; }
-    if (!Room || !Room->Build()) { Error = TEXT("Garage construction failed; required mesh or collision components unavailable"); return false; }
+    if(Room)Room->ConfigureLocation(Interior);
+    if (!Room || !Room->Build()) { Error = TEXT("Room construction failed; required mesh or collision components unavailable"); return false; }
     if (IsValid(Walker)) Walker->Destroy();
     FActorSpawnParameters Params; Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
     Walker = GetWorld()->SpawnActor<AMaiWalkCharacter>(Room->PlayerStart(), FRotator::ZeroRotator, Params);
     if (!Walker) { Error = TEXT("Garage character spawn failed"); return false; }
+    Walker->SetRoomBounds(Room->GetActorLocation(),Room->WalkHalfSize());
     Possess(Walker); bOperationsOpen = false; return GetPawn() == Walker;
 }
-void AMaiPlayerController::ShowWarehouse() { if(auto* Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>()) Rules->Dispatch(TEXT("ui:procurement"),{MakeShared<FJsonValueString>(TEXT("garage"))}); }
+void AMaiPlayerController::ShowWarehouse() {
+    auto* Company=GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>();
+    if(!Company||!Company->CampaignDomain())return;
+    const FString Id=UTF8_TO_TCHAR(Company->CampaignDomain()->View().interior.c_str());
+    if(!Id.IsEmpty())if(auto* Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>())Rules->Dispatch(TEXT("ui:procurement"),{MakeShared<FJsonValueString>(Id)});
+}
