@@ -228,7 +228,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     if(g.acquisitionOffered&&!g.acquisitionDeclined&&!ui.modal) modal=column('acquisition',head('acquisition-title','Предложение о продаже компании'),text('acquisition-price',money(cfg.ACQUISITION_OFFER)),text('acquisition-warning','Продажа завершает партию. Текущие показатели войдут в итоговый отчёт.'),button('accept-acquisition','Принять предложение','acceptAcquisition'),button('decline-acquisition','Продолжить самостоятельно','declineAcquisition'))
   }
   if(modal) modal={...modal,id:'modal-'+modal.id}
-  return {schema:1,mode,page:ui.page,content,toolbar,modal,notice:host.saveError||s.notice?.message||null,noticeKind:s.notice?.kind??'error'}
+  return {schema:1,mode,page:ui.page,selectedLocation:ui.location,content,toolbar,modal,notice:host.saveError||s.notice?.message||null,noticeKind:s.notice?.kind??'error'}
 }
 
 function procurement(s:Store,ui:UiState,close:Node):Node {

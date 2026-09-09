@@ -56,6 +56,8 @@ public:
         else if(Name==TEXT("flask")){Line({{10,3},{14,3}});Line({{11,3},{11,9},{5,19},{7,21},{17,21},{19,19},{13,9},{13,3}});Line({{8,14},{16,14}});}
         else if(Name==TEXT("wallet")){Line({{20,8},{20,3},{6,3},{3,5},{3,18},{6,21},{20,21},{20,9},{6,9},{3,7}});Line({{20,12},{14,12},{14,17},{20,17}});}
         else if(Name==TEXT("server")){for(float Y:{3.f,14.f}){Line({{4,Y},{20,Y},{20,Y+7},{4,Y+7},{4,Y}});Line({{12,Y+3.5f},{17,Y+3.5f}});Circle(8,Y+3.5f,.6);}}
+        else if(Name==TEXT("building")){Line({{3,21},{21,21},{21,10},{12,3},{3,10},{3,21}});Line({{8,21},{8,13},{16,13},{16,21}});Line({{8,16},{16,16}});}
+        else if(Name==TEXT("campus")){Line({{2,8},{12,3},{22,8},{2,8}});for(float X:{5.f,12.f,19.f})Line({{X,10},{X,19}});Line({{2,21},{22,21}});}
         return Layer+1;
     }
 };
@@ -168,7 +170,7 @@ UWidget* UMaiNativeWidget::BuildNode(const TSharedPtr<FJsonObject>& N){
         if(!Icon.IsEmpty()){
             auto* H=WidgetTree->ConstructWidget<UNativeWidgetHost>();H->SetContent(SNew(SMaiIcon).Name(Icon));
             auto* Contents=WidgetTree->ConstructWidget<UHorizontalBox>();
-            auto* IconSlot=Contents->AddChildToHorizontalBox(H);IconSlot->SetVerticalAlignment(VAlign_Center);IconSlot->SetPadding(FMargin(0,0,8,0));
+            auto* IconSlot=Contents->AddChildToHorizontalBox(H);IconSlot->SetVerticalAlignment(VAlign_Center);IconSlot->SetPadding(FMargin(0,0,Id.StartsWith(TEXT("map-location-"))?0:8,0));
             Contents->AddChildToHorizontalBox(Text())->SetVerticalAlignment(VAlign_Center);B->AddChild(Contents);
         }else B->AddChild(Text());
         B->OnClicked.AddDynamic(Binding,&UMaiNativeBinding::Click);auto Style=B->GetStyle();Style.Normal=FSlateRoundedBoxBrush(FLinearColor::White,8.f);Style.Hovered=FSlateRoundedBoxBrush(FLinearColor(1.2f,1.2f,1.2f),8.f);Style.Pressed=FSlateRoundedBoxBrush(FLinearColor(.75f,.75f,.75f),8.f);
@@ -274,14 +276,20 @@ void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=
         auto* S=Cast<UCanvasPanelSlot>(HUD->Slot);S->SetPosition(FVector2D(20,Size.Y-110));S->SetSize(FVector2D(FMath::Min(600.,Size.X-40),90));
         if(auto* T=Labels.FindRef(TEXT("__walk_hud")).Get())if(auto* Hint=Labels.FindRef(TEXT("walk-hint")).Get())T->SetText(Hint->GetText());
     }
-    TArray<FVector2D> PlacedMarkers;
-    for(const auto& Marker:MapMarkerPositions){auto* W=Widgets.FindRef(Marker.Key).Get();if(!W)continue;FVector2D Point;
-        const bool Visible=UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(),Marker.Value,Point,false)&&Point.X>0&&Point.X<Size.X&&Point.Y>Top&&Point.Y<Size.Y-60;
+    TArray<FSlateRect> PlacedMarkers;TArray<FString> MarkerIds;MapMarkerPositions.GetKeys(MarkerIds);
+    const FString SelectedMarker=TEXT("map-location-")+Str(Snapshot,TEXT("selectedLocation"));
+    MarkerIds.Sort([&](const FString& A,const FString& B){if(A==SelectedMarker)return B!=SelectedMarker;if(B==SelectedMarker)return false;return A<B;});
+    for(const auto& MarkerId:MarkerIds){auto* W=Widgets.FindRef(MarkerId).Get();if(!W)continue;FVector2D Point;
+        const bool Selected=MarkerId==SelectedMarker,Expanded=Selected||W->IsHovered()||W->HasKeyboardFocus();
+        const float Width=Expanded?FMath::Clamp(50.f+Str(Nodes.FindRef(MarkerId),TEXT("label")).Len()*8.f,120.f,246.f):42.f,Height=38.f;
+        if(auto* Label=Labels.FindRef(MarkerId).Get()){Label->SetVisibility(Expanded?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);Label->SetColorAndOpacity(FLinearColor(.88f,.94f,.92f));}
+        if(auto* Button=Cast<UButton>(W))Button->SetBackgroundColor(Selected?FLinearColor(.055f,.22f,.18f):FLinearColor(.012f,.035f,.043f));
+        const bool Visible=UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(),MapMarkerPositions[MarkerId],Point,false)&&Point.X>0&&Point.X<Size.X&&Point.Y>Top&&Point.Y<Size.Y-60;
         W->SetVisibility(Visible?ESlateVisibility::Visible:ESlateVisibility::Collapsed);
-        if(Visible){FVector2D MarkerPosition(FMath::Clamp(Point.X-110,12.,Size.X-232),Point.Y);
-            for(int32 Attempt=0;Attempt<8;++Attempt){bool Overlap=false;for(const FVector2D& Other:PlacedMarkers)if(FMath::Abs(MarkerPosition.X-Other.X)<228&&FMath::Abs(MarkerPosition.Y-Other.Y)<52){Overlap=true;break;}if(!Overlap)break;MarkerPosition.Y+=52;}
-            if(MarkerPosition.Y+46>Size.Y-48){W->SetVisibility(ESlateVisibility::Collapsed);continue;}
-            PlacedMarkers.Add(MarkerPosition);auto* S=Cast<UCanvasPanelSlot>(W->Slot);S->SetPosition(MarkerPosition);S->SetSize(FVector2D(220,46));}}
+        if(Visible){FVector2D MarkerPosition(FMath::Clamp(Point.X-21,12.,Size.X-Width-12),Point.Y);
+            for(int32 Attempt=0;Attempt<8;++Attempt){bool Overlap=false;for(const FSlateRect& Other:PlacedMarkers)if(MarkerPosition.X<Other.Right+6&&MarkerPosition.X+Width+6>Other.Left&&MarkerPosition.Y<Other.Bottom+6&&MarkerPosition.Y+Height+6>Other.Top){Overlap=true;break;}if(!Overlap)break;MarkerPosition.Y+=44;}
+            if(MarkerPosition.Y+Height>Size.Y-48){W->SetVisibility(ESlateVisibility::Collapsed);continue;}
+            PlacedMarkers.Add(FSlateRect(MarkerPosition.X,MarkerPosition.Y,MarkerPosition.X+Width,MarkerPosition.Y+Height));auto* S=Cast<UCanvasPanelSlot>(W->Slot);S->SetPosition(MarkerPosition);S->SetSize(FVector2D(Width,Height));}}
     if(auto* T=Labels.FindRef(TEXT("__notice")).Get()){T->SetVisibility(Walking?ESlateVisibility::Collapsed:ESlateVisibility::HitTestInvisible);auto* S=Cast<UCanvasPanelSlot>(T->Slot);S->SetPosition(FVector2D(20,Size.Y-44));S->SetSize(FVector2D(Size.X-40,38));}
 }
 void UMaiNativeWidget::BuildMapMarkers(){
@@ -289,6 +297,8 @@ void UMaiNativeWidget::BuildMapMarkers(){
     for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It){const FString* Name=Names.Find(It->LocationId);if(!Name||!It->Instances)continue;
         const FString Id=TEXT("map-location-")+It->LocationId;if(MapMarkerPositions.Contains(Id))continue;
         auto N=MakeShared<FJsonObject>();N->SetStringField(TEXT("kind"),TEXT("button"));N->SetStringField(TEXT("id"),Id);N->SetStringField(TEXT("label"),*Name);N->SetStringField(TEXT("action"),TEXT("ui:location"));N->SetArrayField(TEXT("args"),{MakeShared<FJsonValueString>(It->LocationId)});
+        N->SetStringField(TEXT("tooltip"),*Name);N->SetStringField(TEXT("label"),TEXT("  ")+*Name);
+        N->SetStringField(TEXT("icon"),It->LocationId==TEXT("campus")?TEXT("campus"):It->LocationId.StartsWith(TEXT("dc-"))||It->LocationId==TEXT("server-hall")?TEXT("server"):TEXT("building"));
         if(auto* W=BuildNode(N)){Canvas->AddChild(W);MapMarkerPositions.Add(Id,It->Instances->Bounds.Origin+FVector(0,0,It->Instances->Bounds.BoxExtent.Z+100));}
     }
 }

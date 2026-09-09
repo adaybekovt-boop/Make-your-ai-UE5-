@@ -54,7 +54,7 @@
     "Unreal/Rules/prelude.js": "ffbcb97aeceb47f7d0af6e1066225ff0ae973004",
     "Unreal/Rules/tsconfig.json": "302ccb3e6ae58762341271efb750cc89e3b5a16c",
     "Unreal/Rules/vanilla.ts": "ec61f46afb096233e451363fccf50b8d2f70e090",
-    "Unreal/Rules/view.ts": "a3334b766bc8fd47694262b16f1c1da7ad1bbf10",
+    "Unreal/Rules/view.ts": "3c02028bcc55dde06e93df9bb875dd9e5431acdb",
     "Unreal/Tests/native/campaign_main.cpp": "1fd5a34593481f5b3bdad2f0d73164ef30453591",
     "Unreal/Tests/run_campaign.sh": "a02bedf6309e75a38aa29a16a0420a054d5668ac",
     "Unreal/Tests/test_campaign.py": "7f290e5cacf5abf84f55e721bdc583ee9758ad59",

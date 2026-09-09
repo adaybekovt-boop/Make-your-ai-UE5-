@@ -65,6 +65,11 @@ async function differential(strategy){
   const unknown=await second.call(cmd('eval','require("fs")'));assert.equal(unknown.ok,false);near((await second.call({method:'state'})).value.company,before)
   const unknownBase=structuredClone(saved);unknownBase.ui.fields.base='not-a-base';assert.equal((await second.call({method:'validate',payload:unknownBase})).ok,false)
   const viewBefore=(await second.call({method:'state'})).value
+  for(const location of ['garage','campus','dc-north','dc-south']){
+    await second.call(cmd('ui:location',location))
+    assert.equal((await second.call({method:'view'})).value.selectedLocation,location,'Map marker selection must reflect canonical UI location')
+  }
+  await second.call(cmd('ui:location',viewBefore.ui.location))
   for(const page of ['map','training','testing','catalog','portfolio','office']){
     await second.call(cmd('ui:page',page));const v=await second.call({method:'view'});assert.equal(v.ok,true,JSON.stringify(v));const ids=new Set();function visit(x){if(!x)return;assert(!ids.has(x.id),'Duplicate UMG identity '+x.id);ids.add(x.id);for(const child of x.children??[])visit(child)};visit(v.value.toolbar);visit(v.value.content);visit(v.value.modal)
     assert(!JSON.stringify(v).match(/SOURCE_SCAFFOLD|portable vertical slice|NOT VERIFIED/))
