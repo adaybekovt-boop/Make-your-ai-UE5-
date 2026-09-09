@@ -1,4 +1,5 @@
 import {
+  CONTRACT_BREACH_REPUTATION,
   CONTRACT_DIRTY_DAYS,
   CONTRACT_ENTERPRISE_PAYOUT,
   CONTRACT_EXPIRY_DAYS,
@@ -10,7 +11,13 @@ import {
   CONTRACT_OFFICIAL_REPUTATION_MIN,
 } from './config'
 import { gameDay, pushNotice } from './market'
+import { changeReputation } from './reputation'
 import type { ActionResult, ContractKind, ContractOffer, GameState, Rng } from './types'
+
+export const GREY_CONTRACT_REPUTATION_HIT = 4
+export const GREY_CONTRACT_COURT_RISK_MULT = 2
+export const GREY_CONTRACT_COMPLAINT_RISK_MULT = 1.5
+export const GREY_CONTRACT_EVENT_RISK_MULT = 1.5
 
 const FICTIONAL_CLIENTS = [
   'Аврора Логистика',
@@ -32,26 +39,39 @@ export function nextOfferDay(state: GameState, rng: Rng): number {
   return gameDay(state) + intervalDays(rng)
 }
 
+export function greyContractRiskActive(state: GameState): boolean {
+  return state.contracts.active?.kind === 'grey' && state.market.dirtyRiskUntil !== null && state.elapsedGameHours < state.market.dirtyRiskUntil
+}
+
 /**
  * Release the slot only after the data obligation is settled AND all time windows end.
- * Calendar deadlines are inclusive, matching benchmark.cheatBlockedByContract.
- * No payout/refund/reputation change occurs here. Untrained official contracts keep
- * waiting: the existing design specifies the next training, not a training deadline.
+ * Official next-training obligations use the no-cheat deadline as their finite due date;
+ * old saves therefore cannot leave a contract stuck forever.
  */
 export function closeCompletedContract(state: GameState): GameState {
-  const active = state.contracts.active
-  if (!active || state.ending) return state
-  if (active.requiresOfficialData && active.fulfilled === null) return state
-  const day = gameDay(state)
-  if (active.noCheatUntilDay !== null && day <= active.noCheatUntilDay) return state
-  if (active.dirtyUntilDay !== null && day <= active.dirtyUntilDay) return state
-  // Old saves can have a risk timer which ends later than the calendar deadline.
-  if (active.kind === 'grey' && state.market.dirtyRiskUntil !== null &&
-      state.elapsedGameHours < state.market.dirtyRiskUntil) return state
-  return pushNotice(
-    { ...state, contracts: { ...state.contracts, active: null } },
-    `Контракт «${active.clientName}» закрыт. Компания может принимать новые предложения.`,
-  )
+  let next = state
+  let active = next.contracts.active
+  if (!active || next.ending) return next
+  const day = gameDay(next)
+
+  if (active.requiresOfficialData && active.fulfilled === null) {
+    if (active.noCheatUntilDay !== null && day <= active.noCheatUntilDay) return next
+    next = changeReputation(next, -CONTRACT_BREACH_REPUTATION)
+    active = { ...active, fulfilled: false }
+    next = pushNotice(
+      { ...next, contracts: { ...next.contracts, active } },
+      `Контракт «${active.clientName}» нарушен: обязательное официальное обучение не выполнено в срок.`,
+    )
+  }
+
+  if (active.noCheatUntilDay !== null && day <= active.noCheatUntilDay) return next
+  if (active.dirtyUntilDay !== null && day <= active.dirtyUntilDay) return next
+  if (active.kind === 'grey' && next.market.dirtyRiskUntil !== null && next.elapsedGameHours < next.market.dirtyRiskUntil) return next
+
+  const cleared = active.kind === 'grey'
+    ? { ...next, market: { ...next.market, dirtyRiskUntil: null }, contracts: { ...next.contracts, active: null } }
+    : { ...next, contracts: { ...next.contracts, active: null } }
+  return pushNotice(cleared, `Контракт «${active.clientName}» закрыт. Компания может принимать новые предложения.`)
 }
 
 /** One offer at a time: the same deal in an official and a grey variant. */
@@ -125,7 +145,10 @@ export function acceptContract(state: GameState, variant: ContractKind): ActionR
     contracts: { ...state.contracts, pending: null, active },
   }
   if (variant === 'grey') {
-    next = { ...next, market: { ...next.market, dirtyRiskUntil: next.elapsedGameHours + CONTRACT_DIRTY_DAYS * 24 } }
+    next = changeReputation(
+      { ...next, market: { ...next.market, dirtyRiskUntil: next.elapsedGameHours + CONTRACT_DIRTY_DAYS * 24 } },
+      -GREY_CONTRACT_REPUTATION_HIT,
+    )
   }
   const label = variant === 'official' ? 'официальный' : variant === 'grey' ? 'серый' : 'энтерпрайз'
   return {
@@ -152,6 +175,13 @@ export function activeContractLabel(state: GameState): string | null {
       ? ` Без манипуляций с бенчмарками до конца дня ${active.noCheatUntilDay}.`
       : ' Ожидает закрытия на суточной границе.'
     return `Контракт «${active.clientName}»: ${outcome}${restriction}`
+  }
+  if (active.requiresOfficialData && active.fulfilled === null && active.noCheatUntilDay !== null) {
+    return `Контракт «${active.clientName}»: следующее обучение — только официальные данные, срок до конца дня ${active.noCheatUntilDay}.`
+  }
+  if (active.kind === 'grey' && state.market.dirtyRiskUntil !== null) {
+    const hours = Math.max(0, Math.ceil(state.market.dirtyRiskUntil - state.elapsedGameHours))
+    return `Серый контракт «${active.clientName}»: повышенный риск ещё ${hours} ч.`
   }
   return `Контракт с «${active.clientName}» в силе.`
 }

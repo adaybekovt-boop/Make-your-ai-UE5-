@@ -1,6 +1,6 @@
-import { AD_DAILY_COST, BENCHMARK_COST, BENCHMARK_OFFLINE_HOURS, INSURANCE_DAILY_PREMIUM, INSURANCE_COVERAGE, REGIONS, TOKEN_PRICE_DEFAULT, TOKEN_PRICE_MAX, TOKEN_PRICE_MIN } from '../systems/config'
+import { AD_DAILY_COST, AD_USER_BOOST, BENCHMARK_COST, BENCHMARK_OFFLINE_HOURS, ESPIONAGE_COST, GMI_BOOST_THRESHOLD, INSURANCE_DAILY_PREMIUM, INSURANCE_COVERAGE, REGIONS, REPUTATION_MAX, TOKEN_PRICE_DEFAULT, TOKEN_PRICE_MAX, TOKEN_PRICE_MIN } from '../systems/config'
 import { adCostMultiplier } from '../systems/reputation'
-import { competitorRevealed, competitorGrowth } from '../systems/competitor'
+import { competitorRevealed, expectedCompetitorGrowth } from '../systems/competitor'
 import { gameDay } from '../systems/market'
 import { benchmarkIsCurrent, effectiveProfile, getModel, modelIsOnline } from '../systems/models'
 import { useGameStore } from '../store/gameStore'
@@ -42,12 +42,13 @@ export function TestingScreen({ onLeave }: { onLeave: () => void }) {
   const today = gameDay(game)
   const name = modelDisplayName(model)
   const stale = last !== null && !benchmarkIsCurrent(model)
+  const currentLast = stale ? null : last
 
   return <section className="screen" aria-label={`Тестирование и рынок · ${name}`}>
     <header className="screen-header">
       <div>
         <span className="card-caption">Тестирование и рынок · {name}</span>
-        <h2>GMI {last ? <strong className="text-green">{Math.round(last.total)}</strong> : <strong>—</strong>}</h2>
+        <h2>GMI {currentLast ? <strong className="text-green">{Math.round(currentLast.total)}</strong> : <strong>—</strong>}</h2>
       </div>
       <div className="screen-status">
         {model.state.iq <= 0 && !Object.values(effectiveProfile(model)).some((value) => value > 0) && <span className="status-pill warm">Сначала обучите {name}</span>}
@@ -81,10 +82,10 @@ export function TestingScreen({ onLeave }: { onLeave: () => void }) {
           <div><span>Coding</span><strong>{Math.round(last.coding)}</strong></div>
           <div><span>Safety</span><strong>{Math.round(last.safety)}</strong></div>
           <div><span>Multimodal</span><strong>{Math.round(last.multimodal)}</strong></div>
-          <div className="summary-total"><span>Итог · день {last.day}{stale ? ' · устарел' : ''}</span><strong>{Math.round(last.total)}</strong></div>
+          <div className="summary-total"><span>{stale ? 'Исторический результат' : 'Итог'} · день {last.day}{stale ? ' · устарел' : ''}</span><strong>{Math.round(last.total)}</strong></div>
           {last.cheated && !last.exposed && <p className="card-note text-warm">Этот результат «{name}» завышен подготовкой. Пока правда не вскрылась.</p>}
           {last.exposed && <p className="card-note text-warm">Жульничество в результате «{name}» вскрыто: буст рекламы и доверие потеряны.</p>}
-          {!last.cheated && last.total >= 75 && <p className="card-note text-green">Честный высокий балл: реклама работает на четверть лучше, открыты дорогие контракты.</p>}
+          {!stale && !last.cheated && last.total >= GMI_BOOST_THRESHOLD && <p className="card-note text-green">Честный высокий балл: реклама работает на четверть лучше, открыты дорогие контракты.</p>}
         </div>}
 
         <div className="toggle-row">
@@ -109,14 +110,14 @@ export function TestingScreen({ onLeave }: { onLeave: () => void }) {
             ? `Балл конкурента: ${Math.round(company.company.competitor.score)} (точные данные разведки, ещё ${Math.ceil((company.company.competitor.revealedUntil! - company.company.elapsedGameHours))} ч).`
             : `Балл конкурента: ≈${Math.round(company.company.competitor.score / 10) * 10} (оценка; разведка покажет точное число).`}
         </p>
-        <button className="secondary-button" disabled={!ready || company.company.cash < 25_000} onClick={() => useGameStore.getState().attemptEspionage()}>Заказать разведку<span>{money(25_000)}</span></button>
+        <button className="secondary-button" disabled={!ready || company.company.cash < ESPIONAGE_COST} onClick={() => useGameStore.getState().attemptEspionage()}>Заказать разведку<span>{money(ESPIONAGE_COST)}</span></button>
         <p className="card-note">Провал разведки ударит по репутации сильнее, чем отказ от попытки.</p>
 
         <h3>Реклама и цена токена</h3>
         <div className="toggle-row">
           <label className="toggle-label">
             <input type="checkbox" checked={market.advertising} disabled={!ready} onChange={() => useGameStore.getState().toggleAdvertising()} />
-            Реклама: +50% к ёмкости аудитории, {money(Math.round(AD_DAILY_COST * adCostMultiplier(game)))} в день
+            Реклама: +{Math.round(AD_USER_BOOST * 100)}% к ёмкости аудитории, {money(Math.round(AD_DAILY_COST * adCostMultiplier(game)))} в день
           </label>
         </div>
         <label className="slider-row">
@@ -132,8 +133,8 @@ export function TestingScreen({ onLeave }: { onLeave: () => void }) {
 
         <h3>Репутация и страховка</h3>
         <div className="card-facts">
-          <span>Репутация<strong>{Math.round(company.company.reputation)} / 100</strong></span>
-          <span>Эффективность рекламы<strong>{percent(company.company.reputation / 100 / 2 + 0.5)}</strong></span>
+          <span>Репутация<strong>{Math.round(company.company.reputation)} / {REPUTATION_MAX}</strong></span>
+          <span>Эффективность рекламы<strong>{percent(company.company.reputation / REPUTATION_MAX / 2 + 0.5)}</strong></span>
         </div>
         <div className="toggle-row">
           <label className="toggle-label">
@@ -158,7 +159,7 @@ export function TestingScreen({ onLeave }: { onLeave: () => void }) {
           <p className="card-note">{REGIONS[0].description}</p>
           <button className="secondary-button" disabled={!ready || company.company.cash < REGIONS[0].unlockCost} onClick={() => useGameStore.getState().unlockRegion(REGIONS[0].id)}>Открыть регион<span>{money(REGIONS[0].unlockCost)}</span></button>
         </>}
-        <p className="card-note">Ориентир: соперник растёт на {percent(competitorGrowth(game, Math.random) / Math.max(company.company.competitor.score, 1))} в день. День {today}.</p>
+        <p className="card-note">Ориентир: ожидаемый рост соперника {percent(expectedCompetitorGrowth(game) / Math.max(company.company.competitor.score, 1))} в день. День {today}.</p>
       </div>
     </div>
   </section>

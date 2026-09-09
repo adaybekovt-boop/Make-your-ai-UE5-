@@ -58,6 +58,13 @@ import type {
 
 export { gameDay } from './calendar'
 
+const CHIP_PRICE_PHASE: Record<ChipId, number> = {
+  'consumer-gpu': 0,
+  'pro-gpu': Math.PI / 2,
+  accelerator: Math.PI,
+  flagship: 3 * Math.PI / 2,
+}
+
 // ---------- Notices ----------
 export function pushNotice(state: GameState, message: string): GameState {
   return { ...state, pendingNotices: [...state.pendingNotices, message] }
@@ -73,10 +80,10 @@ export function chipBasePrice(chip: ChipId): number {
   return CHIPS[chip].price
 }
 
-/** Price of a chip class on a given day: base ±20% sine, phase offset per class. */
+/** Price of a chip class on a given day: base ±20% sine, with a distinct phase per class. */
 export function chipPriceForDay(chip: ChipId, day: number, rng: Rng): { price: number; trend: 1 | 0 | -1 } {
   const period = CHIP_PRICE_PERIOD_DAYS[chip]
-  const phase = period === 9 ? 0 : period === 13 ? Math.PI / 2 : Math.PI
+  const phase = CHIP_PRICE_PHASE[chip]
   const noise = (rng() * 2 - 1) * 0.03
   const factor = 1 + CHIP_PRICE_SWING * Math.sin((2 * Math.PI * day) / period + phase) + noise
   const price = Math.round(chipBasePrice(chip) * factor)

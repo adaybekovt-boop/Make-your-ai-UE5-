@@ -1,5 +1,5 @@
 import { createInitialGame } from '../simulation'
-import { TRAINING_IQ_PER_VOLUME } from '../config'
+import { OPEN_SOURCE_IQ_THRESHOLD, TRAINING_IQ_PER_VOLUME } from '../config'
 import type { ActionResult, GameState, ModelState } from '../types'
 import type { CompanyActionResult, CompanyLedger, CompanyState, ManagedModel, ModelId, Strategy } from './types'
 import { addProfile, CATEGORIES, COMPUTE_BUDGET_BPS, effectiveProfile, GENERAL_GAINS, quantizationQuality, scaleProfile } from './config'
@@ -63,10 +63,24 @@ export function mergeModel(state: CompanyState, id: ModelId, result: GameState):
 export function mergeCompany(state: CompanyState, result: GameState): CompanyState {
   return { ...state, company: ledgerOf(result), dataLiability: state.dataLiability || result.model.dirtyHistory, contractModelId: result.contracts.active ? state.contractModelId : null }
 }
+
+function openSourceTransitionError(before: GameState, after: GameState): string | null {
+  const changedDecision = after.model.openSourceChosen !== before.model.openSourceChosen || after.model.openSource !== before.model.openSource
+  if (!changedDecision) return null
+  if (before.ending) return 'Компания уже продана.'
+  if (before.model.openSourceChosen) return 'Решение об открытом коде уже принято.'
+  if (!after.model.openSourceChosen) return 'Решение об открытом коде должно быть окончательным.'
+  if (before.model.iq < OPEN_SOURCE_IQ_THRESHOLD) return `Открытый код доступен с IQ ${OPEN_SOURCE_IQ_THRESHOLD}.`
+  return null
+}
+
 export function applyModel(state: CompanyState, id: ModelId, action: (view: GameState) => ActionResult): CompanyActionResult {
   if (!state.models.some(item => item.id === id)) return { ok: false, error: 'Модель не найдена.' }
-  const result = action(modelView(state, id))
-  return result.ok ? { ok: true, state: mergeModel(state, id, result.state) } : result
+  const before = modelView(state, id)
+  const result = action(before)
+  if (!result.ok) return result
+  const transitionError = openSourceTransitionError(before, result.state)
+  return transitionError ? { ok: false, error: transitionError } : { ok: true, state: mergeModel(state, id, result.state) }
 }
 export function companyLearnedIQ(state: CompanyState): number {
   return state.models.reduce((sum, model) => sum + model.state.iq * quantizationQuality(model.quantization), 0)

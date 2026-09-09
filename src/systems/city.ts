@@ -8,7 +8,7 @@ export const CITY_TOWERS = [
 
 export type CityTowerId = typeof CITY_TOWERS[number]['id']
 export const CHIP_SHOPS = [
-  { id: 'silicon-market', name: 'Кремний · магазин чипов', description: 'Комплектующие для вашей сети. Выберите класс чипа и площадку — магазин доставит и установит сервер сразу.' },
+  { id: 'silicon-market', name: 'Кремний · магазин чипов', description: 'Комплектующие для вашей сети. Выберите класс чипа и площадку — магазин оформит доставку на склад; монтаж выполняется после получения.' },
   { id: 'chip-depot', name: 'Чип-депо', description: 'Поставка ускорителей и графических станций. Цены общие для городского рынка и обновляются каждый игровой день.' },
 ] as const
 export type ChipShopId = typeof CHIP_SHOPS[number]['id']
