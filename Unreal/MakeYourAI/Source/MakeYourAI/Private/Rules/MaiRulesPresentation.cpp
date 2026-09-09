@@ -26,10 +26,9 @@ TSharedPtr<FJsonObject> UMaiRulesSubsystem::HostView(){
     auto H=MakeShared<FJsonObject>();H->SetBoolField(TEXT("hasSave"),bHasSave);H->SetStringField(TEXT("saveError"),LastError);
     auto* C=Company?Company->Campaign():nullptr;if(!C)return H;const auto& G=C->View();H->SetStringField(TEXT("companyName"),Utf(G.companyName));H->SetBoolField(TEXT("walking"),!G.interior.empty()&&C->CanPlay());H->SetBoolField(TEXT("canReturn"),bHasSave&&G.ending.allowReturnToSave);
     if(!G.interior.empty()){
-        FString Hint=TEXT("WASD — движение · ПКМ + мышь — осмотр");
-        if(auto* Walker=Cast<AMaiWalkCharacter>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0))){AMaiInteriorPoint* Nearest=nullptr;double Distance=TNumericLimits<double>::Max();
-            for(TActorIterator<AMaiInteriorPoint> It(GetWorld());It;++It){const double D=FVector::DistSquared(Walker->GetActorLocation(),It->GetActorLocation());if(D<Distance&&It->LocationId==Utf(G.interior)&&It->CanInteract(Walker)){Nearest=*It;Distance=D;}}
-            if(Nearest)Hint+=TEXT("\nE — ")+Nearest->InteractionLabel();}
+        FString Hint=TEXT("WASD — движение · мышь — осмотр\nTab — курсор / осмотр · E — взаимодействие");
+        if(auto* Walker=Cast<AMaiWalkCharacter>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0))){
+            if(auto* Focused=Walker->FocusedInteraction())Hint+=TEXT("\nE — ")+Focused->InteractionLabel();}
         H->SetStringField(TEXT("inputHint"),Hint);
     }
     if(G.screen==mai::Screen::Loading){auto L=MakeShared<FJsonObject>();L->SetStringField(TEXT("status"),G.loading.phase==mai::LoadPhase::Failed?Utf(G.loading.error):TEXT("Подготовка игрового мира…"));

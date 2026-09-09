@@ -28,8 +28,10 @@ public:
     virtual TSharedRef<SWidget> RebuildWidget() override;
     virtual void NativeConstruct() override;
     virtual void NativeTick(const FGeometry& Geometry,float Delta) override;
+    virtual FReply NativeOnPreviewKeyDown(const FGeometry& Geometry,const FKeyEvent& Event) override;
     void Dispatch(const FString& Id,const TSharedPtr<FJsonValue>& Value=nullptr);
     bool ValidateViewport(FString& Error) const;
+    bool IsWalkingView() const;
     bool ApplyingSnapshot=false;
     UFUNCTION(BlueprintPure,Category="MakeYourAI|UI") TArray<FString> ActionIds() const;
 private:

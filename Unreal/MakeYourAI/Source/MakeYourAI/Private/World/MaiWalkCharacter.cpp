@@ -24,6 +24,9 @@ AMaiWalkCharacter::AMaiWalkCharacter() {
     Camera=CreateDefaultSubobject<UCameraComponent>(TEXT("InteriorCamera")); Camera->SetupAttachment(Arm);
     Camera->PostProcessSettings.bOverride_AutoExposureMinBrightness=true;Camera->PostProcessSettings.bOverride_AutoExposureMaxBrightness=true;
     Camera->PostProcessSettings.AutoExposureMinBrightness=Camera->PostProcessSettings.AutoExposureMaxBrightness=5;
+    // Do not inherit the city's daylight exposure compensation. A room loaded
+    // directly from Continue must match the same room entered from the city.
+    Camera->PostProcessSettings.bOverride_AutoExposureBias=true;Camera->PostProcessSettings.AutoExposureBias=.65f;
     Camera->PostProcessSettings.bOverride_BloomIntensity=true;Camera->PostProcessSettings.BloomIntensity=.05f;
 }
 bool AMaiWalkCharacter::CanMoveInCampaign() const {
@@ -48,15 +51,26 @@ void AMaiWalkCharacter::SetupPlayerInputComponent(UInputComponent* Input) {
     Input->BindAction(TEXT("MaiInteract"),IE_Pressed,this,&AMaiWalkCharacter::InteractNearest);
     Input->BindAxis(TEXT("MaiMouseX"),this,&AMaiWalkCharacter::LookX);Input->BindAxis(TEXT("MaiMouseY"),this,&AMaiWalkCharacter::LookY);
 }
-void AMaiWalkCharacter::North(float Value) { if (CanMoveInCampaign()) AddMovementInput(GetActorForwardVector(),Value); }
-void AMaiWalkCharacter::East(float Value) { if (CanMoveInCampaign()) AddMovementInput(GetActorRightVector(),Value); }
-void AMaiWalkCharacter::LookX(float Value){auto* PC=Cast<APlayerController>(GetController());if(CanMoveInCampaign()&&PC&&PC->IsInputKeyDown(EKeys::RightMouseButton))AddControllerYawInput(Value);}
-void AMaiWalkCharacter::LookY(float Value){auto* PC=Cast<APlayerController>(GetController());if(CanMoveInCampaign()&&PC&&PC->IsInputKeyDown(EKeys::RightMouseButton))AddControllerPitchInput(-Value);}
-void AMaiWalkCharacter::InteractNearest() {
-    if (!CanMoveInCampaign()) return; AMaiInteriorPoint* Best=nullptr; double Distance=TNumericLimits<double>::Max();
+void AMaiWalkCharacter::North(float Value) { auto* PC=Cast<APlayerController>(GetController());if (CanMoveInCampaign() && PC && !PC->bShowMouseCursor) AddMovementInput(GetActorForwardVector(),Value); }
+void AMaiWalkCharacter::East(float Value) { auto* PC=Cast<APlayerController>(GetController());if (CanMoveInCampaign() && PC && !PC->bShowMouseCursor) AddMovementInput(GetActorRightVector(),Value); }
+void AMaiWalkCharacter::LookX(float Value){auto* PC=Cast<APlayerController>(GetController());if(CanMoveInCampaign()&&PC&&!PC->bShowMouseCursor)AddControllerYawInput(Value);}
+void AMaiWalkCharacter::LookY(float Value){auto* PC=Cast<APlayerController>(GetController());if(CanMoveInCampaign()&&PC&&!PC->bShowMouseCursor)AddControllerPitchInput(-Value);}
+AMaiInteriorPoint* AMaiWalkCharacter::FocusedInteraction() const {
+    if (!CanMoveInCampaign() || !Camera) return nullptr;
+    auto* PC=Cast<APlayerController>(GetController());if(!PC || PC->bShowMouseCursor)return nullptr;
+    const auto* Campaign=GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>()->CampaignDomain();
+    AMaiInteriorPoint* Best=nullptr;double BestScore=.90;
+    const FVector Eye=Camera->GetComponentLocation(),Forward=Camera->GetForwardVector();
     for (TActorIterator<AMaiInteriorPoint> It(GetWorld());It;++It) {
-        const double D=FVector::DistSquared(GetActorLocation(),It->GetActorLocation());
-        if (D<Distance && It->CanInteract(this)) {Best=*It;Distance=D;}
+        if(It->LocationId!=UTF8_TO_TCHAR(Campaign->View().interior.c_str()) || !It->CanInteract(this))continue;
+        // Rank targets in a narrow view cone, not by proximity behind the player.
+        // The same target drives the HUD hint and E action.
+        const double Score=FVector::DotProduct(Forward,(It->GetActorLocation()-Eye).GetSafeNormal());
+        if(Score>BestScore){Best=*It;BestScore=Score;}
     }
+    return Best;
+}
+void AMaiWalkCharacter::InteractNearest() {
+    auto* Best=FocusedInteraction();
     if (Best) Best->Interact_Implementation(Cast<APlayerController>(GetController()));
 }

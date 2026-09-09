@@ -35,12 +35,12 @@ void AMaiCityLighting::ApplyHour(double Hour){
         Settings.bOverride_AutoExposureMinBrightness=true;Settings.bOverride_AutoExposureMaxBrightness=true;
         // EV is logarithmic: interpolating it linearly against lux blows out
         // dawn/dusk. Use the incident-light EV100 relation across the whole day.
-        Settings.AutoExposureMinBrightness=Settings.AutoExposureMaxBrightness=ExposureForSunLux(SunLux);
+        Settings.AutoExposureMinBrightness=Settings.AutoExposureMaxBrightness=FMath::Max(-1.f,ExposureForSunLux(SunLux));
         Settings.bOverride_AutoExposureBias=true;Settings.AutoExposureBias=1.25f*Day;
-        Settings.bOverride_BloomIntensity=true;Settings.BloomIntensity=.05f;
+        Settings.bOverride_BloomIntensity=true;Settings.BloomIntensity=FMath::Lerp(.15f,.05f,Day);
         Settings.bOverride_LensFlareIntensity=true;Settings.LensFlareIntensity=0.f;
     }
-    for(int32 I=0;I<WindowMaterials.Num();++I)WindowMaterials[I]->SetScalarParameterValue(TEXT("EmissionStrength"),WindowEmissionStrengths[I]*(1.f-Day));
+    for(int32 I=0;I<WindowMaterials.Num();++I)WindowMaterials[I]->SetScalarParameterValue(TEXT("EmissionStrength"),NightWindowStrength(WindowEmissionStrengths[I],Day));
     if(Sun){auto* L=Cast<UDirectionalLightComponent>(Sun->GetLightComponent());
         L->SetIntensity(SunLux);
         L->SetLightColor(FMath::Lerp(FLinearColor(.65f,.75f,1.f),FLinearColor(1.f,.99f,.96f),Day));

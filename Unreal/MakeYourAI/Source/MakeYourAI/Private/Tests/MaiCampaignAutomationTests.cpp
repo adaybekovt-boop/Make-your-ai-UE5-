@@ -29,6 +29,9 @@ bool Prepare(mai::Campaign& G) {
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignAssetAutomation,"MakeYourAI.Campaign.EditableProfilesMatchDomain",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignAssetAutomation::RunTest(const FString& Parameters) {
     (void)Parameters;auto* Asset=NewObject<UMaiCampaignAsset>();mai::CampaignRules Rules;FString Error;
+    TestEqual(TEXT("Windows never emit in full daylight"),AMaiCityLighting::NightWindowStrength(.65f,1.f),0.f);
+    TestEqual(TEXT("Non-emissive facades remain non-emissive"),AMaiCityLighting::NightWindowStrength(0.f,0.f),0.f);
+    TestTrue(TEXT("Weak authored evening windows remain visible at night"),AMaiCityLighting::NightWindowStrength(.03f,0.f)>=.8f);
     for(float Lux : {.4f, 1.f, 50.f, 500.f, 3000.f, 6000.f, 12000.f})
         TestTrue(TEXT("Exposure compensates sun intensity throughout twilight"),
             FMath::IsNearlyEqual(Lux/FMath::Pow(2.f,AMaiCityLighting::ExposureForSunLux(Lux)),2.5f,.001f));

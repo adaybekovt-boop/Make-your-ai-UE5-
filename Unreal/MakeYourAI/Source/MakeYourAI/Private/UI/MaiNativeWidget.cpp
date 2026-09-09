@@ -26,6 +26,7 @@
 #include "Styling/CoreStyle.h"
 #include "Brushes/SlateRoundedBoxBrush.h"
 #include "World/MaiCityBatch.h"
+#include "World/MaiPlayerController.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "EngineUtils.h"
 #include "Widgets/SLeafWidget.h"
@@ -87,6 +88,13 @@ TSharedRef<SWidget> UMaiNativeWidget::RebuildWidget(){
     return Super::RebuildWidget();
 }
 void UMaiNativeWidget::NativeConstruct(){Super::NativeConstruct();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();SetVisibility(ESlateVisibility::SelfHitTestInvisible);Refresh();}
+bool UMaiNativeWidget::IsWalkingView()const{return Snapshot&&Str(Obj(Snapshot,TEXT("content")),TEXT("id"))==TEXT("walk-prompt")&&!Obj(Snapshot,TEXT("modal"));}
+FReply UMaiNativeWidget::NativeOnPreviewKeyDown(const FGeometry& Geometry,const FKeyEvent& Event){
+    if(IsWalkingView() && Event.GetKey()==EKeys::Tab){
+        if(auto* PC=Cast<AMaiPlayerController>(GetOwningPlayer())){PC->ToggleWalkCursor();return FReply::Handled();}
+    }
+    return Super::NativeOnPreviewKeyDown(Geometry,Event);
+}
 void UMaiNativeWidget::NativeTick(const FGeometry& G,float Delta){Super::NativeTick(G,Delta);RefreshClock+=Delta;if(RefreshClock>=.2f){RefreshClock=0;Refresh();}Arrange();}
 FString UMaiNativeWidget::Signature(const TSharedPtr<FJsonObject>& N)const {
     if(!N)return TEXT("-");FString S=Str(N,TEXT("kind"))+TEXT(":")+Str(N,TEXT("id"))+Str(N,TEXT("icon"));
@@ -187,10 +195,16 @@ void UMaiNativeWidget::Rebuild(const TSharedPtr<FJsonObject>& View){
     auto Pane=[&](const TCHAR* Id,const TSharedPtr<FJsonObject>& Node,bool Scroll){if(!Node)return;auto* Border=WidgetTree->ConstructWidget<UBorder>();Border->SetBrush(FSlateRoundedBoxBrush(FLinearColor(.008f,.019f,.024f,.98f),16.f));Border->SetPadding(FMargin(16));UWidget* Child=BuildNode(Node);if(Scroll){auto* S=WidgetTree->ConstructWidget<UScrollBox>();S->SetAnimateWheelScrolling(false);S->AddChild(Child);Border->AddChild(S);Widgets.Add(Id,S);if(const float* Offset=Scrolls.Find(Id))S->SetScrollOffset(*Offset);}else{Border->AddChild(Child);Widgets.Add(Id,Border);}Canvas->AddChild(Border);Widgets.Add(FString(Id)+TEXT("_frame"),Border);};
     MapMarkerPositions.Reset();if(Str(View,TEXT("mode"))==TEXT("world")&&Str(Obj(View,TEXT("content")),TEXT("id"))!=TEXT("walk-prompt"))BuildMapMarkers();
     Pane(TEXT("__toolbar"),Obj(View,TEXT("toolbar")),false);Pane(TEXT("__content"),Obj(View,TEXT("content")),true);
+    auto* Dot=WidgetTree->ConstructWidget<UBorder>();Dot->SetBrush(FSlateRoundedBoxBrush(FLinearColor::White,3.f));Dot->SetPadding(FMargin(0));
+    auto* DotSlot=Canvas->AddChildToCanvas(Dot);DotSlot->SetAnchors(FAnchors(.5f,.5f));DotSlot->SetAlignment(FVector2D(.5f,.5f));DotSlot->SetSize(FVector2D(5,5));DotSlot->SetZOrder(20);Widgets.Add(TEXT("__crosshair"),Dot);
+    auto* WalkHUD=WidgetTree->ConstructWidget<UBorder>();WalkHUD->SetBrush(FSlateRoundedBoxBrush(FLinearColor(.008f,.019f,.024f,.85f),12.f));WalkHUD->SetPadding(FMargin(16,12));
+    auto* WalkText=WidgetTree->ConstructWidget<UTextBlock>();WalkText->SetAutoWrapText(true);WalkText->SetFont(FCoreStyle::GetDefaultFontStyle(TEXT("Regular"),13));WalkText->SetColorAndOpacity(FLinearColor(.8f,.92f,.9f));WalkHUD->AddChild(WalkText);Canvas->AddChild(WalkHUD);Widgets.Add(TEXT("__walk_hud"),WalkHUD);Labels.Add(TEXT("__walk_hud"),WalkText);
     if(Obj(View,TEXT("modal"))){auto* Shade=WidgetTree->ConstructWidget<UBorder>();Shade->SetBrushColor(FLinearColor(0,0,0,.65f));auto* ChildSlot=Canvas->AddChildToCanvas(Shade);ChildSlot->SetAnchors(FAnchors(0,0,1,1));ChildSlot->SetOffsets(FMargin(0));Pane(TEXT("__modal"),Obj(View,TEXT("modal")),true);}
     auto* Notice=WidgetTree->ConstructWidget<UTextBlock>();Notice->SetAutoWrapText(true);Notice->SetFont(FCoreStyle::GetDefaultFontStyle(TEXT("Regular"),14));Notice->SetColorAndOpacity(Color(TEXT("positive")));Labels.Add(TEXT("__notice"),Notice);Canvas->AddChild(Notice);Arrange();
 }
 void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=UWidgetLayoutLibrary::GetViewportScale(this);FVector2D Size=UWidgetLayoutLibrary::GetViewportSize(this)/FMath::Max(.01f,Scale);if(Size.X<1||Size.Y<1)return;
+    const bool Walking=IsWalkingView()&&GetOwningPlayer()&&!GetOwningPlayer()->bShowMouseCursor;
+    for(const TCHAR* Name:{TEXT("__toolbar_frame"),TEXT("__content_frame")})if(auto* W=Widgets.FindRef(Name).Get())W->SetVisibility(Walking?ESlateVisibility::Collapsed:ESlateVisibility::Visible);
     float Top=12;
     if(auto* W=Widgets.FindRef(TEXT("__toolbar_frame")).Get()){auto* S=Cast<UCanvasPanelSlot>(W->Slot);S->SetPosition(FVector2D(0,0));S->SetSize(FVector2D(Size.X,FMath::Max(64.f,float(W->GetDesiredSize().Y))));Top=S->GetSize().Y+16;}
     const FString Mode=Str(Snapshot,TEXT("mode"));
@@ -198,6 +212,12 @@ void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=
         const bool Small=!Modal&&Mode==TEXT("world");const bool Menu=Str(Obj(Snapshot,TEXT("content")),TEXT("id"))==TEXT("menu");const float Width=FMath::Min(Size.X-24,Small?272.f:Modal?860.f:Menu?460.f:Mode==TEXT("full")?600.f:1080.f);
         const bool Center=Modal||Mode==TEXT("full");const float Available=Size.Y-(Center?64:Top+52);const float Height=Small?FMath::Min(float(W->GetDesiredSize().Y)+8,Available):Center?FMath::Clamp(float(W->GetDesiredSize().Y)+24.f,360.f,FMath::Max(360.f,Available)):Available;S->SetPosition(FVector2D(Small?12:(Size.X-Width)/2,Center?(Size.Y-Height)/2:Top));S->SetSize(FVector2D(Width,FMath::Max(80.f,Height)));};
     Position(TEXT("__content"),false);Position(TEXT("__modal"),true);
+    if(auto* Dot=Widgets.FindRef(TEXT("__crosshair")).Get())Dot->SetVisibility(Walking?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
+    if(auto* HUD=Widgets.FindRef(TEXT("__walk_hud")).Get()){
+        HUD->SetVisibility(Walking?ESlateVisibility::HitTestInvisible:ESlateVisibility::Collapsed);
+        auto* S=Cast<UCanvasPanelSlot>(HUD->Slot);S->SetPosition(FVector2D(20,Size.Y-110));S->SetSize(FVector2D(FMath::Min(600.,Size.X-40),90));
+        if(auto* T=Labels.FindRef(TEXT("__walk_hud")).Get())if(auto* Hint=Labels.FindRef(TEXT("walk-hint")).Get())T->SetText(Hint->GetText());
+    }
     TArray<FVector2D> PlacedMarkers;
     for(const auto& Marker:MapMarkerPositions){auto* W=Widgets.FindRef(Marker.Key).Get();if(!W)continue;FVector2D Point;
         const bool Visible=UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(),Marker.Value,Point,false)&&Point.X>0&&Point.X<Size.X&&Point.Y>Top&&Point.Y<Size.Y-60;
@@ -206,7 +226,7 @@ void UMaiNativeWidget::Arrange(){if(!Canvas||!Snapshot)return;const float Scale=
             for(int32 Attempt=0;Attempt<8;++Attempt){bool Overlap=false;for(const FVector2D& Other:PlacedMarkers)if(FMath::Abs(MarkerPosition.X-Other.X)<228&&FMath::Abs(MarkerPosition.Y-Other.Y)<52){Overlap=true;break;}if(!Overlap)break;MarkerPosition.Y+=52;}
             if(MarkerPosition.Y+46>Size.Y-48){W->SetVisibility(ESlateVisibility::Collapsed);continue;}
             PlacedMarkers.Add(MarkerPosition);auto* S=Cast<UCanvasPanelSlot>(W->Slot);S->SetPosition(MarkerPosition);S->SetSize(FVector2D(220,46));}}
-    if(auto* T=Labels.FindRef(TEXT("__notice")).Get()){auto* S=Cast<UCanvasPanelSlot>(T->Slot);S->SetPosition(FVector2D(20,Size.Y-44));S->SetSize(FVector2D(Size.X-40,38));}
+    if(auto* T=Labels.FindRef(TEXT("__notice")).Get()){T->SetVisibility(Walking?ESlateVisibility::Collapsed:ESlateVisibility::HitTestInvisible);auto* S=Cast<UCanvasPanelSlot>(T->Slot);S->SetPosition(FVector2D(20,Size.Y-44));S->SetSize(FVector2D(Size.X-40,38));}
 }
 void UMaiNativeWidget::BuildMapMarkers(){
     const TMap<FString,FString> Names={{TEXT("garage"),TEXT("Гараж")},{TEXT("workshop"),TEXT("Мастерская")},{TEXT("technopark"),TEXT("Технопарк")},{TEXT("server-hall"),TEXT("Серверный цех")},{TEXT("campus"),TEXT("Кампус")},{TEXT("dc-north"),TEXT("Северный дата-центр")},{TEXT("dc-south"),TEXT("Южный дата-центр")}};

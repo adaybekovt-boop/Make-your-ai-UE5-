@@ -5,6 +5,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UStaticMeshComponent;
+class AMaiInteriorPoint;
 UCLASS()
 class MAKEYOURAI_API AMaiWalkCharacter : public ACharacter {
     GENERATED_BODY()
@@ -14,6 +15,7 @@ public:
     void SetRoomBounds(const FVector& Origin, const FVector2D& HalfSize);
     virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
     UFUNCTION(BlueprintCallable, Category="Interaction") void InteractNearest();
+    AMaiInteriorPoint* FocusedInteraction() const;
 private:
     UPROPERTY(VisibleAnywhere) TObjectPtr<USpringArmComponent> Arm;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCameraComponent> Camera;

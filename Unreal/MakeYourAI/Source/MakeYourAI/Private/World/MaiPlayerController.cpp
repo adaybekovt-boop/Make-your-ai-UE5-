@@ -21,10 +21,12 @@
 #include "Engine/DirectionalLight.h"
 #include "Components/DirectionalLightComponent.h"
 #include "World/MaiCityBatch.h"
+#include "World/MaiServerAmbience.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 void AMaiPlayerController::BeginPlay() {
     Super::BeginPlay(); if (!IsLocalController()) return;
+    ServerAmbience=NewObject<UMaiServerAmbience>(this);ServerAmbience->RegisterComponent();ServerAmbience->Start();
     bShowMouseCursor = true; bEnableClickEvents = true;
     CityCamera = Cast<AMaiCameraPawn>(GetPawn());
     NativeScreen = CreateWidget<UMaiNativeWidget>(this, UMaiNativeWidget::StaticClass());
@@ -33,28 +35,48 @@ void AMaiPlayerController::BeginPlay() {
 }
 void AMaiPlayerController::PlayerTick(float DeltaTime) {
     Super::PlayerTick(DeltaTime);
+    const bool WalkingView=Cast<AMaiWalkCharacter>(GetPawn())&&NativeScreen&&NativeScreen->IsWalkingView();
+    if(!WalkingView)bWalkCursorFreed=false;
+    const bool Capture=WalkingView&&!bWalkCursorFreed;
+    if(Capture!=bWalkMouseCaptured || bShowMouseCursor==Capture){
+        bWalkMouseCaptured=Capture;bShowMouseCursor=!Capture;
+        if(Capture){FInputModeGameOnly Mode;Mode.SetConsumeCaptureMouseDown(false);SetInputMode(Mode);}
+        else{FInputModeGameAndUI Mode;Mode.SetHideCursorDuringCapture(false);SetInputMode(Mode);}
+    }
     QualityClock+=DeltaTime;
     if(QualityClock>=.25f){QualityClock=0;
         auto* View=Cast<AMaiCameraPawn>(GetPawn());const double Height=View?View->GetActorLocation().Z:0;
         const bool Far=bDistantView?Height>16000:Height>22000;
-        if(Far!=bDistantView||!bQualityInitialized){bDistantView=Far;bQualityInitialized=true;
+        if(!bQualityInitialized){bDistantView=Far;bQualityInitialized=true;
             // Camera distance is a geometry/shadow quality decision, not exposure.
             if(View&&View->Camera)View->Camera->PostProcessSettings.bOverride_AutoExposureBias=false;
-            for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("MAI_CitySun")))It->GetLightComponent()->SetCastShadows(!Far);
-            // Keep authored roof/facade geometry longer nearby; retain the
-            // existing overview LOD budget. Only update when quality band changes.
-            for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It)if(It->Instances)It->Instances->SetLODDistanceScale(Far?1.f:1.65f);
+            // Keep lighting continuous during zoom. The former altitude switch
+            // changed shadows and every instance's LOD together in one frame.
+            for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("MAI_CitySun")))It->GetLightComponent()->SetCastShadows(true);
+            // Screen-size LOD selection remains automatic, with one stable scale.
+            for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It)if(It->Instances)It->Instances->SetLODDistanceScale(1.65f);
         }
     }
     auto* C = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>() : nullptr;
     const auto* G = C ? C->CampaignDomain() : nullptr;
+    if(ServerAmbience){
+        float FanLoad=0;
+        if(C && C->Domain() && G && G->CanPlay() && Cast<AMaiWalkCharacter>(GetPawn())){
+            const int32 Index=C->Domain()->Definitions().LocationIndex(G->View().interior);
+            if(Index>=0)for(const auto& Slot:C->Domain()->View().locations[static_cast<size_t>(Index)].slots)
+                if(Slot.chassis>=0)FanLoad+=.18f;
+        }
+        ServerAmbience->SetServerLoad(FanLoad);
+    }
     const bool Operations = G && G->CanPlay() && G->View().screen != mai::Screen::Training && bOperationsOpen;
     if (Screen) Screen->SetVisibility(Operations ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 }
 void AMaiPlayerController::SetupInputComponent() {
     Super::SetupInputComponent(); InputComponent->BindAction(TEXT("MaiSelect"), IE_Pressed, this, &AMaiPlayerController::ClickWorld);
+    InputComponent->BindKey(EKeys::Tab,IE_Pressed,this,&AMaiPlayerController::ToggleWalkCursor);
 }
 void AMaiPlayerController::ClickWorld() {
+    if(Cast<AMaiWalkCharacter>(GetPawn()) && !bShowMouseCursor)return;
     auto* C = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>() : nullptr;
     if (!C || !C->CampaignDomain() || !C->CampaignDomain()->CanPlay() || C->CampaignDomain()->View().screen == mai::Screen::Training) return;
     FHitResult Hit;
@@ -114,6 +136,7 @@ bool AMaiPlayerController::PrepareCampaignScene(const FString& Interior, bool bM
             ACameraActor* Authored=nullptr;
             for(TActorIterator<ACameraActor> It(GetWorld());It;++It) if(It->ActorHasTag(TEXT("MAI_CityCamera"))){Authored=*It;break;}
             if(!Authored){Error=TEXT("Камера и карта CityV4 не загружены. Повторите создание контента в Editor.");return false;}
+            bQualityInitialized=false;
             CityCamera->Arm->TargetArmLength=0;CityCamera->Arm->SetRelativeRotation(FRotator::ZeroRotator);
             CityCamera->SetActorTransform(Authored->GetActorTransform());
             CityCamera->Camera->SetProjectionMode(Authored->GetCameraComponent()->ProjectionMode);

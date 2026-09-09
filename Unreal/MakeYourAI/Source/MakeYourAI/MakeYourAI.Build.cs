@@ -8,7 +8,7 @@ public class MakeYourAI : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
         // Follow the actual UE installation's C++ standard. The portable domain
         // also compiles separately as C++17, but must not downgrade engine headers.
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "Json" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "Json", "AudioMixer" });
         RuntimeDependencies.Add("$(ProjectDir)/Content/Rules/mai-rules.js", StagedFileType.UFS);
         RuntimeDependencies.Add("$(ProjectDir)/Content/Rules/mai-rules.manifest.json", StagedFileType.UFS);
         RuntimeDependencies.Add("$(ProjectDir)/Content/Rules/city-content.json", StagedFileType.UFS);
