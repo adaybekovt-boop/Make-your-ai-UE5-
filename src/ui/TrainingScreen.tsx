@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DATA_LOT_OFFICIAL, DATA_LOT_UNOFFICIAL, HIRE_COST, LICENSE_IQ_THRESHOLD, LICENSE_PAYOUT_PER_DAY, OPEN_SOURCE_IQ_THRESHOLD, OVERWORK_TRAINING_BONUS, SALARY_PER_HOUR, TECH_NODES } from '../systems/config'
+import { DATA_LOT_OFFICIAL, DATA_LOT_UNOFFICIAL, HIRE_COST, LICENSE_IQ_THRESHOLD, LICENSE_PAYOUT_PER_DAY, MAX_EMPLOYEES, OPEN_SOURCE_IQ_THRESHOLD, OVERWORK_TRAINING_BONUS, SALARY_PER_HOUR, TECH_NODES } from '../systems/config'
 import { DOMAINS, getModel, modelIsOnline, portfolioEconomy } from '../systems/models'
 import type { DataDomain } from '../systems/models'
 import type { DataQuality } from '../systems/types'
@@ -148,12 +148,12 @@ export function TrainingScreen({ onLeave }: { onLeave: () => void }) {
         <div className="chip-row">
           <Icon name="users" size={16} />
           <div><strong>Инженер</strong><span>{money(SALARY_PER_HOUR.engineer)}/ч · ускоряет работу офиса</span></div>
-          <button className="secondary-button" disabled={!ready || company.company.cash < HIRE_COST.engineer || team.employees.length >= 12} onClick={() => useGameStore.getState().hireEmployee('engineer')}>Нанять<span>{money(HIRE_COST.engineer)}</span></button>
+          <button className="secondary-button" disabled={!ready || company.company.cash < HIRE_COST.engineer || team.employees.length >= MAX_EMPLOYEES} onClick={() => useGameStore.getState().hireEmployee('engineer')}>Нанять<span>{money(HIRE_COST.engineer)}</span></button>
         </div>
         <div className="chip-row">
           <Icon name="users" size={16} />
           <div><strong>Safety-инженер</strong><span>{money(SALARY_PER_HOUR.safety)}/ч · снижает шанс промпт-инъекций</span></div>
-          <button className="secondary-button" disabled={!ready || company.company.cash < HIRE_COST.safety || team.employees.length >= 12} onClick={() => useGameStore.getState().hireEmployee('safety')}>Нанять<span>{money(HIRE_COST.safety)}</span></button>
+          <button className="secondary-button" disabled={!ready || company.company.cash < HIRE_COST.safety || team.employees.length >= MAX_EMPLOYEES} onClick={() => useGameStore.getState().hireEmployee('safety')}>Нанять<span>{money(HIRE_COST.safety)}</span></button>
         </div>
         <div className="toggle-row">
           <label className="toggle-label">
