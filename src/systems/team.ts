@@ -7,6 +7,7 @@ import {
   OVERWORK_MORALE_DRAIN_PER_DAY,
   SALARY_PER_HOUR,
 } from './config'
+import { gameDay } from './calendar'
 import { pushNotice } from './market'
 import type { ActionResult, Employee, EmployeeRole, GameState, Rng } from './types'
 
@@ -19,13 +20,14 @@ export function hireEmployee(state: GameState, role: EmployeeRole): ActionResult
     id: state.team.seq + 1,
     role,
     salaryPerHour: SALARY_PER_HOUR[role],
-    hiredDay: Math.floor(state.elapsedGameHours / 24) + 1,
+    hiredDay: gameDay(state),
   }
   return {
     ok: true,
     state: {
       ...state,
       cash: state.cash - cost,
+      totalExpenses: state.totalExpenses + cost,
       team: {
         ...state.team,
         seq: employee.id,

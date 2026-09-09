@@ -8,6 +8,7 @@ import {
   dailyAdvertisingBilling, dailyChipMarket, dailyInsuranceBilling, dailyInvestors, dailyLicensingPayout,
   maybeOfferAcquisition,
 } from '../market'
+import { gameDay, nextGameDayBoundary } from '../calendar'
 import { dailyMoraleStep } from '../team'
 import { dailyMalwareRoll, tickTraining } from '../training'
 import { deliverOrders } from '../procurement'
@@ -39,7 +40,7 @@ function competitionView(state: CompanyState): GameState {
   const scores = Object.fromEntries(CATEGORIES.map(key => [key, denominator > 0 ? state.models.reduce((sum, model) =>
     sum + (benchmarkIsCurrent(model) ? model.benchmark.last![key] : effectiveProfile(model)[key] * .8) * model.allocationBps, 0) / denominator : 0])) as ReturnType<typeof effectiveProfile>
   return { ...view, benchmark: { ...view.benchmark, last: { ...scores, total: meanProfile(scores),
-    cheated: false, exposed: false, day: Math.floor((state.company.elapsedGameHours + 8) / 24) + 1 } } }
+    cheated: false, exposed: false, day: gameDay(state.company) } } }
 }
 /** One global daily hook; only model-local events loop over model IDs. */
 export function processCompanyDay(state: CompanyState, rng: Rng): CompanyState {
@@ -82,7 +83,7 @@ export function advanceCompanySimulation(state: CompanyState, realSeconds: numbe
   let next = state
   while (next.company.elapsedGameHours < target) {
     const now = next.company.elapsedGameHours
-    const dayBoundary = (Math.floor((now + 8) / 24) + 1) * 24 - 8
+    const dayBoundary = nextGameDayBoundary(now)
     const coolingBoundary = (Math.floor(now / 24) + 1) * 24
     const trafficBoundary = (Math.floor(now / 6) + 1) * 6
     let until = Math.min(target, dayBoundary, coolingBoundary, trafficBoundary)
