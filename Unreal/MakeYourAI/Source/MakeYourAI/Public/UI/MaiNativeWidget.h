@@ -19,6 +19,7 @@ public:
     UFUNCTION() void TextChanged(const FText& Text);
     UFUNCTION() void SelectionChanged(FString Selection,ESelectInfo::Type Type);
     UFUNCTION() void SliderChanged(float Value);
+    UFUNCTION() UWidget* GenerateOption(FString Option);
 };
 UCLASS()
 class MAKEYOURAI_API UMaiNativeWidget : public UUserWidget {

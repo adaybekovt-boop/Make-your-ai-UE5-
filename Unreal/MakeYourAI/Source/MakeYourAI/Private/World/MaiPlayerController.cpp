@@ -20,6 +20,8 @@
 #include "Engine/World.h"
 #include "Engine/DirectionalLight.h"
 #include "Components/DirectionalLightComponent.h"
+#include "World/MaiCityBatch.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 void AMaiPlayerController::BeginPlay() {
     Super::BeginPlay(); if (!IsLocalController()) return;
@@ -35,9 +37,13 @@ void AMaiPlayerController::PlayerTick(float DeltaTime) {
     if(QualityClock>=.25f){QualityClock=0;
         auto* View=Cast<AMaiCameraPawn>(GetPawn());const double Height=View?View->GetActorLocation().Z:0;
         const bool Far=bDistantView?Height>16000:Height>22000;
-        if(Far!=bDistantView){bDistantView=Far;
-            if(View&&View->Camera){View->Camera->PostProcessSettings.bOverride_AutoExposureBias=true;View->Camera->PostProcessSettings.AutoExposureBias=Far?-1.2f:0.f;}
+        if(Far!=bDistantView||!bQualityInitialized){bDistantView=Far;bQualityInitialized=true;
+            // Camera distance is a geometry/shadow quality decision, not exposure.
+            if(View&&View->Camera)View->Camera->PostProcessSettings.bOverride_AutoExposureBias=false;
             for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("MAI_CitySun")))It->GetLightComponent()->SetCastShadows(!Far);
+            // Keep authored roof/facade geometry longer nearby; retain the
+            // existing overview LOD budget. Only update when quality band changes.
+            for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It)if(It->Instances)It->Instances->SetLODDistanceScale(Far?1.f:1.65f);
         }
     }
     auto* C = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>() : nullptr;
@@ -127,7 +133,7 @@ bool AMaiPlayerController::PrepareCampaignScene(const FString& Interior, bool bM
     Walker = GetWorld()->SpawnActor<AMaiWalkCharacter>(Room->PlayerStart(), FRotator::ZeroRotator, Params);
     if (!Walker) { Error = TEXT("Garage character spawn failed"); return false; }
     Walker->SetRoomBounds(Room->GetActorLocation(),Room->WalkHalfSize());
-    Possess(Walker); bOperationsOpen = false; return GetPawn() == Walker;
+    Possess(Walker);SetControlRotation(FRotator(0,-90,0));bShowMouseCursor=true; bOperationsOpen = false; return GetPawn() == Walker;
 }
 void AMaiPlayerController::ShowWarehouse() {
     auto* Company=GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>();

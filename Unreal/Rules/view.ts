@@ -10,10 +10,10 @@ import type { DataDomain, QuantizationStep } from '../../src/systems/models'
 
 type Store = ReturnType<typeof useGameStore.getState>
 export interface Node {
-  kind: 'text'|'heading'|'button'|'input'|'select'|'slider'|'progress'|'row'|'column'|'card'|'chart'
+  kind: 'text'|'heading'|'button'|'input'|'select'|'slider'|'progress'|'row'|'column'|'card'|'chart'|'bar'|'spacer'|'grid'|'columns'
   id: string; label?: string; value?: string|number; role?: string; enabled?: boolean
-  action?: string; args?: unknown[]; options?: {label: string;value: string}[]
-  min?: number; max?: number; step?: number; children?: Node[]; samples?: number[]
+  action?: string; args?: unknown[]; options?: {label: string;value: string}[]; icon?: string; tooltip?: string
+  min?: number; max?: number; step?: number; children?: Node[]; samples?: number[]; columns?: number
 }
 export interface HostView {
   hasSave?: boolean; loading?: {status: string; progress: number|null; cancel: boolean; failed: boolean}
@@ -42,6 +42,7 @@ const select = (id: string,label: string,value: string,options: {label:string;va
 const slider = (id: string,label: string,value: number,min:number,max:number,step:number,action:string,args:unknown[]=[]): Node => ({kind:'slider',id,label,value,min,max,step,action,args})
 const progress = (id:string,label:string,value:number):Node => ({kind:'progress',id,label,value:Math.max(0,Math.min(1,value))})
 const page = (id: string,label: string) => button('nav-'+id,label,'ui:page',[id])
+const iconButton = (node: Node, icon: string): Node => ({...node, icon, tooltip: node.label})
 const profile = (id:string,values:Record<(typeof CATEGORIES)[number],number>) => row(id,...CATEGORIES.map(k=>text(id+'-'+k,CATEGORY_LABELS[k]+' '+n(values[k],1))))
 
 /** Pure presentation. Never advances time, calls RNG, touches a file or changes game state. */
@@ -67,9 +68,12 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
       button('settings','Настройки','ui:modal',['settings']),button('quit','Выйти из игры','host:quit'))
     mode='full'
   } else if (s.phase==='setup') {
-    content=column('new-game',head('new-title','Новая компания'),text('strategy-explainer','Стратегия определяет организацию моделей на всю партию.'),
-      select('strategy','Стратегия',ui.fields.strategy,[{value:'flagship',label:'Флагман — одна основная модель'},{value:'portfolio',label:'Портфель — до четырёх моделей'}]),
-      input('name','Название первой модели',ui.fields.name),
+    content=column('new-game',text('setup-eyebrow','Создание компании','muted'),head('new-title','Стратегия партии'),text('strategy-explainer','Этот выбор нельзя изменить посреди партии.'),
+      button('strategy-flagship','Один флагман','ui:field',['strategy','flagship'],true,ui.fields.strategy==='flagship'?'selected':'secondary'),
+      text('flagship-description','Одна модель владеет всем вычислительным бюджетом. Так устроена текущая игра.'),
+      button('strategy-portfolio','Портфель моделей','ui:field',['strategy','portfolio'],true,ui.fields.strategy==='portfolio'?'selected':'secondary'),
+      text('portfolio-description','До четырёх моделей с явным разделением мощности. Новые базы покупаются отдельно и стартуют без квоты.'),
+      input('name','Название флагмана',ui.fields.name),
       text('name-limit','От 1 до 48 символов. Купленная база и заработанный обучением IQ учитываются отдельно.'),
       row('setup-actions',button('setup-back','Назад','cancelSetup'),button('setup-next','Продолжить','host:setup-next',[],ui.fields.name.trim().length>0&&ui.fields.name.trim().length<=48,'primary')))
     mode='full'
@@ -83,7 +87,11 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     const modelTabs=row('model-tabs',...c.models.map(v=>button('model-'+v.id,modelDisplayName(v),'selectModel',[v.id],true,v.id===m.id?'selected':'secondary')))
     const modelTitle=column('model-title',modelTabs,head('model-name',modelDisplayName(m)),
       text('model-base',`${baseCatalogLabel(m)} · ${QUANTIZATION_LABELS[m.quantization]} · ${modelIdleStatus(c,m).label}`),
-      text('model-iq',`Заработанный IQ ${n(m.state.iq,1)} · Эффективная мощность ${n(rates.allocatedCompute,2)} · Пользователи ${n(m.users)}`),profile('effective-gmi',effectiveProfile(m)))
+      {kind:'grid',id:'model-metrics',columns:3,children:[
+        card('iq-card',text('iq-label','ЗАРАБОТАННЫЙ IQ','muted'),head('model-iq',n(m.state.iq,1))),
+        card('compute-card',text('compute-label','МОЩНОСТЬ МОДЕЛИ','muted'),head('model-compute',n(rates.allocatedCompute,2))),
+        card('users-card',text('users-label','ПОЛЬЗОВАТЕЛИ','muted'),head('model-users',n(m.users)))
+      ]},profile('effective-gmi',effectiveProfile(m)))
     if (ui.page==='training') {
       mode='panel'
       const run=m.state.run, volume=m.state.queue.reduce((sum,v)=>sum+v.volume,0)
@@ -94,7 +102,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
         card('dataset-inventory',head('inventory','Dataset Inventory'),...m.state.queue.map(l=>text('lot-'+l.id,`#${l.id} · ${l.quality==='official'?'Официальные':'Неофициальные'} · ${DOMAIN_LABELS[l.domain]} · ${l.volume} ед.`)),text('queue-volume',`В очереди: ${volume} ед.`),
           button('open-review','Проверка данных','host:review')),
         host.review??column('review-state'),
-        card('training-run',run?progress('training-progress',`Обучение: ${n(run.total-run.remaining,1)} / ${run.total} ед.`,1-run.remaining/run.total):text('training-idle','Обучение не запущено.'),
+        card('training-run',head('training-title','Обучение модели'),run?progress('training-progress',`Обучение: ${n(run.total-run.remaining,1)} / ${run.total} ед.`,1-run.remaining/run.total):text('training-idle',volume>0?'Данные готовы. Проверьте партии перед запуском.':'Модель ждёт данные. Приобретите первую партию справа.'),
           text('training-rate',`${n(rates.trainingVolumePerHour,2)} ед./игровой час`),button('train','Начать обучение','host:start-training',[],!run&&volume>0,'primary')),
         card('team',head('team-title','Команда'),text('morale',`Мораль ${n(g.team.morale)} · Сотрудников ${g.team.employees.length}/${cfg.MAX_EMPLOYEES}`),
           row('hire',button('hire-engineer',`Инженер · ${money(cfg.HIRE_COST.engineer)}`,'hireEmployee',['engineer']),button('hire-safety',`Специалист безопасности · ${money(cfg.HIRE_COST.safety)}`,'hireEmployee',['safety'])),
@@ -103,6 +111,10 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
         card('technology',head('tech-title','Технологии'),...cfg.TECH_NODES.map(v=>button('tech-'+v.id,`${v.name} · ${money(v.cost)} · IQ ${v.iqThreshold}`,'unlockTech',[v.id],!m.state.tech.includes(v.id))),
           button('license',m.state.licensed?'Лицензирование включено':`Лицензирование · IQ ${cfg.LICENSE_IQ_THRESHOLD}`,'toggleLicense'),
           row('opensource',button('open-source','Открыть исходный код','chooseOpenSource',[true],!m.state.openSourceChosen&&m.state.iq>=cfg.OPEN_SOURCE_IQ_THRESHOLD),button('keep-closed','Оставить модель закрытой','chooseOpenSource',[false],!m.state.openSourceChosen&&m.state.iq>=cfg.OPEN_SOURCE_IQ_THRESHOLD))))
+      const panels=content.children!
+      content=column('training',panels[0],{kind:'columns',id:'training-dashboard',children:[
+        column('training-main',panels[4],panels[2],panels[3]),column('training-side',panels[1],panels[5])
+      ]},panels[6])
     } else if (ui.page==='testing') {
       mode='panel';const b=m.benchmark.last
       content=column('testing',modelTitle,
@@ -141,7 +153,7 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
       const server=loc.installedServers.find(v=>v.id===ui.selectedServer)
       content=column('interior',head('interior-title',d.name),text('interior-rates',`${n(le.effectiveCompute,2)} compute · ${n(le.demandKw,2)} / ${d.powerLimitKw} кВт · ${money(le.profitPerHour)}/ч`),
         row('interior-actions',button('walk-in','Войти в помещение','host:enter',[loc.id],loc.owned),button('procurement','Закупки и склад','ui:procurement',[loc.id]),page('map','Город')),
-        {kind:'row',id:'server-grid',children:cells},
+        {kind:'grid',id:'server-grid',columns:loc.gridSize.cols,children:cells},
         ...(server?[card('selected-server',head('server-title',cfg.CHIPS[server.chip].name),text('server-output',`${n(serverOutput(server).compute,2)} compute · ${n(serverOutput(server).powerKw,2)} кВт`),
           slider('overclock',`Разгон ${n(server.overclock*100)}%`,server.overclock*100,50,150,5,'ui:overclock',[loc.id,server.id]),
           row('server-actions',button('upgrade','Апгрейд','ui:procurement',[loc.id]),button('sell','Продать чип','sellAt',[loc.id,server.id])))]:[]),
@@ -151,14 +163,28 @@ export function makeView(s: Store, ui: UiState, host: HostView = {}) {
     } else {
       // World remains readable. Location browser is a deliberate drawer, never a permanent wall.
       const loc=[...g.locations,...g.regionLocations].find(v=>v.id===ui.location)??g.locations[0],d=locationDefinition(loc.id)
-      content=card('location-card',head('location-name',d.name),text('location-description',d.description),text('location-price',loc.owned?'Площадка принадлежит компании':money(d.price)),
-        row('location-actions',button('buy-location','Приобрести','purchaseLocation',[loc.id],!loc.owned,'primary'),button('open-location','Оборудование','ui:interior',[loc.id],loc.owned),button('enter-location','Войти','host:enter',[loc.id],loc.owned)),
+      const size=normalizeLocation(loc).gridSize
+      content=column('location-card',text('location-eyebrow',loc.owned?'Ваша серверная':'Будущая серверная','muted'),head('location-name',d.name),text('location-description',loc.owned?'Площадка куплена. Расставляйте серверы в ячейках внутри помещения.':d.description),
+        ...(!loc.owned?[text('location-grid',`Сетка помещения     ${size.rows} × ${size.cols}`),text('location-power',`Энергосеть     ${d.powerLimitKw} кВт`),text('location-rent',`Аренда     ${n(d.rentPerHour)} $/ч`),button('buy-location',`Купить локацию    ${n(d.price)} $`,'purchaseLocation',[loc.id],true,'primary')]:
+          [button('enter-location','Войти в интерьер','host:enter',[loc.id],true,'primary'),button('open-location','Оборудование','ui:interior',[loc.id])]),
         button('locations-drawer','Все локации','ui:modal',['locations']))
-      if(host.walking) content=card('walk-prompt',text('walk-hint',host.inputHint||'WASD — движение · E — взаимодействие · Esc — меню'),button('leave-interior','Вернуться в город','host:leave'),button('walk-operations','Управление площадкой','ui:interior',[ui.location]))
+      if(host.walking) content=column('walk-prompt',text('walk-hint',host.inputHint||'WASD — движение · ПКМ — осмотр · E — взаимодействие'),button('leave-interior','Вернуться в город','host:leave'),button('walk-operations','Управление площадкой','ui:interior',[ui.location]))
     }
   }
-  const toolbar=s.phase==='playing'&&!g.ending?row('toolbar',button('brand-button','Neuron','ui:page',['map']),button('cash',money(g.cash),'ui:modal',['economy']),text('profit',`${money(e.profitPerHour)}/ч`,e.profitPerHour<0?'danger':'positive'),text('clock',`День ${Math.floor(g.elapsedGameHours/24)+1} · ${n(Math.floor(g.elapsedGameHours%24)).padStart(2,'0')}:${n(Math.floor((g.elapsedGameHours%1)*60)).padStart(2,'0')}`),
-    button('pause',g.paused?'Продолжить':'Пауза','togglePause'),button('speed-1','1×','setSpeed',[1],true,g.speed===1?'selected':'secondary'),button('speed-3','3×','setSpeed',[3],true,g.speed===3?'selected':'secondary'),page('training','Обучение'),page('testing','GMI'),page('catalog','Каталог'),page('portfolio','Модели'),page('office','Офис'),button('events','События','ui:modal',['events']),button('save','Сохранить','host:save'),button('settings','Настройки','ui:modal',['settings'])):null
+  const toolbar: Node|null=s.phase==='playing'&&!g.ending?column('toolbar',{kind:'bar',id:'status-bar',children:[
+    button('brand-button','Neuron.','ui:page',['map'],true,'brand'),
+    column('capital-metric',text('capital-label','Капитал','muted'),button('cash',n(g.cash)+' $','ui:modal',['economy'],true,'metric')),
+    column('profit-metric',text('profit-label','Прибыль в час','muted'),text('profit',n(e.profitPerHour)+' $',e.profitPerHour<0?'danger':'positive')),
+    {kind:'spacer',id:'toolbar-space'},
+    text('clock',`День ${Math.floor((g.elapsedGameHours+8)/24)+1}  ${n(Math.floor((g.elapsedGameHours+8)%24)).padStart(2,'0')}:${n(Math.floor((g.elapsedGameHours%1)*60)).padStart(2,'0')}`),
+    iconButton(button('pause',g.paused?'Продолжить':'Пауза','togglePause'),g.paused?'play':'pause'),
+    button('speed-1','1×','setSpeed',[1],true,g.speed===1?'selected':'secondary'),button('speed-3','3×','setSpeed',[3],true,g.speed===3?'selected':'secondary'),
+    iconButton(button('save','Сохранить','host:save'),'save'),iconButton(button('settings','Настройки','ui:modal',['settings']),'settings'),
+  ]},row('navigation',...[
+    page('map','Город'),iconButton(page('training','Обучение'),'model'),iconButton(page('testing','GMI и рынок'),'flask'),iconButton(page('catalog','Каталог'),'wallet'),
+    iconButton(page('portfolio','Модели'),'server'),page('office','Офис'),iconButton(button('events','События','ui:modal',['events']),'clock'),
+    iconButton(button('toolbar-help','Помощь','ui:modal',['help']),'help')
+  ].map(v=>({...v,role:v.id==='nav-'+ui.page?'selected':v.role})))):null
   if(ui.modal==='locations') modal=column('locations',head('locations-title','Город и недвижимость'),...g.locations.map(l=>button('goto-'+l.id,locationDefinition(l.id).name+(l.owned?' · В собственности':' · '+money(locationDefinition(l.id).price)),'ui:location',[l.id])),...g.regionLocations.filter(l=>l.owned).map(l=>button('goto-'+l.id,locationDefinition(l.id).name,'ui:location',[l.id])),
     ...CITY_TOWERS.map(t=>card('tower-'+t.id,head('tower-title-'+t.id,t.name),text('tower-description-'+t.id,t.description),text('tower-rent-'+t.id,`Аренда ${money(t.rentPerHour)}/ч · Обслуживание ${money(t.upkeepPerHour)}/ч`),button('tower-buy-'+t.id,money(t.price),'purchaseCityTower',[t.id],!(g.cityProperties??[]).includes(t.id)))),
     ...CHIP_SHOPS.map(t=>button('shop-'+t.id,t.name,'ui:procurement',[ui.location])),button('auction','Аукцион','host:auction'),button('nuclear','АЭС','host:nuclear'),button('greenhaven','Greenhaven','host:greenhaven'),close)

@@ -39,6 +39,7 @@ private:
     bool bOperationsOpen = true;
     float QualityClock=0;
     bool bDistantView=false;
+    bool bQualityInitialized=false;
     void ClickWorld();
     void PossessCity();
     void PossessWalk();

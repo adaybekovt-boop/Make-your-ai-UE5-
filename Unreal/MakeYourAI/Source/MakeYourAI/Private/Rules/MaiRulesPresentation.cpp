@@ -4,6 +4,8 @@
 #include "Gameplay/MaiCompanySubsystem.h"
 #include "Campaign/MaiLoadingSubsystem.h"
 #include "World/MaiPlayerController.h"
+#include "World/MaiWalkCharacter.h"
+#include "Interaction/MaiInteriorPoint.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/GameUserSettings.h"
@@ -23,6 +25,13 @@ FString Dollars(mai::Money M){return Utf(mai::FormatMoney(M));}
 TSharedPtr<FJsonObject> UMaiRulesSubsystem::HostView(){
     auto H=MakeShared<FJsonObject>();H->SetBoolField(TEXT("hasSave"),bHasSave);H->SetStringField(TEXT("saveError"),LastError);
     auto* C=Company?Company->Campaign():nullptr;if(!C)return H;const auto& G=C->View();H->SetStringField(TEXT("companyName"),Utf(G.companyName));H->SetBoolField(TEXT("walking"),!G.interior.empty()&&C->CanPlay());H->SetBoolField(TEXT("canReturn"),bHasSave&&G.ending.allowReturnToSave);
+    if(!G.interior.empty()){
+        FString Hint=TEXT("WASD — движение · ПКМ + мышь — осмотр");
+        if(auto* Walker=Cast<AMaiWalkCharacter>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0))){AMaiInteriorPoint* Nearest=nullptr;double Distance=TNumericLimits<double>::Max();
+            for(TActorIterator<AMaiInteriorPoint> It(GetWorld());It;++It){const double D=FVector::DistSquared(Walker->GetActorLocation(),It->GetActorLocation());if(D<Distance&&It->LocationId==Utf(G.interior)&&It->CanInteract(Walker)){Nearest=*It;Distance=D;}}
+            if(Nearest)Hint+=TEXT("\nE — ")+Nearest->InteractionLabel();}
+        H->SetStringField(TEXT("inputHint"),Hint);
+    }
     if(G.screen==mai::Screen::Loading){auto L=MakeShared<FJsonObject>();L->SetStringField(TEXT("status"),G.loading.phase==mai::LoadPhase::Failed?Utf(G.loading.error):TEXT("Подготовка игрового мира…"));
         if(G.loading.progressBps<0)L->SetField(TEXT("progress"),MakeShared<FJsonValueNull>());else L->SetNumberField(TEXT("progress"),G.loading.progressBps/10000.);
         const auto* Loader=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>();L->SetBoolField(TEXT("cancel"),G.prologueStep==3&&Loader&&Loader->CanCancel());L->SetBoolField(TEXT("failed"),G.loading.phase==mai::LoadPhase::Failed);H->SetObjectField(TEXT("loading"),L);return H;}
@@ -88,7 +97,13 @@ bool UMaiRulesSubsystem::HostAction(const FString& Action,const TArray<TSharedPt
     if(Action==TEXT("quit")){if(String(State,TEXT("phase"))==TEXT("playing")&&!SaveSlot())return false;UKismetSystemLibrary::QuitGame(GetGameInstance(),PC,EQuitPreference::Quit,false);return true;}
     if(Action==TEXT("cancel")){auto* L=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>();if(!L||!L->CanCancel()){LastError=TEXT("Мир уже активируется; эту фазу нельзя отменить.");return false;}L->Invalidate();bRestoreCancelled=bLoadingTransaction;const bool Ok=Flow([](mai::Campaign& G){return G.CancelLoad();});CheckRestore();return Ok;}
     if(Action==TEXT("retry")){if(auto* L=GetGameInstance()->GetSubsystem<UMaiLoadingSubsystem>()){L->Retry();return true;}return false;}
-    if(Action==TEXT("enter")){if(!PC||Arg(0).IsEmpty())return false;if(!Project())return false;return Flow([&](mai::Campaign& G){return G.BeginLoad(mai::Screen::Gameplay,TCHAR_TO_UTF8(*Arg(0)));});}
+    if(Action==TEXT("enter")){
+        if(!PC||Arg(0).IsEmpty()||!Project())return false;
+        if(!Flow([&](mai::Campaign& G){return G.BeginLoad(mai::Screen::Gameplay,TCHAR_TO_UTF8(*Arg(0)));}))return false;
+        // Entering from equipment must dismiss that panel, select the actual room
+        // and expose the first-person view rather than leave a full-screen grid.
+        return Command(TEXT("ui:location"),{S(Arg(0))});
+    }
     if(Action==TEXT("leave")){if(PC){bReviewOpen=false;PC->ShowCity();return true;}return false;}
     if(Action==TEXT("review")){if(!C->CanPlay()){LastError=TEXT("Сначала начните партию.");return false;}bReviewOpen=true;return true;}
     if(Action==TEXT("review-close")){bReviewOpen=false;return Command(TEXT("ui:page"),{S(TEXT("training"))});}

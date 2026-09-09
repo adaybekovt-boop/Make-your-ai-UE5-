@@ -14,7 +14,8 @@ public:
     bool Build();
     void ConfigureLocation(const FString& Id);
     FVector2D WalkHalfSize() const {return FVector2D(HalfX-50,HalfY-50);}
-    FVector PlayerStart() const {return GetActorLocation()+FVector(0,-430,100);}
+    // Side aisle remains clear even when the entire rear rack row is occupied.
+    FVector PlayerStart() const {return GetActorLocation()+FVector(-HalfX+95,HalfY-90,100);}
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Verification") bool bGraybox=true;
 private:
     UPROPERTY(Transient) TArray<AActor*> Spawned;

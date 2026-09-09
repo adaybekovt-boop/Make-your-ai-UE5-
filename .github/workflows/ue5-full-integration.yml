@@ -58,6 +58,7 @@ jobs:
           os.environ['MAI_QUICKJS_SOURCE'] = str(root / 'Unreal/ThirdParty/QuickJS/source')
           os.environ['MAI_QUICKJS_LIBRARY'] = str(root / 'Unreal/ThirdParty/QuickJS/build/Linux/libqjs.a')
           suites = [
+              ('native-core-and-fixtures', ['bash', 'Unreal/Tests/run_core.sh']),
               ('campaign', ['bash', 'Unreal/Tests/run_campaign.sh']),
               ('durable', ['bash', 'Unreal/Tests/run_durable.sh']),
               ('native-rules', ['bash', 'Unreal/Tests/run_native_rules.sh']),

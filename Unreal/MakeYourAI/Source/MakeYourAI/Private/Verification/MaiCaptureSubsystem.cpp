@@ -20,6 +20,9 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Subsystems/SubsystemCollection.h"
+#if WITH_EDITOR
+#include "ShaderCompiler.h"
+#endif
 namespace {
 FString Encode(const TSharedRef<FJsonObject>& O){FString S;FJsonSerializer::Serialize(O,TJsonWriterFactory<>::Create(&S));return S;}
 bool Equal(const TSharedPtr<FJsonValue>& A,const TSharedPtr<FJsonValue>& B){
@@ -37,6 +40,7 @@ bool Equal(const TSharedPtr<FJsonValue>& A,const TSharedPtr<FJsonValue>& B){
 }
 void UMaiCaptureSubsystem::Initialize(FSubsystemCollectionBase& C){Super::Initialize(C);
 #if !UE_BUILD_SHIPPING
+    if(FParse::Param(FCommandLine::Get(),TEXT("MaiCaptureManual")))return;
     if(!FParse::Value(FCommandLine::Get(),TEXT("MaiCaptureSession="),Session))return;
     if(Session.IsEmpty()||Session.Len()>80)return;for(TCHAR Ch:Session)if(!FChar::IsAlnum(Ch)&&Ch!=TEXT('-')&&Ch!=TEXT('_'))return;
     C.InitializeDependency<UMaiRulesSubsystem>();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();
@@ -51,6 +55,9 @@ UWorld* UMaiCaptureSubsystem::GetTickableGameObjectWorld()const{return GetGameIn
 UMaiNativeWidget* UMaiCaptureSubsystem::UI()const{auto* PC=Cast<AMaiPlayerController>(UGameplayStatics::GetPlayerController(GetGameInstance(),0));return PC?PC->NativeUI():nullptr;}
 bool UMaiCaptureSubsystem::Click(const FString& Id){auto* W=UI();if(!W||!W->ActionIds().Contains(Id))return false;W->Dispatch(Id);Next=FPlatformTime::Seconds()+.7;return true;}
 void UMaiCaptureSubsystem::Capture(const FString& Name,int32 NextStage){
+#if WITH_EDITOR
+    if(GShaderCompilingManager&&GShaderCompilingManager->IsCompiling()){Next=FPlatformTime::Seconds()+1;return;}
+#endif
     if(RecentFrameMs.Num()>30){
         auto Sorted=RecentFrameMs;Sorted.Sort();double Sum=0;for(double Ms:Sorted)Sum+=Ms;
         auto Sample=MakeShared<FJsonObject>();Sample->SetStringField(TEXT("screen"),Name);
@@ -118,10 +125,12 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 34:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->ApplyPreview(false);It->SetActorTickEnabled(true);}
         if(auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0)))Camera->ResetOverview();Stage=12;Next=Now+2;break;
     case 12:if(Click(TEXT("buy-location")))Stage=13;break;
-    case 13:if(Click(TEXT("enter-location")))Stage=40;break;
+    case 13:if(Click(TEXT("open-location")))Stage=43;break;
+    case 43:if(Click(TEXT("walk-in")))Stage=40;break;
     case 40:if(UI()->ActionIds().Contains(TEXT("leave-interior")))Capture(TEXT("05d-walkable-garage"),41);break;
     case 41:if(Click(TEXT("leave-interior")))Stage=42;break;
-    case 42:if(Click(TEXT("open-location")))Stage=14;break;
+    case 42:if(UI()->ActionIds().Contains(TEXT("open-location")))Capture(TEXT("05e-city-after-interior"),44);break;
+    case 44:if(Click(TEXT("open-location")))Stage=14;break;
     case 14:Capture(TEXT("06-equipment"),15);break;
     case 15:if(Click(TEXT("procurement")))Stage=16;break;
     case 16:Capture(TEXT("07-procurement"),17);break;

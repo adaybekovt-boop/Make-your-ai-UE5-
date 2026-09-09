@@ -20,6 +20,14 @@ import extract_city_markers
 
 
 class ScaffoldChecks(unittest.TestCase):
+    def test_runtime_loaded_interiors_are_in_game_cook_settings(self):
+        game = (PROJECT / 'Config/DefaultGame.ini').read_text()
+        engine = (PROJECT / 'Config/DefaultEngine.ini').read_text()
+        self.assertIn('[/Script/UnrealEd.ProjectPackagingSettings]', game)
+        self.assertNotIn('[/Script/UnrealEd.ProjectPackagingSettings]', engine)
+        for directory in ('/Game/Generated/Interiors/V1', '/Game/Generated/Interiors/AuthoredV2'):
+            self.assertIn('+DirectoriesToAlwaysCook=(Path="' + directory + '")', game)
+
     def test_editor_and_blender_scripts_have_valid_python_syntax(self):
         for name in ('build_scaffold.py', 'editor_assets.py', 'editor_scene.py', 'inspect_scaffold.py', 'prepare_skeletal_lods.py', 'extract_city_markers.py', 'scaffold_runner.py', 'editor_materials.py', 'editor_lighting.py', 'editor_world_partition.py', 'run_editor_visual.py'):
             with self.subTest(script=name):

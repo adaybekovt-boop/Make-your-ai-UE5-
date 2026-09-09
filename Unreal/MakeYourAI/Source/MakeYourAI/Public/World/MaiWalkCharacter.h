@@ -20,6 +20,8 @@ private:
     UPROPERTY(VisibleAnywhere) TObjectPtr<UStaticMeshComponent> GrayboxBody;
     void North(float Value);
     void East(float Value);
+    void LookX(float Value);
+    void LookY(float Value);
     bool CanMoveInCampaign() const;
     FVector RoomOrigin=FVector::ZeroVector;
     FVector2D RoomHalfSize=FVector2D(650,650);
