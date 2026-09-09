@@ -9,6 +9,7 @@ class AMaiCameraPawn;
 class AMaiWalkCharacter;
 class AMaiWalkPawn;
 class AMaiGarageInterior;
+class UMaiServerAmbience;
 
 UCLASS()
 class MAKEYOURAI_API AMaiPlayerController : public APlayerController {
@@ -28,7 +29,9 @@ public:
     bool AtReviewDesk() const;
     bool PrepareCampaignScene(const FString& Interior, bool bMenu, FString& Error);
     void ToggleOperations() { bOperationsOpen = !bOperationsOpen; }
+    void ToggleWalkCursor(){bWalkCursorFreed=!bWalkCursorFreed;}
 private:
+    UPROPERTY(Transient) TObjectPtr<UMaiServerAmbience> ServerAmbience;
     UPROPERTY(Transient) TObjectPtr<UMaiNativeWidget> NativeScreen;
     UPROPERTY(Transient) TObjectPtr<UMaiHUDWidget> Screen;
     UPROPERTY(Transient) TObjectPtr<UMaiFlowWidget> Flow;
@@ -39,6 +42,9 @@ private:
     bool bOperationsOpen = true;
     float QualityClock=0;
     bool bDistantView=false;
+    bool bQualityInitialized=false;
+    bool bWalkCursorFreed=false;
+    bool bWalkMouseCaptured=false;
     void ClickWorld();
     void PossessCity();
     void PossessWalk();

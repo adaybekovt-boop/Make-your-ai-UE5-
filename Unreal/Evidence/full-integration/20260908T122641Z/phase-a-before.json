@@ -1,0 +1,46 @@
+{
+  "phase": "A - transactional state and recovery",
+  "utc": "20260908T122641Z",
+  "head": "c244fc44d21fed39f8e9d57d1fb920c821800e17",
+  "branch": "agent/full-integration-ue5",
+  "status": "",
+  "mergeBaseMain": "1f5184334a4d8ee62324be02b894a33658b42c3d",
+  "plannedFiles": [
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Public/Rules/MaiDurableFile.h",
+      "beforeSha256": "0fdf1c1dd05e2acca722e1355edb159ae69ff654bbbf35d59e8b9aa89c458d93"
+    },
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Private/Rules/MaiDurableFile.cpp",
+      "beforeSha256": "74234ed0ac53c6caf826376ad8d61102b9215caf7d5516fccf01b31355ea187b"
+    },
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Private/Rules/MaiRulesPersistence.cpp",
+      "beforeSha256": "9c41d12dad73f50a6bcd6bfd180af59b95e03a3221925f2cab89a6b5f78f7c68"
+    },
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Private/Rules/MaiRulesSubsystem.cpp",
+      "beforeSha256": "45f761b971b2f5104ba609f24cccb6d883d7fb0b4e6b59f0c42ec1ed38f903e5"
+    },
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Public/Rules/MaiRulesSubsystem.h",
+      "beforeSha256": "dc6e5a42ae8b0beec523a05e12114aa764a3097861034ca7c7e41154ad197c73"
+    },
+    {
+      "path": "Unreal/MakeYourAI/Source/MakeYourAI/Private/Gameplay/MaiCompanySubsystem.cpp",
+      "beforeSha256": "86a19d0538a48065bdb5666cc2a1072c406be51b9bac5212249c826769afdca3"
+    },
+    {
+      "path": "Unreal/Tests/native/durable_main.cpp",
+      "beforeSha256": "2c71a24040e3ee84fa515341a7f1c538824b07e5b13c5b997ebc491cca7965b5"
+    },
+    {
+      "path": "Unreal/Tests/run_durable.sh",
+      "beforeSha256": null
+    },
+    {
+      "path": "Unreal/Rules/kernel.ts",
+      "beforeSha256": "08eec074aa29220e097ebe6dda9968a07a191d13f8c54dd499ac340dc68f1d22"
+    }
+  ]
+}

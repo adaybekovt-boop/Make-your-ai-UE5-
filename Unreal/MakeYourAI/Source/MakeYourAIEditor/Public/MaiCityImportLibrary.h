@@ -12,4 +12,6 @@ public:
     static FString ImportCityMesh(const FString& SourceFile, const FString& PackagePath, const FString& ExpectedSHA1, bool EnableNanite);
     UFUNCTION(BlueprintCallable, Category="MakeYourAI|Import")
     static FString AuditCityMesh(UStaticMesh* Mesh);
+    UFUNCTION(BlueprintCallable, Category="MakeYourAI|Import")
+    static FString CreateTreeDetail(UStaticMesh* NearMesh, UStaticMesh* OriginalMesh, const FString& PackagePath);
 };

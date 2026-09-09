@@ -13,6 +13,7 @@ class MAKEYOURAI_API AMaiInteriorPoint : public AActor, public IMaiInteractable 
 public:
     AMaiInteriorPoint();
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString PointId;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString LocationId=TEXT("garage");
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FString Action;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") int32 Cell=-1;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") float RangeCm=220.f;
@@ -20,9 +21,12 @@ public:
     bool CanInteract(const AMaiWalkCharacter* Character) const;
     virtual void Interact_Implementation(APlayerController* Player) override;
     void SetRack(bool bInstalled);
+    FString InteractionLabel() const;
 private:
     UPROPERTY(VisibleAnywhere) TObjectPtr<UStaticMeshComponent> Body;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UTextRenderComponent> Label;
     UPROPERTY(Transient) TObjectPtr<UMaiProximityComponent> Proximity;
+    UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> RackPanels;
+    int32 LastRackState=-1;
     UFUNCTION() void NpcState(EMaiNpcState State,FText Line);
 };

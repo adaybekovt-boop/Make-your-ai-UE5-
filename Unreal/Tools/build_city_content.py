@@ -12,8 +12,10 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cityv4_format import sha256
+from cityv4_format import sha256, write_owned, audit_mesh
 from cityv4_plan import make_plan
+from city_surface_detail import surface_profile, surface_code, NORMAL_CODE
+from city_tree_detail import build_tree
 import unreal
 
 OWNER = 'MakeYourAI.CityV4.v2'
@@ -61,16 +63,39 @@ def make_material(parent_path, source):
     base = node(unreal.MaterialExpressionVectorParameter, parameter_name='BaseColor', default_value=unreal.LinearColor(*source['base_color']))
     vertex = node(unreal.MaterialExpressionVertexColor)
     color = vertex if vertex_driven('Base Color') else base
-    if any(word in source['name'].lower() for word in ('stone','brick','limestone','slate','terracotta','asphalt')):
-        grain = node(unreal.MaterialExpressionNoise, scale=.025, quality=1, levels=1, output_min=.94, output_max=1.02)
-        detail = node(unreal.MaterialExpressionMultiply)
-        connect(color,'',detail,'A');connect(grain,'',detail,'B');color=detail
+    profile = surface_profile(source['name'])
+    roughness_detail = None
+    if profile:
+        def custom(code, inputs):
+            names=[]
+            for name, expression in inputs:
+                item=unreal.CustomInput();item.set_editor_property('input_name',name);names.append(item)
+            result=node(unreal.MaterialExpressionCustom,code=code,inputs=names,
+                        output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+            for name, expression in inputs:connect(expression,'',result,name)
+            return result
+        position=node(unreal.MaterialExpressionWorldPosition)
+        normal=node(unreal.MaterialExpressionVertexNormalWS)
+        eye=node(unreal.MaterialExpressionCameraPositionWS)
+        surface=custom(surface_code(profile),[('P',position),('N',normal),('Eye',eye)])
+        def channel(r=False,g=False,b=False):
+            mask=node(unreal.MaterialExpressionComponentMask,r=r,g=g,b=b,a=False)
+            connect(surface,'',mask,'');return mask
+        tint=channel(r=True);roughness_detail=channel(g=True);height=channel(b=True)
+        detail=node(unreal.MaterialExpressionMultiply)
+        connect(color,'',detail,'A');connect(tint,'',detail,'B');color=detail
+        bump=custom(NORMAL_CODE,[('P',position),('N',normal),('H',height)])
+        material.set_editor_property('tangent_space_normal',False)
+        finish(bump,'',unreal.MaterialProperty.MP_NORMAL)
     finish(color, '', unreal.MaterialProperty.MP_BASE_COLOR)
     # Art-direction pass: subdued dielectric highlights for a readable city view.
     specular = node(unreal.MaterialExpressionScalarParameter, parameter_name='Specular', default_value=.18)
     finish(specular, '', unreal.MaterialProperty.MP_SPECULAR)
     for name, key, prop in [('Roughness','roughness',unreal.MaterialProperty.MP_ROUGHNESS), ('Metallic','metallic',unreal.MaterialProperty.MP_METALLIC)]:
         value = node(unreal.MaterialExpressionScalarParameter, parameter_name=name, default_value=float(source[key]))
+        if name=='Roughness' and roughness_detail is not None:
+            adjusted=node(unreal.MaterialExpressionAdd)
+            connect(value,'',adjusted,'A');connect(roughness_detail,'',adjusted,'B');value=adjusted
         finish(value, '', prop)
     emission = node(unreal.MaterialExpressionVectorParameter, parameter_name='EmissionColor', default_value=unreal.LinearColor(*source['emission']))
     strength = node(unreal.MaterialExpressionScalarParameter, parameter_name='EmissionStrength', default_value=float(source['emission_strength']))
@@ -82,9 +107,8 @@ def make_material(parent_path, source):
         material.set_editor_property('blend_mode', unreal.BlendMode.BLEND_TRANSLUCENT)
         alpha = node(unreal.MaterialExpressionScalarParameter, parameter_name='Opacity', default_value=float(source['alpha']))
         finish(alpha, '', unreal.MaterialProperty.MP_OPACITY)
-    # Source Noise->Bump nodes are not numerically identical to UE's procedural
-    # noise. Preserve their graph/value record and record this as a visual gap.
-    # Baseline uses authored split normals, NOT fabricated baked textures.
+    # New procedural UE surface treatment preserves source colors/split normals
+    # and adds filtered mortar/grain relief, rather than claiming Blender parity.
     for usage in (unreal.MaterialUsage.MATUSAGE_INSTANCED_STATIC_MESHES, unreal.MaterialUsage.MATUSAGE_NANITE):
         ML.set_material_usage(material, usage)
         if not ML.has_material_usage(material, usage):
@@ -112,7 +136,8 @@ def build():
     engine = unreal.SystemLibrary.get_engine_version()
     import_source = Path(__file__).resolve().parents[1] / 'MakeYourAI/Source/MakeYourAIEditor/Private/MaiCityImportLibrary.cpp'
     batch_source = Path(__file__).resolve().parents[1] / 'MakeYourAI/Source/MakeYourAI/Private/World/MaiCityBatch.cpp'
-    fingerprint = hashlib.sha256((sha256(manifest)+sha256(Path(__file__))+sha256(import_source)+sha256(batch_source)+sha256(Path(__file__).with_name('cityv4_plan.py'))+engine+str(nanite)).encode()).hexdigest()[:20]
+    fingerprint = hashlib.sha256((sha256(manifest)+sha256(Path(__file__))+sha256(import_source)+sha256(batch_source)+sha256(Path(__file__).with_name('cityv4_plan.py'))+sha256(Path(__file__).with_name('city_surface_detail.py'))+engine+str(nanite)).encode()).hexdigest()[:20]
+    fingerprint = hashlib.sha256((fingerprint+sha256(Path(__file__).with_name('city_tree_detail.py'))).encode()).hexdigest()[:20]
     root = '/Game/Generated/CityV4/R_' + fingerprint
     world_package = root + '/L_City_DAY'
     map_file = Path(unreal.Paths.project_content_dir()) / (world_package.removeprefix('/Game/') + '.umap')
@@ -168,7 +193,7 @@ def build():
                 record(package_file(instance_path))
             materials[name] = instance
             if any(n['type']=='ShaderNodeBump' for n in source['nodes']):
-                report['materialGaps'].append(dict(material=name, gap='Procedural Blender bump retained in manifest; UE baseline uses source split normals, not equivalent micro-normal shader'))
+                report['materialGaps'].append(dict(material=name, gap='New filtered UE surface-gradient detail; not a numeric reproduction of Blender procedural bump'))
         meshes = {}
         for key, item in data['meshes'].items():
             path = root+'/Geometry/SM_'+key; known_asset(path)
@@ -177,6 +202,24 @@ def build():
             if not result.get('ok') or result['sourceLOD0Triangles']!=item['triangles'] or result['renderLOD0Triangles']!=item['triangles']-result.get('collapsedSourceTriangles',0):
                 raise RuntimeError('Source/imported LOD0 mismatch: '+json.dumps(result))
             report['meshAudits'].append(result); meshes[key]=unreal.load_asset(path);record(package_file(path))
+            if item['source_name'] in ('template tree.001','template tree.002','template tree.004'):
+                colors={slot:tuple(data['materials'][name]['base_color']) for slot,name in
+                        [(6,'Trees / deep green'),(7,'Trees / olive green'),(8,'Trunks')]}
+                raw=build_tree(item,colors)
+                detail_file=Path(unreal.Paths.project_saved_dir())/'TreeDetailSources'/fingerprint/(key+'.maimesh')
+                write_owned(detail_file,raw);detail_audit=audit_mesh(detail_file)
+                near_path=root+'/Geometry/SM_Near_'+key;known_asset(near_path)
+                near_result=json.loads(unreal.MaiCityImportLibrary.import_city_mesh(str(detail_file),near_path,hashlib.sha1(raw).hexdigest(),False))
+                if not near_result.get('ok') or near_result['renderLOD0Triangles']!=detail_audit['triangles']:
+                    raise RuntimeError('Near tree geometry import failed: '+json.dumps(near_result))
+                record(package_file(near_path))
+                lod_path=root+'/Geometry/SM_TreeLODs_'+key;known_asset(lod_path)
+                lod_result=json.loads(unreal.MaiCityImportLibrary.create_tree_detail(unreal.load_asset(near_path),meshes[key],lod_path))
+                if (not lod_result.get('ok') or lod_result.get('sourceLODTriangles',[0,0,0])[2]!=item['triangles']
+                        or lod_result.get('renderLODTriangles',[0,0,0])[2]!=result['renderLOD0Triangles']):
+                    raise RuntimeError('Original distant tree LOD not preserved: '+json.dumps(lod_result))
+                meshes[key]=unreal.load_asset(lod_path);record(package_file(lod_path))
+                report.setdefault('treeDetail',[]).append(dict(sourceMesh=key,sourceTriangles=item['triangles'],nearTriangles=detail_audit['triangles'],audit=lod_result))
         level = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
         actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
         if map_file.exists():

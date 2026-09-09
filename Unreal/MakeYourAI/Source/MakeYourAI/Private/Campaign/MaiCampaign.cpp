@@ -183,7 +183,7 @@ Result Campaign::StartReview(std::int64_t batchId,ReviewMethod method) {
     if(!CanPlay()) return Result::Error("Company inactive");
     auto* batch=MutableBatch(batchId);if(!batch || batch->status!=DatasetStatus::Unreviewed) return Result::Error("Only an Unreviewed batch can enter review");
     if(state_.reviews.size()>=512 || method==ReviewMethod::None || static_cast<int>(method)>3 || static_cast<int>(method)<1) return Result::Error("Invalid review method or queue full");
-    if(method==ReviewMethod::Manual && state_.interior!="garage") return Result::Error("Use the review desk inside Garage for manual review");
+    if(method==ReviewMethod::Manual && state_.interior.empty()) return Result::Error("Use a review desk inside an owned server room for manual review");
     if(method==ReviewMethod::Manual) for(const auto& r:state_.reviews) if(r.method==method && r.phase!=ReviewPhase::Complete) return Result::Error("Finish the active manual session first");
     if(method==ReviewMethod::Human && state_.specialists.empty()) return Result::Error("Hire a specialist first");
     if(method==ReviewMethod::AI && !state_.ai.created) return Result::Error("Create an AI reviewer first");

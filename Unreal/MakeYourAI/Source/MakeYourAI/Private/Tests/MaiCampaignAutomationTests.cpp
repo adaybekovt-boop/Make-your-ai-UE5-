@@ -8,9 +8,12 @@
 #include "Persistence/MaiSaveGame.h"
 #include "World/MaiGarageInterior.h"
 #include "World/MaiWalkCharacter.h"
+#include "World/MaiCityLighting.h"
+#include "World/MaiCameraPawn.h"
 #include "Interaction/MaiInteriorPoint.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,6 +30,16 @@ bool Prepare(mai::Campaign& G) {
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignAssetAutomation,"MakeYourAI.Campaign.EditableProfilesMatchDomain",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignAssetAutomation::RunTest(const FString& Parameters) {
     (void)Parameters;auto* Asset=NewObject<UMaiCampaignAsset>();mai::CampaignRules Rules;FString Error;
+    TestEqual(TEXT("Idle wheel does not zoom"),AMaiCameraPawn::WheelZoomFactor(0),1.f);
+    TestTrue(TEXT("Wheel packets preserve multiple notches"),FMath::IsNearlyEqual(AMaiCameraPawn::WheelZoomFactor(3),FMath::Pow(.85f,3)));
+    TestTrue(TEXT("Opposite wheel steps cancel within float precision"),FMath::IsNearlyEqual(AMaiCameraPawn::WheelZoomFactor(2)*AMaiCameraPawn::WheelZoomFactor(-2),1.f,1.e-6f));
+    TestEqual(TEXT("Extreme wheel packets are bounded"),AMaiCameraPawn::WheelZoomFactor(100),AMaiCameraPawn::WheelZoomFactor(8));
+    TestEqual(TEXT("Windows never emit in full daylight"),AMaiCityLighting::NightWindowStrength(.65f,1.f),0.f);
+    TestEqual(TEXT("Non-emissive facades remain non-emissive"),AMaiCityLighting::NightWindowStrength(0.f,0.f),0.f);
+    TestTrue(TEXT("Weak authored evening windows remain visible at night"),AMaiCityLighting::NightWindowStrength(.03f,0.f)>=.8f);
+    for(float Lux : {.4f, 1.f, 50.f, 500.f, 3000.f, 6000.f, 12000.f})
+        TestTrue(TEXT("Exposure compensates sun intensity throughout twilight"),
+            FMath::IsNearlyEqual(Lux/FMath::Pow(2.f,AMaiCityLighting::ExposureForSunLux(Lux)),2.5f,.001f));
     if(!TestTrue(TEXT("DataAsset converts"),Asset->ToDomain(Rules,Error)))return false;
     TestEqual(TEXT("All editable defaults preserved"),Rules.Fingerprint(),mai::CampaignRules::Defaults().Fingerprint());
     TestEqual(TEXT("Three difficulties"),Asset->Difficulties.Num(),3);TestEqual(TEXT("Five ending profiles"),Asset->Endings.Num(),5);
@@ -58,20 +71,37 @@ bool FMaiCampaignGaragePhysicsAutomation::RunTest(const FString& Parameters) {
     (void)Parameters;LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Cube.Cube"));
     UWorld* World=UWorld::CreateWorld(EWorldType::Game,false,FName(*FGuid::NewGuid().ToString(EGuidFormats::Digits)));
     if(!TestNotNull(TEXT("Isolated real engine world"),World))return false;
-    ON_SCOPE_EXIT { World->DestroyWorld(false); };
+    GEngine->CreateNewWorldContext(EWorldType::Game).SetCurrentWorld(World);
+    ON_SCOPE_EXIT { World->DestroyWorld(false);GEngine->DestroyWorldContext(World); };
     FActorSpawnParameters Spawn;Spawn.SpawnCollisionHandlingOverride=ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
     auto* Room=World->SpawnActor<AMaiGarageInterior>(FVector::ZeroVector,FRotator::ZeroRotator,Spawn);
-    if(!TestTrue(TEXT("Real collision graybox built"),Room && Room->Build()))return false;
-    auto* Character=World->SpawnActor<AMaiWalkCharacter>(FVector(-400,120,100),FRotator::ZeroRotator,Spawn);
+    if(!TestTrue(TEXT("Authored room and collision built"),Room && Room->Build()))return false;
+    auto* Character=World->SpawnActor<AMaiWalkCharacter>(FVector(-175,-180,100),FRotator::ZeroRotator,Spawn);
     if(!TestNotNull(TEXT("ACharacter with movement component"),Character))return false;
     AMaiInteriorPoint* Desk=nullptr;for(TActorIterator<AMaiInteriorPoint> It(World);It;++It)if(It->Action==TEXT("review"))Desk=*It;
     if(!TestNotNull(TEXT("Real review point"),Desk))return false;
     TestTrue(TEXT("Near desk permits trace-based interaction"),Desk->CanInteract(Character));
     FHitResult Hit;Character->GetCharacterMovement()->SafeMoveUpdatedComponent(FVector(0,50,0),FQuat::Identity,true,Hit);
-    TestTrue(TEXT("Movement component changes physical location"),Character->GetActorLocation().Y>160);
+    TestTrue(TEXT("Movement component changes physical location"),Character->GetActorLocation().Y>-135);
     Character->GetCharacterMovement()->SafeMoveUpdatedComponent(FVector(0,-1200,0),FQuat::Identity,true,Hit);
     TestTrue(TEXT("Wall stops swept capsule"),Hit.bBlockingHit);TestTrue(TEXT("Character stays inside room"),Character->GetActorLocation().Y>-710);
-    TestFalse(TEXT("Distant review point is not callable"),Desk->CanInteract(Character));return true;
+    Character->SetActorLocation(Room->PlayerStart(),false,nullptr,ETeleportType::TeleportPhysics);
+    TestFalse(TEXT("Review desk cannot be activated from the entrance"),Desk->CanInteract(Character));
+    for(const auto& Profile:mai::InteriorProfiles()) {
+        Room->ConfigureLocation(UTF8_TO_TCHAR(Profile.id.c_str()));
+        TestTrue(TEXT("Server room builds"),Room->Build());
+        Character->SetActorLocation(Room->PlayerStart(),false,nullptr,ETeleportType::TeleportPhysics);
+        Character->SetRoomBounds(Room->GetActorLocation(),Room->WalkHalfSize());
+        const FVector Start=Character->GetActorLocation();
+        for(TActorIterator<AMaiInteriorPoint> It(World);It;++It)if(It->Cell>=0)
+            TestTrue(TEXT("Spawn aisle clears rack columns including occupied rear row"),
+                FMath::Abs(Start.X-It->GetActorLocation().X)>72.f);
+        for(const FVector Escape:{FVector(10000,0,100),FVector(0,10000,100),FVector(0,0,-500)}) {
+            Character->SetActorLocation(Escape,false,nullptr,ETeleportType::TeleportPhysics);Character->Tick(0);
+            TestTrue(TEXT("Escaped capsule returns to safe spawn"),Character->GetActorLocation().Equals(Start,1));
+        }
+    }
+    return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMaiCampaignFlow, "MakeYourAI.Campaign.LoadingDifficultyAndInventory", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FMaiCampaignFlow::RunTest(const FString& Parameters) {

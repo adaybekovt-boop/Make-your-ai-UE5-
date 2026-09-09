@@ -19,6 +19,7 @@ public:
     UFUNCTION() void TextChanged(const FText& Text);
     UFUNCTION() void SelectionChanged(FString Selection,ESelectInfo::Type Type);
     UFUNCTION() void SliderChanged(float Value);
+    UFUNCTION() UWidget* GenerateOption(FString Option);
 };
 UCLASS()
 class MAKEYOURAI_API UMaiNativeWidget : public UUserWidget {
@@ -27,8 +28,12 @@ public:
     virtual TSharedRef<SWidget> RebuildWidget() override;
     virtual void NativeConstruct() override;
     virtual void NativeTick(const FGeometry& Geometry,float Delta) override;
+    virtual FReply NativeOnPreviewKeyDown(const FGeometry& Geometry,const FKeyEvent& Event) override;
     void Dispatch(const FString& Id,const TSharedPtr<FJsonValue>& Value=nullptr);
     bool ValidateViewport(FString& Error) const;
+    bool IsWalkingView() const;
+    bool CanControlMap(bool CheckPointer) const;
+    bool RevealContentNode(const FString& Id);
     bool ApplyingSnapshot=false;
     UFUNCTION(BlueprintPure,Category="MakeYourAI|UI") TArray<FString> ActionIds() const;
 private:

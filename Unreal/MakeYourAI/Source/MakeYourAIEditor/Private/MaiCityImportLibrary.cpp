@@ -38,6 +38,8 @@ FString UMaiCityImportLibrary::AuditCityMesh(UStaticMesh* Mesh) {
     TArray<UStaticMesh*> Pending{Mesh};FStaticMeshCompilingManager::Get().FinishCompilation(Pending);
     auto O=MakeShared<FJsonObject>();O->SetBoolField(TEXT("ok"),true);O->SetStringField(TEXT("asset"),Mesh->GetPathName());
     O->SetNumberField(TEXT("sourceModels"),Mesh->GetNumSourceModels());O->SetNumberField(TEXT("materialSlots"),Mesh->GetStaticMaterials().Num());
+    TArray<TSharedPtr<FJsonValue>> LODTriangles;for(int32 Level=0;Level<Mesh->GetNumLODs();++Level)LODTriangles.Add(MakeShared<FJsonValueNumber>(Mesh->GetNumTriangles(Level)));O->SetArrayField(TEXT("renderLODTriangles"),LODTriangles);
+    TArray<TSharedPtr<FJsonValue>> SourceTriangles;for(int32 Level=0;Level<Mesh->GetNumSourceModels();++Level){const auto* SourceDescription=Mesh->GetMeshDescription(Level);SourceTriangles.Add(MakeShared<FJsonValueNumber>(SourceDescription?SourceDescription->Triangles().Num():-1));}O->SetArrayField(TEXT("sourceLODTriangles"),SourceTriangles);
     const FMeshDescription* D=Mesh->GetMeshDescription(0);
     O->SetNumberField(TEXT("collapsedSourceTriangles"),D?CollapsedTriangles(*D):0);
     O->SetNumberField(TEXT("sourceLOD0Triangles"),D?D->Triangles().Num():-1);
@@ -132,5 +134,44 @@ FString UMaiCityImportLibrary::ImportCityMesh(const FString& SourceFile,const FS
     FAssetRegistryModule::AssetCreated(Mesh);Mesh->MarkPackageDirty();const FString Filename=FPackageName::LongPackageNameToFilename(PackagePath,FPackageName::GetAssetPackageExtension());
     IFileManager::Get().MakeDirectory(*FPaths::GetPath(Filename),true);FSavePackageArgs Args;Args.TopLevelFlags=RF_Public|RF_Standalone;Args.SaveFlags=SAVE_NoError;
     if(!UPackage::SavePackage(Package,Mesh,*Filename,Args))return Fail(TEXT("Static mesh package save failed"));
+    return AuditCityMesh(Mesh);
+}
+
+FString UMaiCityImportLibrary::CreateTreeDetail(UStaticMesh* NearMesh,UStaticMesh* OriginalMesh,const FString& PackagePath){
+    if(!NearMesh||!OriginalMesh||!PackagePath.StartsWith(TEXT("/Game/Generated/CityV4/"))||!FPackageName::IsValidLongPackageName(PackagePath))return Fail(TEXT("Invalid tree LOD inputs"));
+    const auto* Near=NearMesh->GetMeshDescription(0);const auto* Original=OriginalMesh->GetMeshDescription(0);
+    if(!Near||!Original||NearMesh->GetStaticMaterials().Num()!=OriginalMesh->GetStaticMaterials().Num())return Fail(TEXT("Tree LOD source/binding mismatch"));
+    const FString NearHash=NearMesh->GetOutermost()->GetMetaData().GetValue(NearMesh,TEXT("MAI_SourceSHA1"));
+    const FString OriginalHash=OriginalMesh->GetOutermost()->GetMetaData().GetValue(OriginalMesh,TEXT("MAI_SourceSHA1"));
+    if(NearHash.IsEmpty()||OriginalHash.IsEmpty())return Fail(TEXT("Only audited generated tree sources are accepted"));
+    const FString Signature=NearHash+TEXT(":")+OriginalHash+TEXT(":TreeLOD-v2");
+    const FString Name=FPackageName::GetLongPackageAssetName(PackagePath);
+    if(auto* Existing=LoadObject<UStaticMesh>(nullptr,*(PackagePath+TEXT(".")+Name))){
+        if(Existing->GetOutermost()->GetMetaData().GetValue(Existing,TEXT("MAI_TreeLODs"))!=Signature)return Fail(TEXT("Existing tree derivative differs; retained"));
+        return AuditCityMesh(Existing);
+    }
+    if(FPackageName::DoesPackageExist(PackagePath))return Fail(TEXT("Existing package retained"));
+    UPackage* Package=CreatePackage(*PackagePath);auto* Mesh=NewObject<UStaticMesh>(Package,*Name,RF_Public|RF_Standalone);
+    Mesh->InitResources();Mesh->SetLightingGuid();Mesh->SetAutoComputeLODScreenSize(false);
+    Mesh->GetStaticMaterials()=OriginalMesh->GetStaticMaterials();
+    for(int32 Level=0;Level<4;++Level){auto& Model=Mesh->AddSourceModel();
+        Model.BuildSettings=NearMesh->GetSourceModel(0).BuildSettings;
+        Model.ScreenSize.Default=Level==0?1.f:Level==1?.10f:Level==2?.008f:.003f;
+        Model.ReductionSettings.BaseLODModel=Level>=2?2:0;
+        Model.ReductionSettings.PercentTriangles=Level==1?.12f:Level==3?.2f:1.f;
+        Model.ReductionSettings.PercentVertices=1.f;Model.ReductionSettings.MaxDeviation=0.f;
+    }
+    Mesh->CreateMeshDescription(0,FMeshDescription(*Near));Mesh->CommitMeshDescription(0);
+    Mesh->CreateMeshDescription(2,FMeshDescription(*Original));Mesh->CommitMeshDescription(2);
+    Mesh->NaniteSettings.bEnabled=false;
+    Mesh->CreateBodySetup();Mesh->GetBodySetup()->CollisionTraceFlag=CTF_UseComplexAsSimple;
+    Mesh->Build(false);TArray<UStaticMesh*> Pending{Mesh};FStaticMeshCompilingManager::Get().FinishCompilation(Pending);
+    if(Mesh->GetNumLODs()!=4||Mesh->GetNumTriangles(0)!=NearMesh->GetNumTriangles(0)||Mesh->GetNumTriangles(2)!=OriginalMesh->GetNumTriangles(0))return Fail(TEXT("Tree LOD topology verification failed"));
+    Package->GetMetaData().SetValue(Mesh,TEXT("MAI_TreeLODs"),*Signature);
+    Package->GetMetaData().SetValue(Mesh,TEXT("MAI_GeneratedOwner"),TEXT("CityV4-v2"));
+    FAssetRegistryModule::AssetCreated(Mesh);Mesh->MarkPackageDirty();
+    const FString Filename=FPackageName::LongPackageNameToFilename(PackagePath,FPackageName::GetAssetPackageExtension());
+    IFileManager::Get().MakeDirectory(*FPaths::GetPath(Filename),true);FSavePackageArgs Args;Args.TopLevelFlags=RF_Public|RF_Standalone;Args.SaveFlags=SAVE_NoError;
+    if(!UPackage::SavePackage(Package,Mesh,*Filename,Args))return Fail(TEXT("Tree LOD save failed"));
     return AuditCityMesh(Mesh);
 }

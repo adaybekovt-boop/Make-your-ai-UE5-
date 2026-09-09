@@ -4,6 +4,9 @@
 #include "World/MaiPlayerController.h"
 #include "World/MaiCameraPawn.h"
 #include "World/MaiCityLighting.h"
+#include "World/MaiCityBatch.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "EngineUtils.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
@@ -20,6 +23,9 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Subsystems/SubsystemCollection.h"
+#if WITH_EDITOR
+#include "ShaderCompiler.h"
+#endif
 namespace {
 FString Encode(const TSharedRef<FJsonObject>& O){FString S;FJsonSerializer::Serialize(O,TJsonWriterFactory<>::Create(&S));return S;}
 bool Equal(const TSharedPtr<FJsonValue>& A,const TSharedPtr<FJsonValue>& B){
@@ -37,10 +43,12 @@ bool Equal(const TSharedPtr<FJsonValue>& A,const TSharedPtr<FJsonValue>& B){
 }
 void UMaiCaptureSubsystem::Initialize(FSubsystemCollectionBase& C){Super::Initialize(C);
 #if !UE_BUILD_SHIPPING
+    if(FParse::Param(FCommandLine::Get(),TEXT("MaiCaptureManual")))return;
     if(!FParse::Value(FCommandLine::Get(),TEXT("MaiCaptureSession="),Session))return;
     if(Session.IsEmpty()||Session.Len()>80)return;for(TCHAR Ch:Session)if(!FChar::IsAlnum(Ch)&&Ch!=TEXT('-')&&Ch!=TEXT('_'))return;
     C.InitializeDependency<UMaiRulesSubsystem>();Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>();
     Resume=FParse::Param(FCommandLine::Get(),TEXT("MaiCaptureResume"));
+    SweepRequested=FParse::Param(FCommandLine::Get(),TEXT("MaiCameraSweep"));
     Directory=FPaths::ProjectSavedDir()/TEXT("Verification")/Session/(Resume?TEXT("resume"):TEXT("capture"));
     if(IFileManager::Get().DirectoryExists(*Directory)){UE_LOG(LogTemp,Error,TEXT("Capture directory already exists; never overwrite evidence"));return;}
     IFileManager::Get().MakeDirectory(*Directory,true);Active=true;Started=FPlatformTime::Seconds();Next=Started+5;
@@ -51,6 +59,9 @@ UWorld* UMaiCaptureSubsystem::GetTickableGameObjectWorld()const{return GetGameIn
 UMaiNativeWidget* UMaiCaptureSubsystem::UI()const{auto* PC=Cast<AMaiPlayerController>(UGameplayStatics::GetPlayerController(GetGameInstance(),0));return PC?PC->NativeUI():nullptr;}
 bool UMaiCaptureSubsystem::Click(const FString& Id){auto* W=UI();if(!W||!W->ActionIds().Contains(Id))return false;W->Dispatch(Id);Next=FPlatformTime::Seconds()+.7;return true;}
 void UMaiCaptureSubsystem::Capture(const FString& Name,int32 NextStage){
+#if WITH_EDITOR
+    if(GShaderCompilingManager&&GShaderCompilingManager->IsCompiling()){Next=FPlatformTime::Seconds()+1;return;}
+#endif
     if(RecentFrameMs.Num()>30){
         auto Sorted=RecentFrameMs;Sorted.Sort();double Sum=0;for(double Ms:Sorted)Sum+=Ms;
         auto Sample=MakeShared<FJsonObject>();Sample->SetStringField(TEXT("screen"),Name);
@@ -67,6 +78,7 @@ void UMaiCaptureSubsystem::Finish(const FString& Error){
     Report->SetBoolField(TEXT("humanPlaytest"),false);Report->SetBoolField(TEXT("fullFlowVerified"),false);
     Report->SetStringField(TEXT("performanceScope"),TEXT("Recent game frame deltas per screen; includes transition frames, not isolated GPU timings or a sustained benchmark"));
     Report->SetArrayField(TEXT("performance"),PerformanceSamples);
+    if(SweepReport)Report->SetObjectField(TEXT("cameraSweep"),SweepReport);
     Report->SetStringField(TEXT("inputRoute"),TEXT("UMG semantic action dispatch; OS pointer hit testing remains manual"));
     Report->SetBoolField(TEXT("completed"),Error.IsEmpty());Report->SetBoolField(TEXT("processRestartLoadVerified"),Resume&&Error.IsEmpty());Report->SetStringField(TEXT("error"),Error);
     TArray<TSharedPtr<FJsonValue>> Paths;for(const auto& P:Captures)Paths.Add(MakeShared<FJsonValueString>(P));Report->SetArrayField(TEXT("captures"),Paths);
@@ -107,18 +119,70 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 8:if(Click(TEXT("prologue-budget-next")))Stage=9;break;
     case 9:if(Click(TEXT("prologue-play")))Stage=10;break;
     case 10:if(Click(TEXT("friendly")))Stage=11;break;
-    case 11:if(UI()->ActionIds().Contains(TEXT("buy-location")))Capture(TEXT("05-city"),30);break;
+    case 11:if(UI()->ActionIds().Contains(TEXT("buy-location"))){if(!UI()->CanControlMap(false)){Finish(TEXT("Map keyboard input unexpectedly blocked"));break;}Capture(TEXT("05-city"),30);}break;
     case 30:{auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));if(!Camera){Finish(TEXT("City camera missing"));break;}
         const FVector Position=Camera->GetActorLocation();const FVector Forward=Camera->GetActorForwardVector();
         const FVector Target=Position+Forward*(-Position.Z/Forward.Z);
         Camera->SetActorLocation(Target+(Position-Target)*.12);Stage=31;Next=Now+4;break;}
-    case 31:Capture(TEXT("05b-city-close-day"),32);break;
+    case 31:Capture(TEXT("05b-city-close-day"),SweepRequested?50:32);break;
+    case 50:{
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Camera){Finish(TEXT("Sweep camera missing"));break;}
+        const FVector Position=Camera->GetActorLocation(),Forward=Camera->GetActorForwardVector();
+        if(Forward.Z>=-.05){Finish(TEXT("Sweep requires a downward city view"));break;}
+        SweepPivot=Position+Forward*(-Position.Z/Forward.Z);SweepOffset=Position-SweepPivot;
+        SweepStarted=Now;SweepPreviousTick=Now;SweepFrameMs.Reset();Stage=51;Next=Now;break;
+    }
+    case 51:{
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Camera){Finish(TEXT("Sweep camera lost"));break;}
+        const double Elapsed=Now-SweepStarted;
+        const double WallFrameMs=(Now-SweepPreviousTick)*1000.;SweepPreviousTick=Now;
+        if(Elapsed>=2&&WallFrameMs>0&&FMath::IsFinite(WallFrameMs))SweepFrameMs.Add(WallFrameMs);
+        const double Phase=FMath::Clamp(Elapsed/14.,0.,1.)*2.*PI;
+        const FVector Offset=SweepOffset.RotateAngleAxis(18.*FMath::Sin(Phase),FVector::UpVector)*(1.-.28*FMath::Sin(Phase));
+        Camera->SetActorLocationAndRotation(SweepPivot+Offset,(-Offset).Rotation());
+        if(Elapsed<14){Next=Now;break;}
+        if(SweepFrameMs.Num()<60){Finish(TEXT("Insufficient camera sweep frames"));break;}
+        auto Sorted=SweepFrameMs;Sorted.Sort();double Sum=0;int32 Hitches=0;
+        for(double Ms:Sorted){Sum+=Ms;if(Ms>50)++Hitches;}
+        SweepReport=MakeShared<FJsonObject>();
+        SweepReport->SetStringField(TEXT("scope"),TEXT("Deterministic 14-second near-city zoom/orbit; first 2 seconds excluded. Monotonic wall time between game-thread ticks, not GPU time; no automatic visual flicker verdict."));
+        SweepReport->SetNumberField(TEXT("sampleCount"),Sorted.Num());
+        SweepReport->SetNumberField(TEXT("meanFrameMs"),Sum/Sorted.Num());
+        SweepReport->SetNumberField(TEXT("p95FrameMs"),Sorted[FMath::Min(Sorted.Num()-1,FMath::FloorToInt(Sorted.Num()*.95))]);
+        SweepReport->SetNumberField(TEXT("maxFrameMs"),Sorted.Last());
+        SweepReport->SetNumberField(TEXT("framesAbove50ms"),Hitches);
+        TArray<TSharedPtr<FJsonValue>> Raw;for(double Ms:SweepFrameMs)Raw.Add(MakeShared<FJsonValueNumber>(Ms));
+        SweepReport->SetArrayField(TEXT("frameMs"),Raw);
+        Stage=32;Next=Now+1;break;
+    }
     case 32:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->SetActorTickEnabled(false);It->ApplyPreview(true);}Stage=33;Next=Now+5;break;
     case 33:Capture(TEXT("05c-city-close-night"),34);break;
     case 34:for(TActorIterator<AMaiCityLighting> It(GetTickableGameObjectWorld());It;++It){It->ApplyPreview(false);It->SetActorTickEnabled(true);}
         if(auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0)))Camera->ResetOverview();Stage=12;Next=Now+2;break;
     case 12:if(Click(TEXT("buy-location")))Stage=13;break;
-    case 13:if(Click(TEXT("open-location")))Stage=14;break;
+    case 13:if(Click(TEXT("open-location")))Stage=43;break;
+    case 43:if(Click(TEXT("walk-in")))Stage=40;break;
+    case 40:if(UI()->ActionIds().Contains(TEXT("leave-interior")))Capture(TEXT("05d-walkable-garage"),41);break;
+    case 41:if(Click(TEXT("leave-interior")))Stage=42;break;
+    case 42:if(UI()->ActionIds().Contains(TEXT("open-location")))Capture(TEXT("05e-city-after-interior"),47);break;
+    case 47:{
+        FVector Target;double Closest=TNumericLimits<double>::Max();bool Found=false;
+        const FVector ForestReference(-16000,600,0);
+        for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It){auto* Instances=It->Instances.Get();
+            if(!Instances||!Instances->GetStaticMesh()||!Instances->GetStaticMesh()->GetName().StartsWith(TEXT("SM_TreeLODs_")))continue;
+            for(int32 Index=0;Index<Instances->GetInstanceCount();++Index){FTransform Placement;
+                if(Instances->GetInstanceTransform(Index,Placement,true)){const double Distance=(Placement.GetLocation()-ForestReference).SizeSquared2D();if(Distance<Closest){Target=Placement.GetLocation();Closest=Distance;Found=true;}}
+            }
+        }
+        auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0));
+        if(!Found||!Camera){Finish(TEXT("Detailed tree instance not found"));break;}
+        const FRotator Rotation(-20,180,0);Camera->SetActorLocationAndRotation(Target-Rotation.Vector()*700,Rotation);Stage=48;Next=Now+2;break;
+    }
+    case 48:Capture(TEXT("05f-tree-detail"),49);break;
+    case 49:if(auto* Camera=Cast<AMaiCameraPawn>(UGameplayStatics::GetPlayerPawn(GetGameInstance(),0)))Camera->ResetOverview();Stage=44;Next=Now+1;break;
+    case 44:if(Click(TEXT("open-location")))Stage=14;break;
     case 14:Capture(TEXT("06-equipment"),15);break;
     case 15:if(Click(TEXT("procurement")))Stage=16;break;
     case 16:Capture(TEXT("07-procurement"),17);break;
@@ -126,7 +190,9 @@ void UMaiCaptureSubsystem::Tick(float Delta){if(!Active)return;const double Now=
     case 18:Capture(TEXT("08-ordered"),19);break;
     case 19:if(Click(TEXT("close-dialog")))Stage=20;break;
     case 20:if(Click(TEXT("nav-training")))Stage=21;break;
-    case 21:Capture(TEXT("09-training"),22);break;
+    case 21:if(UI()->CanControlMap(false)||UI()->CanControlMap(true)){Finish(TEXT("Training panel leaks map input"));break;}Capture(TEXT("09-training"),45);break;
+    case 45:if(UI()->RevealContentNode(TEXT("training-run"))){Stage=46;Next=Now+1;}else Finish(TEXT("Training controls not found"));break;
+    case 46:Capture(TEXT("09b-training-controls"),22);break;
     case 22:{if(!Rules->SaveSlot()){Finish(TEXT("Real save failed: ")+Rules->LastError);break;}
         auto Expected=MakeShared<FJsonObject>();Expected->SetObjectField(TEXT("company"),Rules->CanonicalState()->GetObjectField(TEXT("company")));
         if(!FFileHelper::SaveStringToFile(Encode(Expected),*(FPaths::GetPath(Directory)/TEXT("expected-company.json")),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM)){Finish(TEXT("Cannot retain restart oracle"));break;}

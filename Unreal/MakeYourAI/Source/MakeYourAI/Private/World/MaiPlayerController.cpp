@@ -20,9 +20,13 @@
 #include "Engine/World.h"
 #include "Engine/DirectionalLight.h"
 #include "Components/DirectionalLightComponent.h"
+#include "World/MaiCityBatch.h"
+#include "World/MaiServerAmbience.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 void AMaiPlayerController::BeginPlay() {
     Super::BeginPlay(); if (!IsLocalController()) return;
+    ServerAmbience=NewObject<UMaiServerAmbience>(this);ServerAmbience->RegisterComponent();ServerAmbience->Start();
     bShowMouseCursor = true; bEnableClickEvents = true;
     CityCamera = Cast<AMaiCameraPawn>(GetPawn());
     NativeScreen = CreateWidget<UMaiNativeWidget>(this, UMaiNativeWidget::StaticClass());
@@ -31,24 +35,48 @@ void AMaiPlayerController::BeginPlay() {
 }
 void AMaiPlayerController::PlayerTick(float DeltaTime) {
     Super::PlayerTick(DeltaTime);
+    const bool WalkingView=Cast<AMaiWalkCharacter>(GetPawn())&&NativeScreen&&NativeScreen->IsWalkingView();
+    if(!WalkingView)bWalkCursorFreed=false;
+    const bool Capture=WalkingView&&!bWalkCursorFreed;
+    if(Capture!=bWalkMouseCaptured || bShowMouseCursor==Capture){
+        bWalkMouseCaptured=Capture;bShowMouseCursor=!Capture;
+        if(Capture){FInputModeGameOnly Mode;Mode.SetConsumeCaptureMouseDown(false);SetInputMode(Mode);}
+        else{FInputModeGameAndUI Mode;Mode.SetHideCursorDuringCapture(false);SetInputMode(Mode);}
+    }
     QualityClock+=DeltaTime;
     if(QualityClock>=.25f){QualityClock=0;
         auto* View=Cast<AMaiCameraPawn>(GetPawn());const double Height=View?View->GetActorLocation().Z:0;
         const bool Far=bDistantView?Height>16000:Height>22000;
-        if(Far!=bDistantView){bDistantView=Far;
-            if(View&&View->Camera){View->Camera->PostProcessSettings.bOverride_AutoExposureBias=true;View->Camera->PostProcessSettings.AutoExposureBias=Far?-1.2f:0.f;}
-            for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("MAI_CitySun")))It->GetLightComponent()->SetCastShadows(!Far);
+        if(!bQualityInitialized){bDistantView=Far;bQualityInitialized=true;
+            // Camera distance is a geometry/shadow quality decision, not exposure.
+            if(View&&View->Camera)View->Camera->PostProcessSettings.bOverride_AutoExposureBias=false;
+            // Keep lighting continuous during zoom. The former altitude switch
+            // changed shadows and every instance's LOD together in one frame.
+            for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("MAI_CitySun")))It->GetLightComponent()->SetCastShadows(true);
+            // Screen-size LOD selection remains automatic, with one stable scale.
+            for(TActorIterator<AMaiCityBatch> It(GetWorld());It;++It)if(It->Instances)It->Instances->SetLODDistanceScale(1.65f);
         }
     }
     auto* C = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>() : nullptr;
     const auto* G = C ? C->CampaignDomain() : nullptr;
+    if(ServerAmbience){
+        float FanLoad=0;
+        if(C && C->Domain() && G && G->CanPlay() && Cast<AMaiWalkCharacter>(GetPawn())){
+            const int32 Index=C->Domain()->Definitions().LocationIndex(G->View().interior);
+            if(Index>=0)for(const auto& Slot:C->Domain()->View().locations[static_cast<size_t>(Index)].slots)
+                if(Slot.chassis>=0)FanLoad+=.18f;
+        }
+        ServerAmbience->SetServerLoad(FanLoad);
+    }
     const bool Operations = G && G->CanPlay() && G->View().screen != mai::Screen::Training && bOperationsOpen;
     if (Screen) Screen->SetVisibility(Operations ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 }
 void AMaiPlayerController::SetupInputComponent() {
     Super::SetupInputComponent(); InputComponent->BindAction(TEXT("MaiSelect"), IE_Pressed, this, &AMaiPlayerController::ClickWorld);
+    InputComponent->BindKey(EKeys::Tab,IE_Pressed,this,&AMaiPlayerController::ToggleWalkCursor);
 }
 void AMaiPlayerController::ClickWorld() {
+    if(Cast<AMaiWalkCharacter>(GetPawn()) && !bShowMouseCursor)return;
     auto* C = GetGameInstance() ? GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>() : nullptr;
     if (!C || !C->CampaignDomain() || !C->CampaignDomain()->CanPlay() || C->CampaignDomain()->View().screen == mai::Screen::Training) return;
     FHitResult Hit;
@@ -108,6 +136,7 @@ bool AMaiPlayerController::PrepareCampaignScene(const FString& Interior, bool bM
             ACameraActor* Authored=nullptr;
             for(TActorIterator<ACameraActor> It(GetWorld());It;++It) if(It->ActorHasTag(TEXT("MAI_CityCamera"))){Authored=*It;break;}
             if(!Authored){Error=TEXT("Камера и карта CityV4 не загружены. Повторите создание контента в Editor.");return false;}
+            bQualityInitialized=false;
             CityCamera->Arm->TargetArmLength=0;CityCamera->Arm->SetRelativeRotation(FRotator::ZeroRotator);
             CityCamera->SetActorTransform(Authored->GetActorTransform());
             CityCamera->Camera->SetProjectionMode(Authored->GetCameraComponent()->ProjectionMode);
@@ -117,15 +146,21 @@ bool AMaiPlayerController::PrepareCampaignScene(const FString& Interior, bool bM
         }
         return GetPawn() == CityCamera;
     }
-    if (Interior != TEXT("garage")) { Error = TEXT("Прогулка по этому интерьеру пока не подключена. Оборудование доступно в панели площадки."); return false; }
     AMaiGarageInterior* Room = nullptr;
     for (TActorIterator<AMaiGarageInterior> It(GetWorld()); It; ++It) if (!It->IsHidden()) { Room = *It; break; }
     if (!Room) { RuntimeGarage = GetWorld()->SpawnActor<AMaiGarageInterior>(FVector(100000, 100000, 0), FRotator::ZeroRotator); Room = RuntimeGarage; }
-    if (!Room || !Room->Build()) { Error = TEXT("Garage construction failed; required mesh or collision components unavailable"); return false; }
+    if(Room)Room->ConfigureLocation(Interior);
+    if (!Room || !Room->Build()) { Error = TEXT("Room construction failed; required mesh or collision components unavailable"); return false; }
     if (IsValid(Walker)) Walker->Destroy();
     FActorSpawnParameters Params; Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
     Walker = GetWorld()->SpawnActor<AMaiWalkCharacter>(Room->PlayerStart(), FRotator::ZeroRotator, Params);
     if (!Walker) { Error = TEXT("Garage character spawn failed"); return false; }
-    Possess(Walker); bOperationsOpen = false; return GetPawn() == Walker;
+    Walker->SetRoomBounds(Room->GetActorLocation(),Room->WalkHalfSize());
+    Possess(Walker);SetControlRotation(FRotator(0,-90,0));bShowMouseCursor=true; bOperationsOpen = false; return GetPawn() == Walker;
 }
-void AMaiPlayerController::ShowWarehouse() { if(auto* Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>()) Rules->Dispatch(TEXT("ui:procurement"),{MakeShared<FJsonValueString>(TEXT("garage"))}); }
+void AMaiPlayerController::ShowWarehouse() {
+    auto* Company=GetGameInstance()->GetSubsystem<UMaiCompanySubsystem>();
+    if(!Company||!Company->CampaignDomain())return;
+    const FString Id=UTF8_TO_TCHAR(Company->CampaignDomain()->View().interior.c_str());
+    if(!Id.IsEmpty())if(auto* Rules=GetGameInstance()->GetSubsystem<UMaiRulesSubsystem>())Rules->Dispatch(TEXT("ui:procurement"),{MakeShared<FJsonValueString>(Id)});
+}

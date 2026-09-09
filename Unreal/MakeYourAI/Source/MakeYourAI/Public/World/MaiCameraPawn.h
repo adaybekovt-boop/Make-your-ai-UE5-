@@ -16,9 +16,13 @@ public:
     void ZoomOut();
     void RememberOverview();
     void ResetOverview();
+    static float WheelZoomFactor(float Delta){return FMath::IsFinite(Delta)?FMath::Pow(.85f,FMath::Clamp(Delta,-8.f,8.f)):1.f;}
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera") TObjectPtr<USpringArmComponent> Arm;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera") TObjectPtr<UCameraComponent> Camera;
 private:
+    bool AllowsInput(bool CheckPointer) const;
+    void MouseWheel(float Delta);
+    void ResetFromInput();
     void MoveNorth(float Value);
     void MoveEast(float Value);
     void MouseHorizontal(float Value);

@@ -1,4 +1,6 @@
 #include "World/MaiCameraPawn.h"
+#include "World/MaiPlayerController.h"
+#include "UI/MaiNativeWidget.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -20,10 +22,15 @@ void AMaiCameraPawn::SetupPlayerInputComponent(UInputComponent* Input) {
     Input->BindAxis(TEXT("MaiEast"),this,&AMaiCameraPawn::MoveEast);
     Input->BindAxis(TEXT("MaiMouseX"),this,&AMaiCameraPawn::MouseHorizontal);
     Input->BindAxis(TEXT("MaiMouseY"),this,&AMaiCameraPawn::MouseVertical);
-    Input->BindAction(TEXT("MaiZoomIn"),IE_Pressed,this,&AMaiCameraPawn::ZoomIn);
-    Input->BindAction(TEXT("MaiZoomOut"),IE_Pressed,this,&AMaiCameraPawn::ZoomOut);
-    Input->BindAction(TEXT("MaiResetView"),IE_Pressed,this,&AMaiCameraPawn::ResetOverview);
+    Input->BindAxisKey(EKeys::MouseWheelAxis,this,&AMaiCameraPawn::MouseWheel);
+    Input->BindAction(TEXT("MaiResetView"),IE_Pressed,this,&AMaiCameraPawn::ResetFromInput);
 }
+bool AMaiCameraPawn::AllowsInput(bool CheckPointer)const{
+    const auto* PC=Cast<AMaiPlayerController>(GetController());
+    return PC&&PC->NativeUI()&&PC->NativeUI()->CanControlMap(CheckPointer);
+}
+void AMaiCameraPawn::MouseWheel(float Delta){if(!FMath::IsNearlyZero(Delta)&&AllowsInput(true))Zoom(WheelZoomFactor(Delta));}
+void AMaiCameraPawn::ResetFromInput(){if(AllowsInput(false))ResetOverview();}
 FVector AMaiCameraPawn::GroundTarget() const {
     const FVector P=Camera->GetComponentLocation(),D=Camera->GetForwardVector();
     return P+D*(D.Z<-.05?FMath::Clamp(-P.Z/D.Z,200.,200000.):20000.);
@@ -31,12 +38,12 @@ FVector AMaiCameraPawn::GroundTarget() const {
 void AMaiCameraPawn::RememberOverview(){Overview=GetActorTransform();bHasOverview=true;}
 void AMaiCameraPawn::ResetOverview(){if(bHasOverview){SetActorTransform(Overview);Camera->SetFieldOfView(65);}}
 void AMaiCameraPawn::MoveNorth(float V){
-    if(!GetWorld()||FMath::IsNearlyZero(V))return;
+    if(!GetWorld()||FMath::IsNearlyZero(V)||!AllowsInput(false))return;
     FVector D=Camera->GetForwardVector();D.Z=0;D.Normalize();
     AddActorWorldOffset(D*V*FMath::Clamp(GetActorLocation().Z,1000.,60000.)*GetWorld()->GetDeltaSeconds());
 }
 void AMaiCameraPawn::MoveEast(float V){
-    if(!GetWorld()||FMath::IsNearlyZero(V))return;
+    if(!GetWorld()||FMath::IsNearlyZero(V)||!AllowsInput(false))return;
     FVector D=Camera->GetRightVector();D.Z=0;D.Normalize();
     AddActorWorldOffset(D*V*FMath::Clamp(GetActorLocation().Z,1000.,60000.)*GetWorld()->GetDeltaSeconds());
 }
@@ -46,12 +53,12 @@ void AMaiCameraPawn::Orbit(float Yaw,float Pitch){
     SetActorLocationAndRotation(Pivot-R.Vector()*Distance,R);
 }
 void AMaiCameraPawn::MouseHorizontal(float V){
-    auto* PC=Cast<APlayerController>(GetController());if(!PC||FMath::IsNearlyZero(V))return;
+    auto* PC=Cast<APlayerController>(GetController());if(!PC||FMath::IsNearlyZero(V)||!AllowsInput(true))return;
     if(PC->IsInputKeyDown(EKeys::MiddleMouseButton)||(PC->IsInputKeyDown(EKeys::RightMouseButton)&&PC->IsInputKeyDown(EKeys::LeftShift)))Orbit(V*2,0);
     else if(PC->IsInputKeyDown(EKeys::RightMouseButton))AddActorWorldOffset(-Camera->GetRightVector()*V*FMath::Max(100.,GetActorLocation().Z)*.012);
 }
 void AMaiCameraPawn::MouseVertical(float V){
-    auto* PC=Cast<APlayerController>(GetController());if(!PC||FMath::IsNearlyZero(V))return;
+    auto* PC=Cast<APlayerController>(GetController());if(!PC||FMath::IsNearlyZero(V)||!AllowsInput(true))return;
     if(PC->IsInputKeyDown(EKeys::MiddleMouseButton)||(PC->IsInputKeyDown(EKeys::RightMouseButton)&&PC->IsInputKeyDown(EKeys::LeftShift)))Orbit(0,V*2);
     else if(PC->IsInputKeyDown(EKeys::RightMouseButton)){FVector D=Camera->GetForwardVector();D.Z=0;D.Normalize();AddActorWorldOffset(-D*V*FMath::Max(100.,GetActorLocation().Z)*.012);}
 }
